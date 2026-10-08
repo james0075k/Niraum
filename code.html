@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Domine:wght@400;500;600;700&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-tertiary-fixed": "#0d1d2b", "tertiary": "#b9c8dc", "on-background": "#e1e2e8", "inverse-primary": "#85522d", "secondary-fixed-dim": "#ffb689", "ore-highlight": "#E8D8CD", "on-surface": "#e1e2e8", "copper-deep": "#82461D", "primary-container": "#dd9e72", "success-emerald": "#2E7D5B", "on-tertiary-container": "#334151", "on-error": "#690005", "on-tertiary": "#233241", "on-primary-fixed": "#301400", "on-tertiary-fixed-variant": "#3a4859", "copper-glow": "#F0B892", "surface-container-low": "#191c20", "on-secondary": "#512400", "surface-variant": "#323539", "on-secondary-container": "#f9a065", "secondary": "#ffb689", "surface-dim": "#111418", "surface-container-high": "#272a2f", "surface-container-lowest": "#0b0e12", "secondary-fixed": "#ffdbc7", "warning-amber": "#D9822B", "inverse-on-surface": "#2e3135", "on-secondary-fixed": "#311300", "on-surface-variant": "#d6c3b8", "primary-fixed-dim": "#fbb88a", "surface-bright": "#36393e", "inverse-surface": "#e1e2e8", "on-secondary-fixed-variant": "#733500", "surface": "#111418", "surface-tint": "#fbb88a", "surface-container-highest": "#323539", "on-primary": "#4e2604", "tertiary-container": "#9eadc1", "on-primary-container": "#613511", "on-error-container": "#ffdad6", "surface-container": "#1d2024", "primary-fixed": "#ffdcc6", "on-primary-fixed-variant": "#693b18", "primary": "#fbb98b", "tertiary-fixed-dim": "#b9c8dc", "slate-surface": "#14171C", "tertiary-fixed": "#d5e4f9", "error-container": "#93000a", "error": "#ffb4ab", "outline": "#9e8d83", "outline-variant": "#51443c", "iron-depth": "#0A0D10", "background": "#111418", "secondary-container": "#733500" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "space-md": "1rem", "gutter-mobile": "1rem", "space-xs": "0.25rem", "space-xl": "2.5rem", "margin-mobile": "1rem", "margin-tablet": "2rem", "space-3xl": "6rem", "margin": "3rem", "space-lg": "1.5rem", "gutter": "1.5rem", "space-2xl": "4rem", "space-sm": "0.5rem" }, "fontFamily": { "headline-md": ["Domine"], "label-lg": ["Manrope"], "body-xl": ["Manrope"], "body-sm": ["Manrope"], "headline-xl-mobile": ["Domine"], "label-sm": ["Manrope"], "headline-lg": ["Domine"], "headline-xl": ["Domine"], "headline-sm": ["Domine"], "label-md": ["Manrope"], "body-lg": ["Manrope"], "display-lg-mobile": ["Domine"], "body-md": ["Manrope"], "display-lg": ["Domine"] }, "fontSize": { "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "500"}], "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.04em", "fontWeight": "600"}], "body-xl": ["18px", {"lineHeight": "28px", "fontWeight": "400"}], "body-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}], "headline-xl-mobile": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600"}], "label-sm": ["10px", {"lineHeight": "14px", "letterSpacing": "0.08em", "fontWeight": "700"}], "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}], "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.015em", "fontWeight": "600"}], "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "500"}], "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.06em", "fontWeight": "600"}], "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}], "display-lg-mobile": ["38px", {"lineHeight": "46px", "letterSpacing": "-0.01em", "fontWeight": "700"}], "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}], "display-lg": ["56px", {"lineHeight": "64px", "letterSpacing": "-0.02em", "fontWeight": "700"}] } } } }</script></head><body class="bg-background text-on-surface font-body-md text-body-md transition-colors duration-300"><header class="fixed top-0 left-0 right-0 z-50 bg-slate-surface/85 backdrop-blur-md border-b border-primary-container/20 shadow-[0_1px_8px_rgba(0,0,0,0.35)] transition-all duration-300"><div class="h-20 max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-md shrink-0"><img alt="Niraum Metals Hexagon Brand Mark" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUjbpVqHKAdpdgwos5p_5BTZVfruTLIquZRikWjXeSBToyyIq4ynfbZkW0BJ2ke_pIMXJg1w0g5xc43Ej5ecDzo0lyK85Tc4YPQahrZkUqsA9aNttZorOWIemAytu0CJg527li6sVDD3QShBOLSK3NtgM5GzA0OMTU-04oF2hZ9rAfEHikdVVd9-WPxL4rNZW8gGj3vw1dwppLSqV4lztVcqtVXo404zmXblle_J8"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-on-surface tracking-wide uppercase leading-tight font-semibold">Niraum Metals</span><span class="font-label-sm text-label-sm uppercase tracking-widest text-primary">Lalitpur, Nepal</span></div></div><nav class="hidden xl:flex items-center gap-space-lg" data-active-classes="bg-primary-container text-on-primary-container font-semibold rounded-lg px-3 py-1.5"><a aria-current="page" class="transition-colors bg-primary-container text-on-primary-container font-semibold rounded-lg px-3 py-1.5" data-path="home" href="#">Home</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors" data-path="about" href="#">About</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors" data-path="operations" href="#">Operations</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors" data-path="projects" href="#">Projects</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors" data-path="sustainability" href="#">Sustainability</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors" data-path="news" href="#">News</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors" data-path="careers" href="#">Careers</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors" data-path="contact" href="#">Contact</a></nav><div class="flex items-center gap-space-md shrink-0"><button aria-label="Toggle color theme" class="w-10 h-10 rounded-lg flex items-center justify-center bg-surface-container text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" id="theme-toggle" type="button"><span class="material-symbols-outlined text-[20px]" id="theme-icon">light_mode</span></button><a class="hidden sm:inline-flex items-center justify-center px-5 py-2.5 rounded-lg bg-gradient-to-br from-primary-container to-copper-deep text-iron-depth font-label-lg text-label-lg font-semibold tracking-wide border border-white/20 shadow-[0_0_12px_rgba(221,158,114,0.25)] hover:shadow-[0_0_20px_rgba(221,158,114,0.45)] hover:brightness-105 active:scale-95 transition-all" data-path="quote" href="#">Get a Quote</a><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-20 bg-background"><div class="flex flex-col w-full relative selection:bg-primary-container selection:text-iron-depth">
+<!-- 1. BRANDED PRELOADER OVERLAY -->
+<div class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-iron-depth transition-opacity duration-700 ease-out pointer-events-auto" id="preloader-overlay">
+<div class="relative flex flex-col items-center">
+<!-- Animated Copper Hexagon Mark -->
+<div class="relative w-28 h-28 flex items-center justify-center mb-6">
+<svg class="w-full h-full text-primary" fill="none" viewbox="0 0 100 100">
+<polygon class="animate-[dash_1.2s_cubic-bezier(0.4,0,0.2,1)_forwards] drop-shadow-[0_0_12px_rgba(221,158,114,0.7)]" points="50 4, 92 27, 92 73, 50 96, 8 73, 8 27" stroke="currentColor" stroke-dasharray="300" stroke-dashoffset="300" stroke-width="2.5"></polygon>
+<polygon points="50 16, 80 33, 80 67, 50 84, 20 67, 20 33" stroke="currentColor" stroke-opacity="0.35" stroke-width="1.5"></polygon>
+<path class="animate-pulse" d="M42 35L58 50L42 65" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</div>
+<div class="flex flex-col items-center gap-1 mb-8">
+<span class="font-headline-sm text-headline-sm text-on-surface tracking-widest uppercase font-semibold">NIRAUM METALS</span>
+<span class="font-label-sm text-label-sm tracking-widest uppercase text-primary">LALITPUR • HIMALAYAN PRECISION</span>
+</div>
+<!-- Linear Copper Progress Bar -->
+<div class="w-56 h-1 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-copper-deep via-primary to-primary-container w-0 transition-all duration-1000 ease-out shadow-[0_0_8px_#dd9e72]" id="preloader-progress"></div>
+</div>
+</div>
+</div>
+<style>
+    @keyframes dash {
+      to { stroke-dashoffset: 0; }
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    .animate-marquee {
+      display: flex;
+      width: 200%;
+      animation: marquee 28s linear infinite;
+    }
+    .animate-marquee:hover {
+      animation-play-state: paused;
+    }
+  </style>
+<!-- 2. CINEMATIC HERO SECTION -->
+<section class="relative w-full -mt-20 pt-20 min-h-screen flex items-center overflow-hidden">
+<!-- Full Bleed Quarry Background -->
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-1000 scale-105" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD5Z-h6to_jZA4ZY9T2Ba7VOrs2ClLds43SG6t_WmziErsxILqH84gl53CqTYfITwxjkfNhyEAzRbtOAG1TFzJFN0OHoGGrrHgZSfMahVjZaKKFobFJvWHxnLZeVWo5uKa9YV_r_cXSg_bwXzZ-sYe5DZN1tNiJRkUTVMj0hLjk81yYm2QSFiLvqL87GFBk49h2KU1vhr5R3gSwuNRdDlqYNb3I3K7tinVf2qX6lzU');"></div>
+<!-- Heavy Industrial Scrim & Dynamic Lighting Overlay -->
+<div class="absolute inset-0 bg-gradient-to-t from-iron-depth via-iron-depth/75 to-iron-depth/50"></div>
+<div class="absolute inset-0 bg-gradient-to-r from-iron-depth via-iron-depth/60 to-transparent"></div>
+<div class="relative max-w-7xl mx-auto px-6 lg:px-12 py-24 sm:py-32 w-full flex flex-col justify-between min-h-[calc(100vh-5rem)]">
+<!-- Central Narrative Block -->
+<div class="max-w-4xl flex flex-col mt-auto pt-16">
+<!-- Eyebrow Tag -->
+<div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-slate-surface/80 backdrop-blur-md border border-primary/30 w-fit mb-6 shadow-lg">
+<span class="w-2 h-2 rounded-full bg-primary animate-ping"></span>
+<span class="font-label-sm text-label-sm text-ore-highlight uppercase tracking-widest font-semibold">
+            Lalitpur, Nepal • Mining &amp; Metallurgy Excellence
+          </span>
+</div>
+<!-- Monumental Headline -->
+<h1 class="font-headline-xl text-4xl sm:text-6xl lg:text-7xl text-on-surface font-extrabold tracking-tight leading-[1.08] mb-6">
+          Strength Forged <br class="hidden sm:inline"/>
+<span class="bg-gradient-to-r from-white via-ore-highlight to-primary bg-clip-text text-transparent">
+            For Generations
+          </span>
+</h1>
+<!-- High-Altitude Industrial Narrative -->
+<p class="font-body-xl text-body-xl text-on-surface-variant max-w-2xl leading-relaxed mb-10 text-pretty">
+          Pioneering responsible mineral extraction, heavy metallurgical processing, and seismic-grade structural engineering across the elevated rock strata of the Himalayas.
+        </p>
+<!-- High-Command CTAs -->
+<div class="flex flex-wrap items-center gap-4 sm:gap-6">
+<a class="inline-flex items-center justify-center gap-3 px-8 py-4 rounded bg-gradient-to-br from-primary-container to-copper-deep text-iron-depth font-label-lg text-label-lg font-bold tracking-wide uppercase shadow-[0_0_24px_rgba(221,158,114,0.35)] hover:shadow-[0_0_36px_rgba(221,158,114,0.6)] hover:brightness-110 active:scale-95 transition-all" data-path="operations" href="#">
+<span>Explore Operations</span>
+<span class="material-symbols-outlined text-[18px]">engineering</span>
+</a>
+<a class="inline-flex items-center justify-center gap-3 px-8 py-4 rounded bg-slate-surface/60 backdrop-blur-xl border border-primary/20 text-on-surface font-label-lg text-label-lg font-semibold tracking-wide uppercase hover:bg-slate-surface hover:border-primary/50 transition-all" data-path="contact" href="#">
+<span>Contact Engineering Team</span>
+<span class="material-symbols-outlined text-[18px] text-primary">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- Bottom Telemetry & Scroll Indicator -->
+<div class="flex items-end justify-between pt-16 border-t border-surface-variant/30 mt-16">
+<div class="hidden md:flex items-center gap-6 text-on-surface-variant font-label-md text-label-md">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">verified</span> ISO 9001:2015 &amp; 14001 Certified
+          </span>
+<span class="text-surface-variant">•</span>
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">terrain</span> High-Altitude Terrain Standard: 4,000m+
+          </span>
+</div>
+<a class="flex items-center gap-3 text-ore-highlight font-label-sm text-label-sm uppercase tracking-widest hover:text-primary transition-colors group ml-auto md:ml-0" href="#stats-strip">
+<span>Scroll to Explore</span>
+<div class="w-7 h-11 rounded-full border border-primary/40 flex items-start justify-center p-1.5 group-hover:border-primary">
+<div class="w-1.5 h-2.5 rounded-full bg-primary animate-bounce"></div>
+</div>
+</a>
+</div>
+</div>
+</section>
+<!-- 3. IMPACT STATS STRIP -->
+<section class="relative z-10 -mt-10 max-w-7xl mx-auto px-6 lg:px-12 w-full" id="stats-strip">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Metric 1 -->
+<div class="p-6 rounded-xl bg-slate-surface/85 backdrop-blur-xl border border-primary/20 shadow-2xl flex flex-col justify-between group hover:border-primary/50 transition-all">
+<div class="flex items-center justify-between mb-4">
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-primary">Annual Capacity</span>
+<span class="material-symbols-outlined text-primary text-2xl">precision_manufacturing</span>
+</div>
+<div>
+<div class="font-headline-xl text-4xl lg:text-5xl font-bold text-on-surface tracking-tight mb-1">2.4M+</div>
+<div class="font-body-md text-body-md text-on-surface-variant">Metric Tonnes Processed</div>
+</div>
+<div class="mt-4 pt-3 border-t border-surface-variant/40 flex items-center gap-2 font-label-sm text-label-sm text-primary">
+<span class="material-symbols-outlined text-sm">trending_up</span> 18.4% YoY Industrial Scale
+        </div>
+</div>
+<!-- Metric 2 -->
+<div class="p-6 rounded-xl bg-slate-surface/85 backdrop-blur-xl border border-primary/20 shadow-2xl flex flex-col justify-between group hover:border-primary/50 transition-all">
+<div class="flex items-center justify-between mb-4">
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-primary">SLA Reliability</span>
+<span class="material-symbols-outlined text-primary text-2xl">verified_user</span>
+</div>
+<div>
+<div class="font-headline-xl text-4xl lg:text-5xl font-bold text-on-surface tracking-tight mb-1">100%</div>
+<div class="font-body-md text-body-md text-on-surface-variant">Projects Delivered on Spec</div>
+</div>
+<div class="mt-4 pt-3 border-t border-surface-variant/40 flex items-center gap-2 font-label-sm text-label-sm text-success-emerald">
+<span class="material-symbols-outlined text-sm">check_circle</span> Zero Defect Yield Rate
+        </div>
+</div>
+<!-- Metric 3 -->
+<div class="p-6 rounded-xl bg-slate-surface/85 backdrop-blur-xl border border-primary/20 shadow-2xl flex flex-col justify-between group hover:border-primary/50 transition-all">
+<div class="flex items-center justify-between mb-4">
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-primary">Workforce Safety</span>
+<span class="material-symbols-outlined text-primary text-2xl">health_and_safety</span>
+</div>
+<div>
+<div class="font-headline-xl text-4xl lg:text-5xl font-bold text-success-emerald tracking-tight mb-1">Zero</div>
+<div class="font-body-md text-body-md text-on-surface-variant">Lost-Time Incidents (LTIFR 0.00)</div>
+</div>
+<div class="mt-4 pt-3 border-t border-surface-variant/40 flex items-center gap-2 font-label-sm text-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">calendar_month</span> Fiscal 2025/2026 Audit
+        </div>
+</div>
+<!-- Metric 4 -->
+<div class="p-6 rounded-xl bg-slate-surface/85 backdrop-blur-xl border border-primary/20 shadow-2xl flex flex-col justify-between group hover:border-primary/50 transition-all">
+<div class="flex items-center justify-between mb-4">
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-primary">Alpine Holdings</span>
+<span class="material-symbols-outlined text-primary text-2xl">layers</span>
+</div>
+<div>
+<div class="font-headline-xl text-4xl lg:text-5xl font-bold text-on-surface tracking-tight mb-1">18+</div>
+<div class="font-body-md text-body-md text-on-surface-variant">Active Mining Concessions</div>
+</div>
+<div class="mt-4 pt-3 border-t border-surface-variant/40 flex items-center gap-2 font-label-sm text-label-sm text-primary">
+<span class="material-symbols-outlined text-sm">location_on</span> Bagmati, Gandaki, Karnali
+        </div>
+</div>
+</div>
+</section>
+<!-- 4. 'WHAT WE DO' - 4 OPERATIONAL GLASS CARDS -->
+<section class="max-w-7xl mx-auto px-6 lg:px-12 py-28 w-full">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+<div>
+<div class="inline-flex items-center gap-2 font-label-sm text-label-sm text-primary uppercase tracking-widest mb-2 font-bold">
+<span class="w-1.5 h-1.5 bg-primary rounded-full"></span>
+          Core Disciplines
+        </div>
+<h2 class="font-headline-lg text-3xl sm:text-4xl text-on-surface font-bold tracking-tight">
+          Industrial Scale with Alpine Precision
+        </h2>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-md">
+        Deploying deep engineering capabilities to mine, refine, and transport critical metallurgical ores from rugged Himalayan geologies to tier-one industrial consumers.
+      </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Discipline 1: Iron Ore -->
+<div class="group relative p-8 rounded-xl bg-slate-surface/70 backdrop-blur-xl border border-primary/15 hover:border-primary/45 transition-all duration-300 flex flex-col justify-between hover:-translate-y-1 hover:shadow-2xl">
+<div class="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full pointer-events-none group-hover:bg-primary/10 transition-colors"></div>
+<div>
+<div class="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-2xl">hardware</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-3">Iron Ore Extraction</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">
+            Selective open-pit and mechanized high-altitude bench mining for premium magnetite and hematite with fe content exceeding 64%.
+          </p>
+<ul class="space-y-2.5 mb-8 text-on-surface-variant font-body-sm text-body-sm">
+<li class="flex items-center gap-2">
+<span class="w-1 h-1 bg-primary rounded-full"></span> Sub-surface core drill modeling
+            </li>
+<li class="flex items-center gap-2">
+<span class="w-1 h-1 bg-primary rounded-full"></span> Controlled micro-delay blasting
+            </li>
+<li class="flex items-center gap-2">
+<span class="w-1 h-1 bg-primary rounded-full"></span> Primary crushing in-pit systems
+            </li>
+</ul>
+</div>
+<a class="inline-flex items-center gap-2 text-primary font-label-md text-label-md tracking-wider uppercase group-hover:translate-x-1 transition-transform" data-path="iron-ore-extraction" href="#">
+<span>Operation Specs</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+<!-- Discipline 2: Metal Minerals & Smelting -->
+<div class="group relative p-8 rounded-xl bg-slate-surface/70 backdrop-blur-xl border border-primary/15 hover:border-primary/45 transition-all duration-300 flex flex-col justify-between hover:-translate-y-1 hover:shadow-2xl">
+<div class="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full pointer-events-none group-hover:bg-primary/10 transition-colors"></div>
+<div>
+<div class="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-2xl">volcano</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-3">Metal Minerals &amp; Refining</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">
+            Concentration, hydrometallurgy, and specialized thermal refinement of strategic chalcopyrite copper, sphalerite zinc, and lead deposits.
+          </p>
+<ul class="space-y-2.5 mb-8 text-on-surface-variant font-body-sm text-body-sm">
+<li class="flex items-center gap-2">
+<span class="w-1 h-1 bg-primary rounded-full"></span> High-density froth flotation cells
+            </li>
+<li class="flex items-center gap-2">
+<span class="w-1 h-1 bg-primary rounded-full"></span> Thermal induction smelters
+            </li>
+<li class="flex items-center gap-2">
+<span class="w-1 h-1 bg-primary rounded-full"></span> 99.85% refined anode grade output
+            </li>
+</ul>
+</div>
+<a class="inline-flex items-center gap-2 text-primary font-label-md text-label-md tracking-wider uppercase group-hover:translate-x-1 transition-transform" data-path="metal-minerals" href="#">
+<span>Operation Specs</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+<!-- Discipline 3: Stone & Aggregates -->
+<div class="group relative p-8 rounded-xl bg-slate-surface/70 backdrop-blur-xl border border-primary/15 hover:border-primary/45 transition-all duration-300 flex flex-col justify-between hover:-translate-y-1 hover:shadow-2xl">
+<div class="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full pointer-events-none group-hover:bg-primary/10 transition-colors"></div>
+<div>
+<div class="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-2xl">foundation</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-3">Stone &amp; Alpine Aggregates</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">
+            Heavy compressive strength basalt, granite, and dolomite quarried for national dam construction, expressways, and high-altitude tunnels.
+          </p>
+<ul class="space-y-2.5 mb-8 text-on-surface-variant font-body-sm text-body-sm">
+<li class="flex items-center gap-2">
+<span class="w-1 h-1 bg-primary rounded-full"></span> 4-stage cone crushing plant
+            </li>
+<li class="flex items-center gap-2">
+<span class="w-1 h-1 bg-primary rounded-full"></span> Concrete aggregate 10mm-40mm grading
+            </li>
+<li class="flex items-center gap-2">
+<span class="w-1 h-1 bg-primary rounded-full"></span> ASTM C33 compressive rating
+            </li>
+</ul>
+</div>
+<a class="inline-flex items-center gap-2 text-primary font-label-md text-label-md tracking-wider uppercase group-hover:translate-x-1 transition-transform" data-path="stone-and-aggregates" href="#">
+<span>Operation Specs</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+<!-- Discipline 4: Logistics & Supply -->
+<div class="group relative p-8 rounded-xl bg-slate-surface/70 backdrop-blur-xl border border-primary/15 hover:border-primary/45 transition-all duration-300 flex flex-col justify-between hover:-translate-y-1 hover:shadow-2xl">
+<div class="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full pointer-events-none group-hover:bg-primary/10 transition-colors"></div>
+<div>
+<div class="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-2xl">local_shipping</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-3">Logistics &amp; Supply Fleet</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">
+            All-weather alpine haulage corridors, high-capacity material ropeways, and rail-linked transshipment depots centered out of Lalitpur.
+          </p>
+<ul class="space-y-2.5 mb-8 text-on-surface-variant font-body-sm text-body-sm">
+<li class="flex items-center gap-2">
+<span class="w-1 h-1 bg-primary rounded-full"></span> 85+ Heavy multi-axle tippers
+            </li>
+<li class="flex items-center gap-2">
+<span class="w-1 h-1 bg-primary rounded-full"></span> Automated telemetric route monitors
+            </li>
+<li class="flex items-center gap-2">
+<span class="w-1 h-1 bg-primary rounded-full"></span> Strategic regional buffer stockpiles
+            </li>
+</ul>
+</div>
+<a class="inline-flex items-center gap-2 text-primary font-label-md text-label-md tracking-wider uppercase group-hover:translate-x-1 transition-transform" data-path="logistics-and-supply" href="#">
+<span>Operation Specs</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+</div>
+</section>
+<!-- 5. FEATURED PROJECTS HORIZONTAL GALLERY -->
+<section class="w-full bg-surface-container-lowest py-28">
+<div class="max-w-7xl mx-auto px-6 lg:px-12">
+<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-primary font-semibold">Active Exploitation Portfolios</span>
+<h2 class="font-headline-lg text-3xl sm:text-4xl text-on-surface font-bold tracking-tight mt-1">Key Himalayan Concessions</h2>
+</div>
+<div class="flex items-center gap-3">
+<button aria-label="Previous Project" class="w-11 h-11 rounded border border-surface-variant/60 flex items-center justify-center text-on-surface hover:border-primary hover:text-primary transition-all" id="proj-prev">
+<span class="material-symbols-outlined text-xl">west</span>
+</button>
+<button aria-label="Next Project" class="w-11 h-11 rounded border border-surface-variant/60 flex items-center justify-center text-on-surface hover:border-primary hover:text-primary transition-all" id="proj-next">
+<span class="material-symbols-outlined text-xl">east</span>
+</button>
+</div>
+</div>
+<!-- Horizontal Carousel Container -->
+<div class="flex gap-6 overflow-x-auto pb-6 scroll-smooth snap-x snap-mandatory" id="project-strip">
+<!-- Project 1 -->
+<div class="min-w-[320px] sm:min-w-[420px] lg:min-w-[460px] snap-start rounded-xl overflow-hidden bg-slate-surface border border-primary/15 flex flex-col group hover:border-primary/40 transition-all">
+<div class="relative h-64 overflow-hidden">
+<div class="bg-cover bg-center w-full h-full group-hover:scale-105 transition-transform duration-700" data-alt="An expansive open pit iron ore mine terraced into the steep mountains of Mustang Nepal with heavy excavators and snow-capped peaks in the background under warm sunset lighting." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCoHD7fTVxVTV2X8lXWwmianiddAZ7XD7v61qn3rf2_rVyb8oXrkCkqHnwe1Sg-60DmlYj-gancQUTBa44KqmGyjJgBJTF-I9sf3rCdOmKwWVLllxPKuUwxUe3UFw9v3PQRneIZ4249_4nNOKCi_kNcZFHg13EBJdQwiws7i_qUhKdrbVIDX-fcAv6tLN38SbgWrJPsFMD2ouKu8YQ2J2F4aUIJK7dx0MZlJWfZQrc')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-slate-surface via-transparent to-black/30"></div>
+<div class="absolute top-4 left-4 flex gap-2">
+<span class="px-3 py-1 rounded bg-success-emerald/90 text-on-surface font-label-sm text-label-sm uppercase tracking-wider font-semibold">Active Extraction</span>
+<span class="px-3 py-1 rounded bg-black/60 backdrop-blur-md text-ore-highlight font-label-sm text-label-sm font-semibold">Alt: 3,450m</span>
+</div>
+<div class="absolute bottom-4 left-4 text-xs font-mono text-primary bg-iron-depth/80 px-2.5 py-1 rounded">2024 — 2029 CONCESSION</div>
+</div>
+<div class="p-6 flex flex-col flex-1 justify-between">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold mb-2">Annapurna Range Block A</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4">Mustang Region • 450,000 MT Annual Magnetite Ore output for domestic steel plants.</p>
+<div class="grid grid-cols-2 gap-4 py-3 border-y border-surface-variant/40 mb-6 font-body-sm text-body-sm">
+<div><span class="text-on-surface-variant block">Deposit Type</span> <span class="text-on-surface font-medium">Banded Iron Formation</span></div>
+<div><span class="text-on-surface-variant block">Avg Purity</span> <span class="text-primary font-medium">65.2% Fe Content</span></div>
+</div>
+</div>
+<a class="inline-flex items-center justify-between text-on-surface font-label-md text-label-md uppercase group-hover:text-primary transition-colors" href="#">
+<span>View Technical Geological Profile</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- Project 2 -->
+<div class="min-w-[320px] sm:min-w-[420px] lg:min-w-[460px] snap-start rounded-xl overflow-hidden bg-slate-surface border border-primary/15 flex flex-col group hover:border-primary/40 transition-all">
+<div class="relative h-64 overflow-hidden">
+<div class="bg-cover bg-center w-full h-full group-hover:scale-105 transition-transform duration-700" data-alt="A modern industrial hydrometallurgical mineral processing and beneficiation facility constructed along a Himalayan river valley in Dhunche Nepal with massive copper flotation tanks." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBdgvfTiAAREBrDmbUDqKB4Zn4U9t7QvKkOHXjY1WULcg1xuhsLN9GZYXqkA4PGAr4GbIfvse81EVvkeJfJDvGLWz85zjq-NQRhDP22mgqjqc1DlEDFFSGuHVBIzEVuOP0wKhcY-ut6M-7Bjta9Ey7tfCq3j5ixFJE98HF63IG6qj1ZYgeL6CDCJ-7GHMD8R1vRpDEaoBImWlIDyH8GGNpg1ZQthwGFVcUgf2Fc_7U')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-slate-surface via-transparent to-black/30"></div>
+<div class="absolute top-4 left-4 flex gap-2">
+<span class="px-3 py-1 rounded bg-warning-amber/90 text-on-surface font-label-sm text-label-sm uppercase tracking-wider font-semibold">Expansion Phase</span>
+<span class="px-3 py-1 rounded bg-black/60 backdrop-blur-md text-ore-highlight font-label-sm text-label-sm font-semibold">Alt: 2,120m</span>
+</div>
+<div class="absolute bottom-4 left-4 text-xs font-mono text-primary bg-iron-depth/80 px-2.5 py-1 rounded">PHASE II COMMISSIONING</div>
+</div>
+<div class="p-6 flex flex-col flex-1 justify-between">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold mb-2">Trishuli Valley Beneficiation Plant</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4">Dhunche, Rasuwa • Ultra-modern chalcopyrite copper separation plant with zero toxic tailing discharge.</p>
+<div class="grid grid-cols-2 gap-4 py-3 border-y border-surface-variant/40 mb-6 font-body-sm text-body-sm">
+<div><span class="text-on-surface-variant block">Processing Tech</span> <span class="text-on-surface font-medium">Hydro-Gravity Cells</span></div>
+<div><span class="text-on-surface-variant block">Annual Yield</span> <span class="text-primary font-medium">32,000 MT Cu Conc.</span></div>
+</div>
+</div>
+<a class="inline-flex items-center justify-between text-on-surface font-label-md text-label-md uppercase group-hover:text-primary transition-colors" href="#">
+<span>View Technical Geological Profile</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- Project 3 -->
+<div class="min-w-[320px] sm:min-w-[420px] lg:min-w-[460px] snap-start rounded-xl overflow-hidden bg-slate-surface border border-primary/15 flex flex-col group hover:border-primary/40 transition-all">
+<div class="relative h-64 overflow-hidden">
+<div class="bg-cover bg-center w-full h-full group-hover:scale-105 transition-transform duration-700" data-alt="Heavy aggregate quarry in Kaski Nepal featuring high powered jaw crushers and towering stockpiles of graded structural basalt against misty mountain foothills." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDS0f7XTYP2hk0TmVNOWNUx9QYT5SKNmgGR-X5Qk-OT0Zn5nQlpeXIQr59cIJzwWDb7cnfIbsqf74CRml8srNLgaWgxWHS9MjsmWu-FfMdVUoe00s121Yzfel3UIxU9uxgH1ngbNx1r9yz_UV6sjJ--Fpx0NWVpbN_uTjzxTaeAQjOTp5olRvLG7sgNdI4bCXoqtnIlXtUo34UnTFHJxCDVFMDds9NPXKMQntlKkXc')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-slate-surface via-transparent to-black/30"></div>
+<div class="absolute top-4 left-4 flex gap-2">
+<span class="px-3 py-1 rounded bg-success-emerald/90 text-on-surface font-label-sm text-label-sm uppercase tracking-wider font-semibold">Active Extraction</span>
+<span class="px-3 py-1 rounded bg-black/60 backdrop-blur-md text-ore-highlight font-label-sm text-label-sm font-semibold">Alt: 1,840m</span>
+</div>
+<div class="absolute bottom-4 left-4 text-xs font-mono text-primary bg-iron-depth/80 px-2.5 py-1 rounded">INFRASTRUCTURE SUPPLY</div>
+</div>
+<div class="p-6 flex flex-col flex-1 justify-between">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold mb-2">Pokhara Aggregate Complex</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4">Kaski Basin • High-spec hard rock quarry providing critical ballast for hydropower dams.</p>
+<div class="grid grid-cols-2 gap-4 py-3 border-y border-surface-variant/40 mb-6 font-body-sm text-body-sm">
+<div><span class="text-on-surface-variant block">Capacity</span> <span class="text-on-surface font-medium">1.2M MT / Year</span></div>
+<div><span class="text-on-surface-variant block">Rock Classification</span> <span class="text-primary font-medium">Charnockitic Granite</span></div>
+</div>
+</div>
+<a class="inline-flex items-center justify-between text-on-surface font-label-md text-label-md uppercase group-hover:text-primary transition-colors" href="#">
+<span>View Technical Geological Profile</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- Project 4 -->
+<div class="min-w-[320px] sm:min-w-[420px] lg:min-w-[460px] snap-start rounded-xl overflow-hidden bg-slate-surface border border-primary/15 flex flex-col group hover:border-primary/40 transition-all">
+<div class="relative h-64 overflow-hidden">
+<div class="bg-cover bg-center w-full h-full group-hover:scale-105 transition-transform duration-700" data-alt="Remote Himalayan mountain ridgeline exploratory drilling rig with survey teams analyzing core samples inside an alpine geological field camp under dramatic clouds." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDSWRnKhToqDxySoTtwa_r6PXD4ovB4wOMOvkhWE70kVfT83ZuCRpR0nonTXmw7p5HgbLGokkESAXXy0hdsSh2nZE-NuDSavfLPkhZ04eSHKmI9PSGVINNZB81VNEVXjo5c4rWBCyQKAxLGhkKMHrz-LC-hdF564w0Fh4MPPbBth543SBooTYA2BCfpSx6iq8MADrB2AtGOCQir7RNm0sX5fpKJa4mtTYSO-53nyIU')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-slate-surface via-transparent to-black/30"></div>
+<div class="absolute top-4 left-4 flex gap-2">
+<span class="px-3 py-1 rounded bg-primary/90 text-iron-depth font-label-sm text-label-sm uppercase tracking-wider font-bold">Survey &amp; Feasibility</span>
+<span class="px-3 py-1 rounded bg-black/60 backdrop-blur-md text-ore-highlight font-label-sm text-label-sm font-semibold">Alt: 4,100m</span>
+</div>
+<div class="absolute bottom-4 left-4 text-xs font-mono text-primary bg-iron-depth/80 px-2.5 py-1 rounded">STRATEGIC RESERVE</div>
+</div>
+<div class="p-6 flex flex-col flex-1 justify-between">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold mb-2">Langtang Polymetallic Sector</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4">Rasuwa District • Systematic 3D geological mapping targeting zinc-lead sulfide vein structures.</p>
+<div class="grid grid-cols-2 gap-4 py-3 border-y border-surface-variant/40 mb-6 font-body-sm text-body-sm">
+<div><span class="text-on-surface-variant block">Survey Method</span> <span class="text-on-surface font-medium">Airborne Drone Magnetics</span></div>
+<div><span class="text-on-surface-variant block">Estimated Reserve</span> <span class="text-primary font-medium">8.4M MT Inferred</span></div>
+</div>
+</div>
+<a class="inline-flex items-center justify-between text-on-surface font-label-md text-label-md uppercase group-hover:text-primary transition-colors" href="#">
+<span>View Technical Geological Profile</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 6. INDUSTRIAL PROCESS TIMELINE -->
+<section class="max-w-7xl mx-auto px-6 lg:px-12 py-28 w-full">
+<div class="text-center max-w-3xl mx-auto mb-20">
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-widest font-bold">Lifecycle Protocol</span>
+<h2 class="font-headline-lg text-3xl sm:text-4xl text-on-surface font-bold tracking-tight mt-1 mb-4">From Himalayan Bedrock to Refined Ingot</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Our closed-loop operational blueprint balances massive physical power with scientific environmental preservation at every elevation tier.</p>
+</div>
+<!-- Timeline Grid with Connecting Copper Wire -->
+<div class="relative grid grid-cols-1 md:grid-cols-4 gap-8">
+<!-- Horizontal Line on Desktop -->
+<div class="hidden md:block absolute top-7 left-12 right-12 h-0.5 bg-gradient-to-r from-primary/20 via-primary to-primary/20 pointer-events-none z-0"></div>
+<!-- Step 1 -->
+<div class="relative z-10 flex flex-col items-start bg-slate-surface/60 p-6 rounded-xl border border-primary/10">
+<div class="w-14 h-14 rounded-full bg-iron-depth border-2 border-primary flex items-center justify-center text-primary font-mono font-bold text-lg mb-6 shadow-[0_0_15px_rgba(221,158,114,0.3)]">
+          01
+        </div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold mb-2">Exploration &amp; LIDAR</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+          Satellite multispectral analysis, terrain LIDAR scanning, and diamond core drilling down to 600m beneath alpine overburden.
+        </p>
+</div>
+<!-- Step 2 -->
+<div class="relative z-10 flex flex-col items-start bg-slate-surface/60 p-6 rounded-xl border border-primary/10">
+<div class="w-14 h-14 rounded-full bg-iron-depth border-2 border-primary flex items-center justify-center text-primary font-mono font-bold text-lg mb-6 shadow-[0_0_15px_rgba(221,158,114,0.3)]">
+          02
+        </div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold mb-2">Terrace Mining</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+          Precision bench blasting utilizing digital delay detonators to eliminate seismic shockwaves on alpine slopes and minimize flyrock.
+        </p>
+</div>
+<!-- Step 3 -->
+<div class="relative z-10 flex flex-col items-start bg-slate-surface/60 p-6 rounded-xl border border-primary/10">
+<div class="w-14 h-14 rounded-full bg-iron-depth border-2 border-primary flex items-center justify-center text-primary font-mono font-bold text-lg mb-6 shadow-[0_0_15px_rgba(221,158,114,0.3)]">
+          03
+        </div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold mb-2">Zero-Cyanide Refining</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+          Modern mechanical flotation and gravity separators without cyanide, coupled with closed-circuit 98% recycled industrial wash cycles.
+        </p>
+</div>
+<!-- Step 4 -->
+<div class="relative z-10 flex flex-col items-start bg-slate-surface/60 p-6 rounded-xl border border-primary/10">
+<div class="w-14 h-14 rounded-full bg-iron-depth border-2 border-primary flex items-center justify-center text-primary font-mono font-bold text-lg mb-6 shadow-[0_0_15px_rgba(221,158,114,0.3)]">
+          04
+        </div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold mb-2">Regional Logistics</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+          Heavy telemetric multi-axle freight and high-tension ropeways transferring bulk materials directly to central national distribution hubs.
+        </p>
+</div>
+</div>
+</section>
+<!-- 7. SUSTAINABILITY & GEOLOGICAL STEWARDSHIP HIGHLIGHT BAND -->
+<section class="max-w-7xl mx-auto px-6 lg:px-12 py-20 w-full">
+<div class="rounded-2xl bg-gradient-to-br from-slate-surface via-surface-container to-iron-depth border border-primary/25 p-8 sm:p-14 overflow-hidden relative shadow-2xl">
+<!-- Glow accent -->
+<div class="absolute -right-24 -bottom-24 w-96 h-96 bg-copper-glow/5 rounded-full blur-3xl pointer-events-none"></div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+<div class="lg:col-span-7 flex flex-col">
+<div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-success-emerald/20 text-success-emerald font-label-sm text-label-sm uppercase tracking-wider w-fit mb-4 font-semibold">
+<span class="w-2 h-2 rounded-full bg-success-emerald"></span> Environmental Coexistence Mandate
+          </div>
+<h2 class="font-headline-lg text-3xl sm:text-4xl text-on-surface font-bold tracking-tight mb-6">
+            Responsible Mountain Stewardship: Leaving Hillsides Stable and Thriving
+          </h2>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed mb-8">
+            Niraum Metals operates under strict environmental guidelines. For every metric hectare mined, two hectares of native Himalayan flora are planted. Our operations utilize run-of-the-river hydroelectric power, significantly shrinking our carbon footprint across Nepal's high country.
+          </p>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-6 border-t border-surface-variant/40">
+<div>
+<div class="font-headline-md text-headline-md font-bold text-primary mb-1">150,000+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Native Pines &amp; Rhododendrons Planted</div>
+</div>
+<div>
+<div class="font-headline-md text-headline-md font-bold text-primary mb-1">100%</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Hydro-Powered Refining Mills</div>
+</div>
+<div>
+<div class="font-headline-md text-headline-md font-bold text-primary mb-1">7 Clinics</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">High-Altitude Community Health Centers Funded</div>
+</div>
+</div>
+</div>
+<div class="lg:col-span-5 flex flex-col gap-4">
+<div class="p-6 rounded-xl bg-surface-container-high/80 border border-primary/20 flex items-start gap-4">
+<span class="material-symbols-outlined text-primary text-3xl shrink-0">water_drop</span>
+<div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-1">Catchment Basin Preservation</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Double-lined tailings storage facilities engineered to withstand 8.2 magnitude seismic events with continuous hydrological telemetry.</p>
+</div>
+</div>
+<div class="p-6 rounded-xl bg-surface-container-high/80 border border-primary/20 flex items-start gap-4">
+<span class="material-symbols-outlined text-primary text-3xl shrink-0">groups</span>
+<div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-1">78% Mountain Native Employment</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Rigorous apprenticeship training and certified heavy metallurgy credentials for residents of Lalitpur, Dhunche, and Mustang districts.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 8. LATEST NEWS & PRESS RELEASES -->
+<section class="max-w-7xl mx-auto px-6 lg:px-12 py-24 w-full">
+<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-primary font-bold">Dispatches &amp; Regulatory Filings</span>
+<h2 class="font-headline-lg text-3xl sm:text-4xl text-on-surface font-bold tracking-tight mt-1">Corporate &amp; Geological Insights</h2>
+</div>
+<a class="text-primary font-label-md text-label-md uppercase tracking-wider hover:underline flex items-center gap-1" data-path="news" href="#">
+<span>Browse All Dispatches</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Article 1 -->
+<article class="p-6 rounded-xl bg-slate-surface border border-surface-variant/60 flex flex-col justify-between group hover:border-primary/40 transition-all">
+<div>
+<div class="flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm mb-4">
+<span class="px-2.5 py-0.5 rounded bg-surface-container-high text-primary font-mono font-bold uppercase">PRESS RELEASE</span>
+<span>MARCH 24, 2026</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold mb-3 group-hover:text-primary transition-colors">
+            Commissioning of 45-Ton Secondary Impact Crusher at Trishuli Basin
+          </h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 line-clamp-3">
+            Expands high-grade copper processing throughput by 35% ahead of national railway expansion demands while adhering to strict Himalayan watershed protocols.
+          </p>
+</div>
+<a class="inline-flex items-center gap-2 text-primary font-label-md text-label-md uppercase tracking-wider group-hover:translate-x-1 transition-transform" href="#">
+<span>Read Full Dispatch</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</article>
+<!-- Article 2 -->
+<article class="p-6 rounded-xl bg-slate-surface border border-surface-variant/60 flex flex-col justify-between group hover:border-primary/40 transition-all">
+<div>
+<div class="flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm mb-4">
+<span class="px-2.5 py-0.5 rounded bg-surface-container-high text-copper-glow font-mono font-bold uppercase">TECHNICAL PAPER</span>
+<span>FEBRUARY 18, 2026</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold mb-3 group-hover:text-primary transition-colors">
+            Seismic Rock Mass Stabilization Protocols for Ultra-Steep Alpine Cuts
+          </h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 line-clamp-3">
+            Published in the Himalayan Mining Journal: Our engineering methodology for tension anchors and hydro-permeable mesh in active extraction quarries.
+          </p>
+</div>
+<a class="inline-flex items-center gap-2 text-primary font-label-md text-label-md uppercase tracking-wider group-hover:translate-x-1 transition-transform" href="#">
+<span>Download Technical PDF</span>
+<span class="material-symbols-outlined text-sm">download</span>
+</a>
+</article>
+<!-- Article 3 -->
+<article class="p-6 rounded-xl bg-slate-surface border border-surface-variant/60 flex flex-col justify-between group hover:border-primary/40 transition-all">
+<div>
+<div class="flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm mb-4">
+<span class="px-2.5 py-0.5 rounded bg-surface-container-high text-success-emerald font-mono font-bold uppercase">ESG AUDIT</span>
+<span>JANUARY 30, 2026</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold mb-3 group-hover:text-primary transition-colors">
+            Annual Sustainable Water Conservation Benchmark Reaches 98.4%
+          </h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 line-clamp-3">
+            Closed-circuit filtration circuits across Lalitpur and peripheral wash facilities successfully eliminate mountain aquifer drainage impact.
+          </p>
+</div>
+<a class="inline-flex items-center gap-2 text-primary font-label-md text-label-md uppercase tracking-wider group-hover:translate-x-1 transition-transform" href="#">
+<span>View Audit Metrics</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</article>
+</div>
+</section>
+<!-- 9. MARQUEE CLIENTS & CONSORTIUM PARTNERS -->
+<section class="w-full py-16 border-y border-surface-variant/40 bg-surface-container-lowest overflow-hidden">
+<div class="max-w-7xl mx-auto px-6 lg:px-12 mb-8 text-center">
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant font-semibold">
+        Trusted Metallurgical Supplier to Himalayan Infrastructure &amp; Heavy Industry
+      </span>
+</div>
+<!-- Continuous Running Marquee -->
+<div class="w-full overflow-hidden flex items-center">
+<div class="animate-marquee flex items-center gap-16 text-on-surface-variant/60 font-headline-sm text-xl font-bold uppercase tracking-wider whitespace-nowrap">
+<span class="flex items-center gap-3 hover:text-primary transition-colors"><span class="material-symbols-outlined text-primary">apartment</span> NEPAL INFRASTRUCTURE CORP</span>
+<span class="text-surface-variant">•</span>
+<span class="flex items-center gap-3 hover:text-primary transition-colors"><span class="material-symbols-outlined text-primary">bolt</span> HIMAL POWER GRID GROUP</span>
+<span class="text-surface-variant">•</span>
+<span class="flex items-center gap-3 hover:text-primary transition-colors"><span class="material-symbols-outlined text-primary">factory</span> BAGMATI HEAVY FOUNDRIES</span>
+<span class="text-surface-variant">•</span>
+<span class="flex items-center gap-3 hover:text-primary transition-colors"><span class="material-symbols-outlined text-primary">subway</span> REGIONAL RAIL ALLIANCE</span>
+<span class="text-surface-variant">•</span>
+<span class="flex items-center gap-3 hover:text-primary transition-colors"><span class="material-symbols-outlined text-primary">architecture</span> KATHMANDU CEMENT HOLDINGS</span>
+<span class="text-surface-variant">•</span>
+<span class="flex items-center gap-3 hover:text-primary transition-colors"><span class="material-symbols-outlined text-primary">build</span> LALITPUR STEEL WORKS</span>
+<span class="text-surface-variant">•</span>
+<span class="flex items-center gap-3 hover:text-primary transition-colors"><span class="material-symbols-outlined text-primary">apartment</span> NEPAL INFRASTRUCTURE CORP</span>
+<span class="text-surface-variant">•</span>
+<span class="flex items-center gap-3 hover:text-primary transition-colors"><span class="material-symbols-outlined text-primary">bolt</span> HIMAL POWER GRID GROUP</span>
+<span class="text-surface-variant">•</span>
+<span class="flex items-center gap-3 hover:text-primary transition-colors"><span class="material-symbols-outlined text-primary">factory</span> BAGMATI HEAVY FOUNDRIES</span>
+<span class="text-surface-variant">•</span>
+<span class="flex items-center gap-3 hover:text-primary transition-colors"><span class="material-symbols-outlined text-primary">subway</span> REGIONAL RAIL ALLIANCE</span>
+</div>
+</div>
+</section>
+<!-- 10. EXECUTIVE CONTACT CTA BAND -->
+<section class="max-w-7xl mx-auto px-6 lg:px-12 py-24 sm:py-32 w-full">
+<div class="relative p-10 sm:p-16 rounded-2xl bg-gradient-to-r from-slate-surface via-surface-container to-iron-depth border border-primary/30 shadow-[0_20px_50px_rgba(0,0,0,0.6)] flex flex-col lg:flex-row lg:items-center justify-between gap-10">
+<div class="max-w-2xl">
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-primary font-bold mb-2 block">Direct Corporate Dispatch</span>
+<h2 class="font-headline-lg text-3xl sm:text-4xl lg:text-5xl text-on-surface font-extrabold tracking-tight mb-4">
+          Forge Your Next Infrastructure Milestone with Niraum Metals
+        </h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+          From custom high-spec aggregate sizing to large-scale iron ore long-term contracts. Consult directly with our Lalitpur geological and procurement directors.
+        </p>
+</div>
+<div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 shrink-0">
+<a class="inline-flex items-center justify-center gap-3 px-6 py-4 rounded bg-surface-container-high border border-surface-variant text-on-surface font-label-lg text-label-lg hover:border-primary transition-colors" href="tel:+97715548920">
+<span class="material-symbols-outlined text-primary">call</span>
+<span>+977 1 554 8920</span>
+</a>
+<a class="inline-flex items-center justify-center gap-3 px-8 py-4 rounded bg-gradient-to-r from-primary-container to-copper-deep text-iron-depth font-label-lg text-label-lg font-bold tracking-wide uppercase hover:brightness-110 shadow-[0_0_20px_rgba(221,158,114,0.4)] transition-all" data-path="contact" href="#">
+<span>Request Technical Proposal</span>
+<span class="material-symbols-outlined">send</span>
+</a>
+</div>
+</div>
+</section>
+<!-- SCRIPT FOR PRELOADER, CONTROLS & INTERACTIVITY -->
+<script>
+    (function () {
+      // 1. Preloader smooth fadeout after 1.4s
+      const preloader = document.getElementById('preloader-overlay');
+      const progressBar = document.getElementById('preloader-progress');
+      if (progressBar) {
+        setTimeout(() => {
+          progressBar.style.width = '100%';
+        }, 100);
+      }
+      if (preloader) {
+        setTimeout(() => {
+          preloader.style.opacity = '0';
+          setTimeout(() => {
+            preloader.style.display = 'none';
+          }, 700);
+        }, 1400);
+      }
+
+      // 2. Project horizontal carousel arrow navigation
+      const projectStrip = document.getElementById('project-strip');
+      const prevBtn = document.getElementById('proj-prev');
+      const nextBtn = document.getElementById('proj-next');
+
+      if (projectStrip && prevBtn && nextBtn) {
+        prevBtn.addEventListener('click', () => {
+          projectStrip.scrollBy({ left: -440, behavior: 'smooth' });
+        });
+        nextBtn.addEventListener('click', () => {
+          projectStrip.scrollBy({ left: 440, behavior: 'smooth' });
+        });
+      }
+    })();
+  </script>
+</div></main><footer class="w-full bg-iron-depth border-t border-primary-container/20 pt-space-2xl pb-space-lg"><div class="max-w-7xl mx-auto px-6 lg:px-12"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-space-xl pb-space-2xl border-b border-surface-variant/40"><div class="lg:col-span-4 flex flex-col gap-space-md"><div class="flex items-center gap-space-md"><img alt="Niraum Metals Hexagon Brand Mark" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUjbpVqHKAdpdgwos5p_5BTZVfruTLIquZRikWjXeSBToyyIq4ynfbZkW0BJ2ke_pIMXJg1w0g5xc43Ej5ecDzo0lyK85Tc4YPQahrZkUqsA9aNttZorOWIemAytu0CJg527li6sVDD3QShBOLSK3NtgM5GzA0OMTU-04oF2hZ9rAfEHikdVVd9-WPxL4rNZW8gGj3vw1dwppLSqV4lztVcqtVXo404zmXblle_J8"/><span class="font-headline-sm text-headline-sm text-on-surface uppercase font-semibold">Niraum Metals</span></div><p class="font-headline-sm text-headline-sm italic text-primary">Strength Forged For Generations</p><p class="font-body-md text-body-md text-on-surface-variant max-w-sm">Pioneering metallurgical precision and responsible resource extraction in the high-altitude terrains of Nepal. Engineered for national infrastructure and industrial resilience.</p></div><div class="lg:col-span-2 flex flex-col gap-space-md"><span class="font-label-md text-label-md uppercase tracking-wider text-primary border-b border-primary-container/20 pb-space-xs">Quick Links</span><ul class="flex flex-col gap-space-sm"><li class="flex"><a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" data-path="about" href="#">About</a></li><li class="flex"><a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" data-path="operations" href="#">Operations</a></li><li class="flex"><a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" data-path="projects" href="#">Projects</a></li><li class="flex"><a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" data-path="sustainability" href="#">Sustainability</a></li><li class="flex"><a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" data-path="news" href="#">News</a></li><li class="flex"><a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" data-path="careers" href="#">Careers</a></li><li class="flex"><a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" data-path="contact" href="#">Contact</a></li></ul></div><div class="lg:col-span-3 flex flex-col gap-space-md"><span class="font-label-md text-label-md uppercase tracking-wider text-primary border-b border-primary-container/20 pb-space-xs">Operations</span><ul class="flex flex-col gap-space-sm"><li class="flex"><a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" data-path="iron-ore-extraction" href="#">Iron Ore Extraction</a></li><li class="flex"><a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" data-path="metal-minerals" href="#">Metal Minerals</a></li><li class="flex"><a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" data-path="stone-and-aggregates" href="#">Stone &amp; Aggregates</a></li><li class="flex"><a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" data-path="logistics-and-supply" href="#">Logistics &amp; Supply</a></li></ul></div><div class="lg:col-span-3 flex flex-col gap-space-md"><span class="font-label-md text-label-md uppercase tracking-wider text-primary border-b border-primary-container/20 pb-space-xs">Corporate Office</span><div class="flex flex-col gap-space-xs font-body-sm text-body-sm text-on-surface-variant"><p>Pulchowk, Lalitpur 44700<br/>Bagmati Province, Nepal</p><p class="mt-space-xs"><span class="text-primary">Tel:</span> +977 1 554 8920</p><p><span class="text-primary">Email:</span> contact@niraummetals.com.np</p></div><div class="flex flex-col gap-space-xs mt-space-sm"><span class="font-label-md text-label-md text-on-surface">Industrial Dispatch</span><form class="flex items-center gap-space-xs mt-space-xs" onsubmit="return false;"><input class="w-full bg-slate-surface border border-surface-variant text-ore-highlight placeholder:text-outline px-3 py-2 rounded-lg font-body-sm text-body-sm focus:outline-none focus:border-primary-container" placeholder="corporate@domain.com" type="email"/><button class="px-3 py-2 bg-gradient-to-r from-primary-container to-copper-deep text-iron-depth font-label-sm text-label-sm font-bold uppercase rounded-lg hover:brightness-110 shrink-0 transition-all" type="submit">Join</button></form></div></div></div><div class="pt-space-lg flex flex-col md:flex-row items-center justify-between gap-space-md font-body-sm text-body-sm text-outline"><p>© 2026 Niraum Metals Pvt. Ltd. All rights reserved.</p><div class="flex items-center gap-space-lg"><a class="hover:text-primary transition-colors" data-path="privacy-policy" href="#">Privacy Policy</a><a class="hover:text-primary transition-colors" data-path="terms-of-use" href="#">Terms of Use</a><a class="hover:text-primary transition-colors" data-path="cookie-policy" href="#">Cookie Policy</a></div></div></div></footer><script>(function(){const toggleBtn=document.getElementById('theme-toggle');const icon=document.getElementById('theme-icon');if(!toggleBtn||!icon)return;toggleBtn.addEventListener('click',function(){const html=document.documentElement;const isDark=html.classList.contains('dark');if(isDark){html.classList.remove('dark');icon.textContent='dark_mode';}else{html.classList.add('dark');icon.textContent='light_mode';}});})();</script></body></html>
