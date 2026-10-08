@@ -13,6 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - run: docker build -f frontend/Dockerfile -t niraum-frontend:${{ github.sha }} .
       - run: echo "TODO push image and deploy once the hosting target is decided." && exit 1
