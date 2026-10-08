@@ -1,0 +1,146 @@
+@import '@fontsource-variable/manrope';
+@import './glass.css';
+@import './textures.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Brand tokens — Niraum Metals. Hex values are fixed (sampled from the logo);
+ * HSL triplets below are the same colours in shadcn/ui's variable format.
+ *   Charcoal #2B2F36 = 218 11% 19%   Graphite #14171C = 218 17% 9%
+ *   Copper   #B8754A = 24 44% 51%    Copper light #DDA27C = 24 59% 68%
+ *   Copper deep #8A5236 = 20 44% 38% Silver #C9CDD3 = 216 10% 81%
+ *   Off-white #F6F4F1 = 36 22% 95%
+ * Contrast: text on copper buttons is graphite (5.0:1), never white (3.6:1).
+ * In light mode copper *text* (links) uses copper-deep for AA (≈6:1 on off-white).
+ */
+@layer base {
+  :root {
+    --brand-charcoal: #2b2f36;
+    --brand-graphite: #14171c;
+    --brand-copper: #b8754a;
+    --brand-copper-light: #dda27c;
+    --brand-copper-deep: #8a5236;
+    --brand-copper-gradient: linear-gradient(135deg, #8a5236 0%, #dda27c 50%, #a9663f 100%);
+    --brand-silver: #c9cdd3;
+    --brand-offwhite: #f6f4f1;
+    --brand-rule: #c27a44;
+
+    /* light theme */
+    --background: 36 22% 95%;
+    --foreground: 218 11% 19%;
+    --card: 0 0% 100%;
+    --card-foreground: 218 11% 19%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 218 11% 19%;
+    --primary: 24 44% 51%;
+    --primary-foreground: 218 17% 9%;
+    --secondary: 216 10% 90%;
+    --secondary-foreground: 218 11% 19%;
+    --muted: 36 12% 90%;
+    --muted-foreground: 218 8% 38%;
+    --accent: 20 44% 38%;
+    --accent-foreground: 36 22% 95%;
+    --destructive: 0 70% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 216 10% 81%;
+    --input: 216 10% 81%;
+    --ring: 24 44% 51%;
+    --link: 20 44% 38%;
+    --radius: 0.75rem;
+
+    --glass-bg: 0 0% 100% / 0.55;
+    --glass-border: 0 0% 100% / 0.6;
+    --header-h: 4.5rem;
+  }
+
+  .dark {
+    --background: 218 17% 9%;
+    --foreground: 36 22% 95%;
+    --card: 218 11% 13%;
+    --card-foreground: 36 22% 95%;
+    --popover: 218 11% 13%;
+    --popover-foreground: 36 22% 95%;
+    --primary: 24 44% 51%;
+    --primary-foreground: 218 17% 9%;
+    --secondary: 218 11% 19%;
+    --secondary-foreground: 36 22% 95%;
+    --muted: 218 11% 16%;
+    --muted-foreground: 216 10% 70%;
+    --accent: 24 59% 68%;
+    --accent-foreground: 218 17% 9%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 218 11% 24%;
+    --input: 218 11% 24%;
+    --ring: 24 59% 68%;
+    --link: 24 59% 68%;
+
+    --glass-bg: 218 17% 9% / 0.45;
+    --glass-border: 216 10% 81% / 0.14;
+  }
+
+  * {
+    @apply border-border;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    @apply bg-background font-sans text-foreground antialiased;
+    font-weight: 400;
+  }
+  h1 {
+    @apply font-extrabold tracking-tight;
+  }
+  h2 {
+    @apply font-bold tracking-tight;
+  }
+  h3 {
+    @apply font-semibold;
+  }
+  a {
+    color: hsl(var(--link));
+  }
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+
+  /* Lenis */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  .label {
+    @apply text-xs font-medium uppercase tracking-label;
+  }
+  .text-copper-gradient {
+    background: var(--brand-copper-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}

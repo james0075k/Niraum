@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+
+# PLACEHOLDER: replace with the production origin.
+Sitemap: https://example.com/sitemap.xml
