@@ -1,0 +1,68 @@
+# Local development stack.
+#   pnpm db:up            → MongoDB + Mailpit only (run frontend/backend with `pnpm dev`)
+#   docker compose --profile app up --build   → full stack in containers
+name: niraum
+
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: niraum
+      MONGO_INITDB_ROOT_PASSWORD: niraum-dev # local dev only
+      MONGO_INITDB_DATABASE: niraum
+    ports:
+      - '127.0.0.1:27017:27017'
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ['CMD', 'mongosh', '--quiet', '--eval', "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Catches all outgoing SMTP in dev — UI at http://localhost:8025
+  mailpit:
+    image: axllent/mailpit:v1.20
+    restart: unless-stopped
+    ports:
+      - '127.0.0.1:1025:1025'
+      - '127.0.0.1:8025:8025'
+
+  backend:
+    profiles: [app]
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    env_file:
+      - path: backend/.env
+        required: false
+    environment:
+      NODE_ENV: production
+      MONGODB_URI: mongodb://niraum:niraum-dev@mongo:27017/niraum?authSource=admin
+      SMTP_HOST: mailpit
+      SMTP_PORT: 1025
+      CORS_ORIGINS: http://localhost:8080
+      PUBLIC_SITE_URL: http://localhost:8080
+    depends_on:
+      mongo:
+        condition: service_healthy
+    ports:
+      - '127.0.0.1:4000:4000'
+
+  frontend:
+    profiles: [app]
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      args:
+        VITE_API_URL: /api/v1
+        VITE_SITE_URL: http://localhost:8080
+        SSG_API_URL: http://backend:4000/api/v1
+    depends_on:
+      - backend
+    ports:
+      - '127.0.0.1:8080:80'
+
+volumes:
+  mongo-data:

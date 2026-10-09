@@ -1,0 +1,9 @@
+packages:
+  - frontend
+  - backend
+
+# Native builds allowed during install (pnpm 10 blocks lifecycle scripts by default).
+onlyBuiltDependencies:
+  - argon2
+  - esbuild
+  - mongodb-memory-server

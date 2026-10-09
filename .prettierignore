@@ -1,0 +1,10 @@
+dist
+build
+coverage
+node_modules
+pnpm-lock.yaml
+.vite-ssg-temp
+playwright-report
+test-results
+frontend/public
+CHANGELOG.md

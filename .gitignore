@@ -1,0 +1,31 @@
+# deps
+node_modules/
+.pnpm-store/
+
+# builds
+dist/
+build/
+.vite-ssg-temp/
+*.tsbuildinfo
+
+# env — only .env.example is committed
+.env
+.env.*
+!.env.example
+
+# tests
+coverage/
+playwright-report/
+test-results/
+blob-report/
+
+# logs / OS / editors
+*.log
+npm-debug.log*
+pnpm-debug.log*
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
