@@ -42,5 +42,23 @@
   "cta": {
     "title": "Questions about how we work?",
     "body": "Ask us about the project, our commitments or a bulk supply quote."
+  },
+  "band": {
+    "eyebrow": "Sustainability & safety",
+    "title": "Responsible mining at Katujpani.",
+    "intro": "Forest land protected, topsoil kept for rehabilitation, local jobs and safe sampling — our commitments for the project.",
+    "safety": {
+      "title": "Safety",
+      "body": "Protective equipment and safe channel sampling."
+    },
+    "environment": {
+      "title": "Environment",
+      "body": "Topsoil kept, worked ground restored step by step."
+    },
+    "community": {
+      "title": "Community",
+      "body": "Local hiring wherever the work allows."
+    },
+    "link": "Our commitments"
   }
 }

@@ -106,7 +106,7 @@ export function Hero() {
         className="absolute bottom-28 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-silver transition-colors hover:text-offwhite sm:flex"
         aria-label={t('hero.scroll')}
       >
-        <span className="label !text-[0.65rem]">Scroll</span>
+        <span className="label !text-[0.65rem]">{t('hero.scrollLabel')}</span>
         <span className="flex h-10 w-6 justify-center rounded-full border border-silver/50 pt-2">
           <span className="h-2 w-0.5 animate-scroll-cue rounded-full bg-copper-light" />
         </span>

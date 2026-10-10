@@ -6,15 +6,18 @@ import { Parallax } from '@/components/motion/Parallax';
 import { RevealGroup, RevealItem } from '@/components/motion/Reveal';
 import { Button } from '@/components/ui/button';
 import { photos } from '@/content/siteImages';
+import { useT } from '@/hooks/useLang';
 
+/** `key` → `sustainability:band.<key>` (blueprint §5 Sustainability & Safety). */
 const points = [
-  { icon: HardHat, title: 'Safety', body: 'PPE, training and the right to stop unsafe work.' },
-  { icon: Leaf, title: 'Environment', body: 'Topsoil saved, drainage controlled, land restored.' },
-  { icon: Users, title: 'Community', body: 'Local hiring and early, honest consultation.' },
-];
+  { icon: HardHat, key: 'safety' },
+  { icon: Leaf, key: 'environment' },
+  { icon: Users, key: 'community' },
+] as const;
 
 /** Full-bleed photo band; glass panel carries the copy. Always dark tokens over the photo. */
 export function SustainabilityBand() {
+  const { t } = useT('sustainability');
   return (
     <section
       id="sustainability"
@@ -30,24 +33,23 @@ export function SustainabilityBand() {
         <div className="glass p-7 sm:p-10 lg:col-span-7">
           <SectionHeading
             id="sustainability-title"
-            eyebrow="Sustainability & safety"
-            title="Responsible mining, measured every day."
-            highlight={[0, 1]}
-            intro="Responsible mining in Nepal means leaving hillsides stable, water clean and every worker safe. We plan for that from the first survey."
+            eyebrow={t('band.eyebrow')}
+            title={t('band.title')}
+            intro={t('band.intro')}
             className="!mb-8"
           />
           <RevealGroup as="ul" className="grid gap-5 sm:grid-cols-3">
-            {points.map(({ icon: Icon, title, body }) => (
-              <RevealItem as="li" key={title}>
+            {points.map(({ icon: Icon, key }) => (
+              <RevealItem as="li" key={key}>
                 <Icon className="h-6 w-6 text-copper-light" aria-hidden="true" />
-                <h3 className="mt-3 font-semibold">{title}</h3>
-                <p className="mt-1 text-sm text-silver">{body}</p>
+                <h3 className="mt-3 font-semibold">{t(`band.${key}.title`)}</h3>
+                <p className="mt-1 text-sm text-silver">{t(`band.${key}.body`)}</p>
               </RevealItem>
             ))}
           </RevealGroup>
           <Button asChild variant="glass" className="mt-8">
             <Link to="/sustainability">
-              Our commitments <ArrowRight aria-hidden="true" />
+              {t('band.link')} <ArrowRight aria-hidden="true" />
             </Link>
           </Button>
         </div>
