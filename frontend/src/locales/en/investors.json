@@ -33,5 +33,9 @@
     "eyebrow": "Investor deck",
     "title": "Request the investor deck.",
     "body": "Tell us about your interest and we will send the project deck. No financial projections are published on this site."
+  },
+  "cta": {
+    "title": "Looking for supply rather than investment?",
+    "body": "Tell us your tonnage and specification and we will reply with availability and a quote."
   }
 }

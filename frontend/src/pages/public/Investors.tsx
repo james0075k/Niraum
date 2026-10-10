@@ -1,6 +1,7 @@
 import { PageHero } from '@/components/common/PageHero';
 import { SectionHeading } from '@/components/common/SectionHeading';
 import { Reveal, RevealGroup, RevealItem } from '@/components/motion/Reveal';
+import { CtaBand } from '@/components/sections/CtaBand';
 import { FounderCard } from '@/components/sections/FounderCard';
 import { InquiryForm } from '@/components/sections/InquiryForm';
 import { Seo } from '@/components/seo/Seo';
@@ -11,6 +12,7 @@ import { useProduct } from '@/features/products/useProducts';
 import { useFounder } from '@/features/team/useTeam';
 import { useT } from '@/hooks/useLang';
 import { formatPct } from '@/lib/format';
+import { personLd } from '@/lib/seo';
 
 /** Primary keyword: "mining investment Nepal". No financial projections (blueprint §5). */
 export default function Investors() {
@@ -45,7 +47,13 @@ export default function Investors() {
 
   return (
     <>
-      <Seo title={t('seo.title')} description={t('seo.description')} crumbs={crumbs} />
+      <Seo
+        title={t('seo.title')}
+        description={t('seo.description')}
+        crumbs={crumbs}
+        image={photos.sampleChd10.src}
+        jsonLd={[personLd(founder)]}
+      />
       <PageHero
         eyebrow={t('hero.eyebrow')}
         title={t('hero.title')}
@@ -118,6 +126,13 @@ export default function Investors() {
           </div>
         </div>
       </section>
+
+      <CtaBand
+        title={t('cta.title')}
+        body={t('cta.body')}
+        primaryTo="/contact?topic=supply#inquiry"
+        primaryLabel={t('common:cta.bulkSupply')}
+      />
     </>
   );
 }
