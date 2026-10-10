@@ -8,6 +8,7 @@
     "build": "vite-react-ssg build",
     "build:spa": "vite build",
     "preview": "vite preview --port 4173",
+    "check:admin-boundary": "node scripts/check-admin-boundary.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",

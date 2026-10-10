@@ -82,7 +82,14 @@ const legacyRoutes: RouteRecord[] = [
   },
 ];
 
+/** Client-only admin app, a sibling of the public tree so Navbar/Footer never render. */
+export const adminRoute: RouteRecord = {
+  path: '/admin/*',
+  lazy: () => import('@/admin/AdminRoot').then((m) => ({ Component: m.default })),
+};
+
 export const routes: RouteRecord[] = [
+  adminRoute,
   {
     path: '/',
     element: <App />,
