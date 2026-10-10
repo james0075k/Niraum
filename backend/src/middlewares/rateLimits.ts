@@ -25,6 +25,7 @@ export function createRateLimiters() {
     contact: rateLimit(base(HOUR, 5, 'Too many messages — please try again in an hour')),
     applications: rateLimit(base(HOUR, 5, 'Too many applications — try again later')),
     newsletter: rateLimit(base(10 * MIN, 5, 'Too many requests — try again later')),
+    inquiries: rateLimit(base(HOUR, 5, 'Too many inquiries — please try again in an hour')),
   } satisfies Record<string, RequestHandler>;
 }
 

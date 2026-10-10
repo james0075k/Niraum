@@ -5,7 +5,9 @@
  *  2. the SiteSettings singleton with the Lalitpur-13 address, geocoded through Nominatim.
  *     The pin stays `approximate` until an admin confirms it on the map;
  *  3. SAMPLE services, projects and posts (./content.ts) — only into empty collections, so it
- *     never duplicates or resurrects content an admin has edited or deleted.
+ *     never duplicates or resurrects content an admin has edited or deleted;
+ *  4. Phase 4.5: assay data from docs/content/data/assay_data.json (upserted), and the
+ *     Katujpani deposit, hematite product and founder from the blueprint (created if missing).
  */
 import { connectDb, disconnectDb } from '../config/db.js';
 import { env } from '../config/env.js';
@@ -19,7 +21,9 @@ import { User } from '../models/User.js';
 import { hashPassword } from '../services/auth.service.js';
 import { geocodeService } from '../services/geocode.service.js';
 import { settingsService } from '../services/settings.service.js';
+import { seedAssay } from './assay.seed.js';
 import { samplePosts, sampleProjects, sampleServices } from './content.js';
+import { seedFounder, seedKatujpani, seedProduct } from './katujpani.seed.js';
 
 export async function seedAdmin(): Promise<'created' | 'exists' | 'skipped'> {
   const { SEED_ADMIN_EMAIL: email, SEED_ADMIN_PASSWORD: password, SEED_ADMIN_NAME: name } = env;
@@ -93,6 +97,11 @@ async function main() {
   logger.info({ admin }, 'Superadmin');
   logger.info({ location: await seedSettings() }, 'Site settings');
   logger.info(await seedContent(), 'Sample content');
+  logger.info(await seedAssay(), 'Assay data');
+  logger.info(
+    { deposit: await seedKatujpani(), product: await seedProduct(), founder: await seedFounder() },
+    'Katujpani content',
+  );
   await disconnectDb();
 }
 

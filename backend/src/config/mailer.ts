@@ -4,6 +4,7 @@ import { logger } from './logger.js';
 
 export interface MailMessage {
   to: string | string[];
+  cc?: string | string[];
   subject: string;
   text: string;
   html?: string;
@@ -28,6 +29,7 @@ async function sendViaResend(msg: MailMessage, apiKey: string) {
     body: JSON.stringify({
       from: env.MAIL_FROM,
       to: Array.isArray(msg.to) ? msg.to : [msg.to],
+      ...(msg.cc && { cc: Array.isArray(msg.cc) ? msg.cc : [msg.cc] }),
       subject: msg.subject,
       text: msg.text,
       html: msg.html,

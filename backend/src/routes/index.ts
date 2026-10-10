@@ -7,8 +7,10 @@ import {
   rebuildController,
   userController,
 } from '../controllers/admin.controller.js';
+import { assayController } from '../controllers/assay.controller.js';
 import { authController } from '../controllers/auth.controller.js';
 import { contentController, type ContentSchemas } from '../controllers/content.controller.js';
+import { inquiryController } from '../controllers/inquiry.controller.js';
 import { publicController } from '../controllers/public.controller.js';
 import { settingsController } from '../controllers/settings.controller.js';
 import { ADMIN_ROLES, CONTENT_ROLES, requireAuth, requireRole } from '../middlewares/auth.js';
@@ -16,8 +18,10 @@ import type { RateLimiters } from '../middlewares/rateLimits.js';
 import { uploadSingle } from '../middlewares/upload.js';
 import type { ContentService } from '../services/content.service.js';
 import {
+  depositService,
   jobService,
   postService,
+  productService,
   projectService,
   serviceService,
   teamService,
@@ -94,6 +98,31 @@ export const contentResources: ContentResource[] = [
       update: v.serviceUpdate,
     },
   },
+  // Phase 4.5
+  {
+    path: 'products',
+    tag: 'Products',
+    service: productService,
+    publicDetail: true,
+    schemas: {
+      publicQuery: v.productPublicQuery,
+      adminQuery: v.productAdminQuery,
+      create: v.productCreate,
+      update: v.productUpdate,
+    },
+  },
+  {
+    path: 'deposits',
+    tag: 'Deposits',
+    service: depositService,
+    publicDetail: true,
+    schemas: {
+      publicQuery: v.depositPublicQuery,
+      adminQuery: v.depositAdminQuery,
+      create: v.depositCreate,
+      update: v.depositUpdate,
+    },
+  },
 ];
 
 const MB = 1024 * 1024;
@@ -136,6 +165,10 @@ export function createApiRouter(limits: RateLimiters): Router {
   api.get('/newsletter/confirm', publicController.confirmNewsletter);
   api.get('/newsletter/unsubscribe', publicController.unsubscribeNewsletter);
   api.get('/seo/sitemap-data', publicController.sitemapData);
+  // Phase 4.5: assay data + bulk-supply inquiries
+  api.get('/assay/summary', assayController.summary);
+  api.get('/assay/samples', assayController.samplesPublic);
+  api.post('/inquiries', limits.inquiries, inquiryController.submit);
 
   // ── Admin (every route authenticated; roles per group) ─────────────────
   const admin = Router();
@@ -169,6 +202,11 @@ export function createApiRouter(limits: RateLimiters): Router {
   admin.get('/applications', adminOnly, inboxController.listApplications);
   admin.get('/applications/:id', adminOnly, inboxController.getApplication);
   admin.patch('/applications/:id', adminOnly, inboxController.setApplicationStatus);
+  admin.get('/inquiries', adminOnly, inquiryController.list);
+  admin.get('/inquiries/export.csv', adminOnly, inquiryController.exportCsv);
+  admin.get('/inquiries/:id', adminOnly, inquiryController.get);
+  admin.patch('/inquiries/:id', adminOnly, inquiryController.setStatus);
+  admin.get('/assay/samples', content, assayController.samplesAdmin);
   admin.get('/audit', adminOnly, auditController.list);
   admin.post('/rebuild', adminOnly, rebuildController.trigger);
 

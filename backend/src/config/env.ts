@@ -63,6 +63,8 @@ const schema = z
     CONTACT_INBOX: z.string().email().default('contact@example.com'),
     /** Job applications; falls back to CONTACT_INBOX. */
     HR_INBOX: optionalString.pipe(z.string().email().optional()),
+    /** Optional CC for bulk-supply inquiries (Phase 4.5); inquiries go to CONTACT_INBOX. */
+    INQUIRY_CC: optionalString.pipe(z.string().email().optional()),
 
     /** Nominatim usage policy requires an identifying User-Agent (app name + contact). */
     NOMINATIM_USER_AGENT: z.string().min(5).default('NiraumMetalsWebsite/0.1 (dev@example.com)'),

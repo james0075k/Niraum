@@ -1,7 +1,9 @@
 import { escapeRegex } from '../utils/pagination.js';
+import { Deposit } from '../models/Deposit.js';
 import { Job } from '../models/Job.js';
 import { Post } from '../models/Post.js';
 import { Project } from '../models/Project.js';
+import { Product } from '../models/Product.js';
 import { Service } from '../models/Service.js';
 import { TeamMember } from '../models/TeamMember.js';
 import { createContentService } from './content.service.js';
@@ -87,4 +89,27 @@ export const serviceService = createContentService({
   adminSort: { order: 1 },
   richText: ['body'],
   localized: ['title', 'summary', 'body'],
+});
+
+// ── Phase 4.5 ───────────────────────────────────────────────────────────────
+export const productService = createContentService({
+  entity: 'Product',
+  model: Product,
+  slugFrom: 'name',
+  visibleField: 'published',
+  sortable: ['order', 'createdAt', 'updatedAt'],
+  publicSort: { order: 1, createdAt: 1 },
+  adminSort: { order: 1, updatedAt: -1 },
+  localized: ['name', 'summary', 'applications', 'typicalChemistry'],
+});
+
+export const depositService = createContentService({
+  entity: 'Deposit',
+  model: Deposit,
+  slugFrom: 'name',
+  visibleField: 'published',
+  sortable: ['createdAt', 'updatedAt'],
+  publicSort: { createdAt: 1 },
+  adminSort: { updatedAt: -1 },
+  localized: ['name', 'summary', 'areas', 'geologySummary', 'statusText'],
 });

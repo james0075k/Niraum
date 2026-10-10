@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { DEPOSIT_STATUSES } from '../models/Deposit.js';
 import { JOB_TYPES } from '../models/Job.js';
 import { MINERALS, PROJECT_STATUSES } from '../models/Project.js';
 import { SERVICE_ICONS } from '../models/Service.js';
@@ -151,3 +152,86 @@ export const serviceCreate = z.object({
 export const serviceUpdate = serviceCreate.partial().strict();
 export const servicePublicQuery = paginationQuery;
 export const serviceAdminQuery = adminListQuery;
+
+// ── Products (Phase 4.5) ────────────────────────────────────────────────────
+export const productCreate = z.object({
+  name: title,
+  slug: slugInput.optional(),
+  chemicalFormula: text(40).default(''),
+  summary: short(600).default(''),
+  applications: z
+    .array(z.object({ title: short(150), body: short(2000) }))
+    .max(12)
+    .default([]),
+  typicalChemistry: z
+    .array(
+      z.object({
+        oxide: text(20).min(1),
+        value: z.number().min(0).max(100),
+        unit: text(10).default('%'),
+        basis: short(200).default(''),
+      }),
+    )
+    .max(20)
+    .default([]),
+  sizes: z.array(text(80)).max(12).default([]),
+  minOrder: text(150).default(''),
+  packing: text(300).default(''),
+  image: imageInput.nullable().default(null),
+  order: z.number().int().min(0).max(1000).default(0),
+  published: z.boolean().default(false),
+  seo: seoInput.optional(),
+});
+export const productUpdate = productCreate.partial().strict();
+export const productPublicQuery = paginationQuery;
+export const productAdminQuery = adminListQuery;
+
+// ── Deposits (Phase 4.5) ────────────────────────────────────────────────────
+const optNum = z.number().nullable();
+export const depositCreate = z.object({
+  name: title,
+  slug: slugInput.optional(),
+  summary: short(1000).default(''),
+  location: z
+    .object({
+      district: text(100).default(''),
+      municipality: text(100).default(''),
+      ward: text(20).default(''),
+      province: text(100).default(''),
+      topoSheet: text(40).default(''),
+      easting: optNum.default(null),
+      northing: optNum.default(null),
+      spotHeightM: optNum.default(null),
+      // WGS-84 only — never a converted local-grid guess.
+      lat: z.number().min(-90).max(90).nullable().default(null),
+      lng: z.number().min(-180).max(180).nullable().default(null),
+    })
+    .default({}),
+  areas: z
+    .array(z.object({ code: text(10).min(1), label: short(150).default('') }))
+    .max(20)
+    .default([]),
+  land: z
+    .object({
+      surveyHa: optNum.default(null),
+      quarryHa: optNum.default(null),
+      topsoilYardHa: optNum.default(null),
+      wasteYardHa: optNum.default(null),
+      officeHa: optNum.default(null),
+      approachRoadHa: optNum.default(null),
+      totalLandUseHa: optNum.default(null),
+      landType: text(100).default(''),
+      confirmed: z.boolean().default(false),
+    })
+    .default({}),
+  geologySummary: short(2000).default(''),
+  consultant: z.object({ name: text(200).default(''), address: text(200).default('') }).default({}),
+  status: z.enum(DEPOSIT_STATUSES).default('studies'),
+  statusText: short(300).default(''),
+  maps: z.array(imageInput).max(20).default([]),
+  published: z.boolean().default(false),
+  seo: seoInput.optional(),
+});
+export const depositUpdate = depositCreate.partial().strict();
+export const depositPublicQuery = paginationQuery;
+export const depositAdminQuery = adminListQuery;

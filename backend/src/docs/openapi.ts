@@ -15,7 +15,8 @@ import {
   userCreateBody,
   userUpdateBody,
 } from '../validators/auth.js';
-import { adminListQuery, paginationQuery } from '../validators/common.js';
+import { assaySamplesQuery } from '../validators/assay.js';
+import { adminListQuery, langQuery, paginationQuery } from '../validators/common.js';
 import {
   applicationStatusBody,
   auditQuery,
@@ -25,6 +26,7 @@ import {
   newsletterBody,
 } from '../validators/public.js';
 import { geocodeBody, settingsUpdateBody } from '../validators/settings.js';
+import { inquiryBody, inquiryListQuery, inquiryStatusBody } from '../validators/public.js';
 
 extendZodWithOpenApi(z);
 
@@ -151,7 +153,8 @@ export function buildOpenApiSpec() {
   // Settings
   add('get', '/settings/public', {
     tag: 'Settings',
-    summary: 'Public site settings (ETag, 60 s cache)',
+    summary: 'Public site settings in ?lang=en|ne (ETag, 60 s cache)',
+    query: langQuery,
   });
   add('get', '/admin/settings', { tag: 'Settings', summary: 'Full settings document', auth: true });
   add('put', '/admin/settings', {
@@ -255,6 +258,56 @@ export function buildOpenApiSpec() {
     tag: 'Forms',
     summary: 'Unsubscribe link → 303',
     status: 303,
+  });
+
+  // Phase 4.5 — assay data and bulk-supply inquiries
+  add('get', '/assay/summary', {
+    tag: 'Assay',
+    summary: 'Weighted grade by section (Table 14), deposit average, headline figures',
+    status: 200,
+  });
+  add('get', '/assay/samples', {
+    tag: 'Assay',
+    summary: 'Sample-level rows — 403 unless settings.publicAssayDetail is on',
+    query: assaySamplesQuery,
+    status: 200,
+  });
+  add('get', '/admin/assay/samples', {
+    tag: 'Assay',
+    summary: 'Sample-level rows (always)',
+    query: assaySamplesQuery,
+    auth: true,
+  });
+  add('post', '/inquiries', {
+    tag: 'Forms',
+    summary: 'Bulk supply / investor inquiry (5/hour/IP, honeypot, captcha, auto-reply in lang)',
+    body: inquiryBody,
+  });
+  add('get', '/admin/inquiries', {
+    tag: 'Inquiries',
+    summary: 'Inquiries (filter by status, buyerType)',
+    query: inquiryListQuery,
+    response: list,
+    auth: true,
+  });
+  add('get', '/admin/inquiries/export.csv', {
+    tag: 'Inquiries',
+    summary: 'CSV export (UTF-8 with BOM)',
+    query: inquiryListQuery,
+    auth: true,
+  });
+  add('get', '/admin/inquiries/{id}', {
+    tag: 'Inquiries',
+    summary: 'Get by id',
+    params: idP,
+    auth: true,
+  });
+  add('patch', '/admin/inquiries/{id}', {
+    tag: 'Inquiries',
+    summary: 'Set status (new → contacted → quoted → won / lost, or spam)',
+    params: idP,
+    body: inquiryStatusBody,
+    auth: true,
   });
 
   // SEO

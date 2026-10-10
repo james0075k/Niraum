@@ -1,6 +1,13 @@
 import { z } from 'zod';
 import { APPLICATION_STATUSES } from '../models/Application.js';
 import { MESSAGE_STATUSES } from '../models/Message.js';
+import {
+  BUYER_TYPES,
+  INQUIRY_STATUSES,
+  INQUIRY_TOPICS,
+  QUANTITY_UNITS,
+} from '../models/Inquiry.js';
+import { LANGS } from '../models/schemas/LocalizedString.js';
 import { email } from './auth.js';
 import { paginationQuery, slugInput } from './common.js';
 
@@ -60,4 +67,36 @@ export const auditQuery = paginationQuery.extend({
     .string()
     .regex(/^[a-f0-9]{24}$/)
     .optional(),
+});
+
+// ── Bulk supply inquiry (Phase 4.5) ─────────────────────────────────────────
+/** Mirrors frontend/src/features/inquiries/schemas.ts. */
+export const inquiryBody = z
+  .object({
+    companyName: z.string().trim().min(2).max(150),
+    contactName: z.string().trim().min(2).max(100),
+    email,
+    phone: phone.min(7),
+    buyerType: z.enum(BUYER_TYPES),
+    topic: z.enum(INQUIRY_TOPICS).default('supply'),
+    quantity: z.coerce.number().positive().max(10_000_000).optional(),
+    quantityUnit: z.enum(QUANTITY_UNITS).optional(),
+    deliveryLocation: z.string().trim().max(200).optional().or(z.literal('')),
+    specRequirement: z.string().trim().max(500).optional().or(z.literal('')),
+    message: z.string().trim().max(5000).optional().or(z.literal('')),
+    lang: z.enum(LANGS).default('en'),
+    sourcePage: z.string().trim().max(200).optional().or(z.literal('')),
+    website: honeypot,
+    captchaToken,
+  })
+  .refine((v) => v.quantity === undefined || v.quantityUnit !== undefined, {
+    message: 'Choose tonnes per month or a one-off tonnage',
+    path: ['quantityUnit'],
+  });
+export type InquiryBody = z.infer<typeof inquiryBody>;
+
+export const inquiryStatusBody = z.object({ status: z.enum(INQUIRY_STATUSES) });
+export const inquiryListQuery = paginationQuery.extend({
+  status: z.enum(INQUIRY_STATUSES).optional(),
+  buyerType: z.enum(BUYER_TYPES).optional(),
 });
