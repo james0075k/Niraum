@@ -8,11 +8,6 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
-    <title>Niraum Metals — Strength Forged For Generations</title>
-    <meta
-      name="description"
-      content="Niraum Metals Pvt. Ltd. — iron ore, metal minerals and stone/aggregate supply in Nepal."
-    />
     <!-- Apply saved theme before paint to avoid a flash (see ThemeProvider). -->
     <script>
       try {
@@ -21,7 +16,22 @@
           t === 'dark' || (t === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
         document.documentElement.classList.toggle('dark', d);
       } catch (e) {}
+      // Preloader: once per session, never under reduced motion (see Preloader.tsx).
+      try {
+        if (
+          sessionStorage.getItem('niraum-preloaded') ||
+          matchMedia('(prefers-reduced-motion: reduce)').matches
+        )
+          document.documentElement.classList.add('preloaded');
+      } catch (e) {}
     </script>
+    <noscript
+      ><style>
+        .preloader {
+          display: none !important;
+        }
+      </style></noscript
+    >
   </head>
   <body>
     <div id="root"></div>

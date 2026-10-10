@@ -1,19 +1,37 @@
-import { Head } from 'vite-react-ssg';
-import { pageTitle, seoDefaults } from '@/lib/seo';
+import { CtaBand } from '@/components/sections/CtaBand';
+import { Hero } from '@/components/sections/Hero';
+import { LogoMarquee } from '@/components/sections/LogoMarquee';
+import { NewsGrid } from '@/components/sections/NewsGrid';
+import { ProcessTimeline } from '@/components/sections/ProcessTimeline';
+import { ProjectGallery } from '@/components/sections/ProjectGallery';
+import { Services } from '@/components/sections/Services';
+import { Stats } from '@/components/sections/Stats';
+import { SustainabilityBand } from '@/components/sections/SustainabilityBand';
+import { Seo } from '@/components/seo/Seo';
+import { homeStats, processSteps, sectors } from '@/content/site';
+import { usePosts } from '@/features/news/usePosts';
+import { useProjects } from '@/features/projects/useProjects';
+import { useServices } from '@/features/services/useServices';
 
-/** Placeholder — real sections (Hero, Stats, Services, …) land in the feature phase. */
+/** Primary keyword: "mining company in Nepal". */
 export default function Home() {
+  const { data: services } = useServices();
+  const { data: projects } = useProjects();
+  const { data: posts } = usePosts();
+  const featured = projects.filter((p) => p.featured);
+
   return (
-    <section className="texture-grain flex min-h-dvh flex-col items-center justify-center gap-4 px-4 text-center">
-      <Head>
-        <title>{pageTitle()}</title>
-        <meta name="description" content={seoDefaults.description} />
-      </Head>
-      <p className="label text-primary">Lalitpur-13, Nepal</p>
-      <h1 className="text-4xl sm:text-6xl">
-        <span className="text-copper-gradient">N</span>iraum Metals
-      </h1>
-      <p className="text-lg text-muted-foreground">Strength Forged For Generations</p>
-    </section>
+    <>
+      <Seo path="/" />
+      <Hero />
+      <Stats stats={homeStats} />
+      <Services services={services} />
+      <ProjectGallery projects={featured.length ? featured : projects} />
+      <ProcessTimeline steps={processSteps} />
+      <SustainabilityBand />
+      <NewsGrid posts={posts} />
+      <LogoMarquee items={sectors} />
+      <CtaBand />
+    </>
   );
 }

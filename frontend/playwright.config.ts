@@ -25,7 +25,8 @@ export default defineConfig({
   webServer: process.env.E2E_BASE_URL
     ? undefined
     : {
-        command: 'pnpm build:spa && pnpm preview',
+        // Full prerender build so e2e exercises the same HTML that ships.
+        command: 'pnpm build && pnpm preview',
         url: baseURL,
         reuseExistingServer: !process.env.CI,
       },

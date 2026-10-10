@@ -1,47 +1,154 @@
 # API — /api/v1
 
-> Skeleton. Endpoints are implemented in the feature phase; this is the contract they follow.
-> Conventions (envelope, pagination, error codes) are defined in
-> [ARCHITECTURE.md §5.3](./ARCHITECTURE.md#53-api-conventions).
+> Implemented in Phase 4. Interactive reference (non-production only): **`/api/docs`**
+> (Swagger UI) and **`/api/docs.json`** (OpenAPI 3, generated from the same Zod schemas the
+> controllers validate with — `backend/src/docs/openapi.ts`).
 
-## Public
+## Conventions
 
-| Method | Path               | Notes                                            |
-| ------ | ------------------ | ------------------------------------------------ |
-| GET    | `/health`          | `{ data: { status, db, uptime } }` — implemented |
-| GET    | `/settings/public` | public projection of SiteSettings                |
-| GET    | `/services`        | ordered by `order`                               |
-| GET    | `/projects`        | `?page&limit&sort&status&mineral&featured`       |
-| GET    | `/projects/:slug`  | published only                                   |
-| GET    | `/posts`           | `?page&limit&tag&q`                              |
-| GET    | `/posts/:slug`     | published only                                   |
-| GET    | `/jobs`            | open and not past deadline                       |
-| GET    | `/jobs/:slug`      |                                                  |
-| GET    | `/team`            | ordered by `order`                               |
-| POST   | `/contact`         | rate-limited, honeypot                           |
-| POST   | `/applications`    | `multipart/form-data` with `cv`                  |
-| POST   | `/newsletter`      | double opt-in                                    |
+| Topic      | Rule                                                                                                                                                                                                                                                                                                                                    |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Format     | JSON only (except multipart uploads). Body limit 1 MB.                                                                                                                                                                                                                                                                                  |
+| Success    | `{ data }` or, for lists, `{ data: [], meta: { page, limit, total, pages } }`. Settings updates add `meta.warnings`.                                                                                                                                                                                                                    |
+| Error      | `{ error: { code, message, details? } }` — never a stack trace in production.                                                                                                                                                                                                                                                           |
+| Codes      | `VALIDATION_ERROR` 400 · `CAPTCHA_FAILED` 400/503 · `UNAUTHENTICATED` 401 · `FORBIDDEN` 403 · `PASSWORD_CHANGE_REQUIRED` 403 · `NOT_FOUND` 404 · `CONFLICT` 409 · `PAYLOAD_TOO_LARGE` 413 · `UNSUPPORTED_MEDIA_TYPE` 415 · `ACCOUNT_LOCKED` 423 · `RATE_LIMITED` 429 · `INTERNAL` 500 · `STORAGE_ERROR` 502 · `STORAGE_UNAVAILABLE` 503 |
+| Validation | `details` is Zod's `flatten()` → `{ formErrors: [], fieldErrors: { field: [msg] } }`. Unknown fields in update bodies are rejected.                                                                                                                                                                                                     |
+| Lists      | `?page=1&limit=20` (`limit ≤ 50`), `?sort=-publishedAt` (allow-listed fields; unknown → default order), `?q=` full-text search (title + summary/excerpt), plus per-resource filters.                                                                                                                                                    |
+| IDs        | Every document is returned with `id` (no `_id`, no `__v`). Admin routes address documents by `id`, public routes by `slug`.                                                                                                                                                                                                             |
+| Caching    | Public GETs: `Cache-Control: public, max-age=60, stale-while-revalidate=300`. `/settings/public` adds a strong `ETag` (→ `304` on `If-None-Match`). Admin responses: `no-store`.                                                                                                                                                        |
+| Tracing    | Every response carries `X-Request-Id` (incoming well-formed IDs from the proxy are kept). Logs are pino JSON with the same id.                                                                                                                                                                                                          |
+| CSRF       | `SameSite=Strict` cookies + state-changing requests with a foreign `Origin` are refused (`403`).                                                                                                                                                                                                                                        |
 
-## Auth
+## Authentication
 
-| Method | Path            | Notes                                       |
-| ------ | --------------- | ------------------------------------------- |
-| POST   | `/auth/login`   | sets `na_at` + `na_rt` cookies              |
-| POST   | `/auth/refresh` | rotates cookies                             |
-| POST   | `/auth/logout`  | clears cookies, bumps `refreshTokenVersion` |
-| POST   | `/auth/forgot`  | always 202                                  |
-| POST   | `/auth/reset`   | single-use token                            |
-| GET    | `/auth/me`      | current user                                |
+Cookies, never headers or local storage ([ADR-0003](./adr/0003-auth-httponly-cookies.md)):
 
-## Admin (role-guarded, prefix `/admin`)
+| Cookie  | Contents            | Lifetime | Path           | Flags                               |
+| ------- | ------------------- | -------- | -------------- | ----------------------------------- |
+| `na_at` | access JWT (HS256)  | 15 min   | `/api`         | HttpOnly · Secure · SameSite=Strict |
+| `na_rt` | refresh JWT (HS256) | 7 days   | `/api/v1/auth` | HttpOnly · Secure · SameSite=Strict |
 
-| Resource                                        | Methods                                                      | Min role   |
-| ----------------------------------------------- | ------------------------------------------------------------ | ---------- |
-| `projects`, `posts`, `jobs`, `team`, `services` | `GET` list, `GET /:id`, `POST`, `PUT /:id`, `DELETE /:id`    | editor     |
-| `media`                                         | `GET`, `POST` (multipart), `PATCH /:id` (alt), `DELETE /:id` | editor     |
-| `users`                                         | full CRUD                                                    | superadmin |
-| `settings`                                      | `GET`, `PUT`                                                 | admin      |
-| `settings/geocode`                              | `POST { address }`                                           | admin      |
-| `messages`                                      | `GET`, `PATCH /:id { status }`                               | admin      |
-| `applications`                                  | `GET`, `PATCH /:id { status }`                               | admin      |
-| `audit`                                         | `GET`                                                        | admin      |
+Both tokens carry the user's `refreshTokenVersion`; logout, password change/reset, role change
+and deactivation bump it, which ends **every** session of that user at once. The access cookie
+is checked against the database on each request, so revocation is immediate.
+
+| Method | Path                    | Body                               | Notes                                                                                                                                 |
+| ------ | ----------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| POST   | `/auth/login`           | `{ email, password }`              | 10 / 15 min / IP. 5 wrong passwords → `423 ACCOUNT_LOCKED` for 15 min. Same `401` for unknown email and wrong password. Audit-logged. |
+| POST   | `/auth/refresh`         | — (cookie `na_rt`)                 | Rotates: issues a new access **and** refresh token.                                                                                   |
+| POST   | `/auth/logout`          | —                                  | `204`. Clears both cookies, bumps the version.                                                                                        |
+| POST   | `/auth/forgot`          | `{ email }`                        | Always `202`. Emails a single-use token (only its SHA-256 is stored), valid 30 min. 5 / h / IP.                                       |
+| POST   | `/auth/reset`           | `{ token, password }`              | Password ≥ 12 chars. Token is cleared atomically on use.                                                                              |
+| POST   | `/auth/change-password` | `{ currentPassword, newPassword }` | Signed in. Re-issues cookies for this session, ends the others.                                                                       |
+| GET    | `/auth/me`              | —                                  | Current user (`mustChangePassword` tells the admin UI to force the change screen).                                                    |
+
+While `mustChangePassword` is true (seeded superadmin, users created by a superadmin), every
+authenticated route except `me`, `change-password` and `logout` answers
+`403 PASSWORD_CHANGE_REQUIRED`.
+
+## Public endpoints
+
+| Method | Path                      | Query / body                                                                    | Notes                                                                     |
+| ------ | ------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| GET    | `/health`                 | —                                                                               | `{ data: { status, uptime, db } }`                                        |
+| GET    | `/settings/public`        | —                                                                               | Public projection; `social` = active only, sorted by `order`. ETag, 60 s. |
+| GET    | `/services`               | `page limit sort q`                                                             | Ordered by `order`.                                                       |
+| GET    | `/services/:slug`         |                                                                                 |                                                                           |
+| GET    | `/projects`               | `page limit sort q status mineral featured`                                     | Default order: featured, then newest published.                           |
+| GET    | `/projects/:slug`         |                                                                                 |                                                                           |
+| GET    | `/posts`                  | `page limit sort q tag`                                                         | Newest `publishedAt` first.                                               |
+| GET    | `/posts/:slug`            |                                                                                 |                                                                           |
+| GET    | `/jobs`                   | `page limit sort q department type`                                             | `isOpen` and deadline not passed.                                         |
+| GET    | `/jobs/:slug`             |                                                                                 |                                                                           |
+| GET    | `/team`                   | `page limit sort`                                                               | Ordered by `order`. No detail route.                                      |
+| POST   | `/contact`                | `{ name, email, phone?, company?, subject, message, website?, captchaToken? }`  | 5 / hour / IP. See below.                                                 |
+| POST   | `/applications`           | multipart: `name email phone message? job? website? captchaToken?` + `cv` (PDF) | 5 / hour / IP. CV ≤ 5 MB, checked by magic bytes.                         |
+| POST   | `/newsletter`             | `{ email, source?, website? }`                                                  | Always `202`. Double opt-in. 5 / 10 min / IP.                             |
+| GET    | `/newsletter/confirm`     | `?token=`                                                                       | `303` → `CLIENT_URL/?newsletter=confirmed` (or `invalid`).                |
+| GET    | `/newsletter/unsubscribe` | `?token=`                                                                       | `303` → `CLIENT_URL/?newsletter=unsubscribed` (or `invalid`).             |
+| GET    | `/seo/sitemap-data`       | —                                                                               | `{ projects, posts, jobs: [{ slug, updatedAt }], generatedAt }`           |
+
+Public responses only include published / open, non-deleted documents and never expose
+`isDeleted`, `deletedAt`, `createdBy`, `updatedBy`.
+
+**Contact flow.** Zod → honeypot (`website` filled ⇒ stored as `spam`, same `201`, no email) →
+Turnstile/reCAPTCHA verification (`captchaToken`; skipped only when no secret is configured,
+which production does not allow) → `Message` saved with IP and user agent → notification to
+`CONTACT_INBOX` (reply-to = sender) and an auto-reply to the sender. Email failures are logged,
+never surfaced.
+
+**Applications.** Optional `job` is the job **slug**; it must be open and before its deadline,
+otherwise `400`. Without `job` it is a general application. The CV is uploaded to Cloudinary as
+a **private** raw file (`niraum/applications/`); admins get a short-lived signed URL. HR
+(`HR_INBOX`, default `CONTACT_INBOX`) is emailed; the applicant gets an acknowledgement.
+
+## Admin endpoints (`/admin`, cookie auth)
+
+| Resource                                        | Routes                                                                                                          | Roles      |
+| ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | ---------- |
+| `projects`, `posts`, `jobs`, `team`, `services` | `GET /` · `POST /` · `GET /:id` · `PUT /:id` · `DELETE /:id` (soft) · `POST /:id/restore`                       | editor+    |
+| `media`                                         | `GET /?type=image\|video\|document` · `POST /` (multipart `file`, `alt`) · `PATCH /:id { alt }` · `DELETE /:id` | editor+    |
+| `settings`                                      | `GET /` · `PUT /` · `POST /geocode { address }`                                                                 | admin+     |
+| `messages`                                      | `GET /?status=` · `PATCH /:id { status: new\|read\|replied\|spam }`                                             | admin+     |
+| `applications`                                  | `GET /?status=` · `GET /:id` (+ signed `cvUrl`) · `PATCH /:id { status }`                                       | admin+     |
+| `audit`                                         | `GET /?entity=&entityId=&user=`                                                                                 | admin+     |
+| `rebuild`                                       | `POST /` — call the frontend deploy hook now                                                                    | admin+     |
+| `users`                                         | `GET /` · `POST /` · `PUT /:id { name?, role?, isActive? }` · `DELETE /:id` (deactivate)                        | superadmin |
+
+Roles: **editor** — content and media · **admin** — + settings, inbox, audit, rebuild ·
+**superadmin** — + users. The last active superadmin can't be demoted or deactivated, and
+nobody can deactivate themselves.
+
+**Content lists** accept `state=all|draft|published` (default `all`) and `trash=true` (soft-
+deleted items) in addition to the public filters.
+
+**Writes.** Slugs are generated from the title on create (`slugify`, lowercase, then `-2`,
+`-3`…). Editing a title does **not** change the slug (stable URLs); send `slug` to change it.
+Soft-deleted items keep their slug reserved. Rich-text fields (`body`, job `description`) are
+sanitised with an allow-list on every write. Turning `published`/`isOpen` on sets `publishedAt`
+the first time. Every create / update / delete / restore / publish / unpublish writes an
+`AuditLog` entry with a field diff (secrets omitted), and changes to public content schedule a
+debounced call to `REBUILD_HOOK_URL`.
+
+**Media.** jpg / png / webp / avif ≤ 8 MB (alt text required), pdf ≤ 5 MB, mp4 ≤ 50 MB. The
+declared MIME type must match the file's magic bytes. Files go to `CLOUDINARY_FOLDER/{images,
+documents,videos}`; the record stores `url`, `publicId`, `alt`, size and dimensions. Delete
+removes the Cloudinary asset first and keeps the record if that fails (`502`).
+
+### Settings and the map pin
+
+`PUT /admin/settings` accepts any subset of the settings sections (nested objects are merged).
+When `address` changes and `location.manualOverride` is `false`, the API geocodes it:
+
+1. Nominatim `search?format=json&limit=1&countrycodes=np` with `NOMINATIM_USER_AGENT`,
+   at most 1 request/second process-wide, results cached for 30 days (Mongo TTL collection).
+2. No match for the full address → retry without line 1 (city level) and return the warning
+   `GEOCODE_APPROXIMATE`.
+3. No match or the service is down → **keep the previous coordinates** and return
+   `GEOCODE_FAILED` so the admin can drop the pin manually.
+
+```json
+{
+  "data": { "...": "full settings" },
+  "meta": { "warnings": [{ "code": "GEOCODE_FAILED", "message": "…" }] }
+}
+```
+
+Dropping a pin = `PUT { location: { lat, lng, manualOverride: true } }`; from then on address
+edits never move it. `POST /admin/settings/geocode { address }` previews coordinates without
+saving: `{ ok, lat, lng, displayName, approximate, cached, query }` or `{ ok: false, reason }`.
+Public settings are cached in memory for 60 s and the cache is cleared on every update.
+
+## Rate limits
+
+| Scope                        | Limit             |
+| ---------------------------- | ----------------- |
+| All `/api`                   | 300 / 15 min / IP |
+| `POST /auth/login`           | 10 / 15 min / IP  |
+| `POST /auth/forgot`, `reset` | 5 / hour / IP     |
+| `POST /contact`              | 5 / hour / IP     |
+| `POST /applications`         | 5 / hour / IP     |
+| `POST /newsletter`           | 5 / 10 min / IP   |
+
+Standard `RateLimit` / `RateLimit-Policy` headers are sent. Counters are in memory per API
+instance — use a shared store before running more than one replica.

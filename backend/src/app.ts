@@ -1,62 +1,92 @@
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import express from 'express';
+import express, { type Express } from 'express';
 import mongoSanitize from 'express-mongo-sanitize';
-import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import hpp from 'hpp';
-import mongoose from 'mongoose';
 import { pinoHttp } from 'pino-http';
-import { env } from './config/env.js';
+import { allowedOrigins, env, isProd } from './config/env.js';
 import { logger } from './config/logger.js';
+import { mountDocs } from './docs/openapi.js';
 import { errorHandler, notFound } from './middlewares/errorHandler.js';
+import { originCheck } from './middlewares/originCheck.js';
+import { createRateLimiters } from './middlewares/rateLimits.js';
+import { getRequestId, requestId } from './middlewares/requestId.js';
+import { createApiRouter } from './routes/index.js';
 
-/** Builds the Express app without connecting to the DB (so Supertest can import it). */
-export function createApp() {
+/**
+ * Builds the Express app without connecting to the DB (so Supertest can import it).
+ * Middleware order: requestId → pino-http → helmet → cors → compression → json →
+ * cookie-parser → mongo-sanitize → hpp → rate limits → routes → 404 → errorHandler.
+ */
+export function createApp(): Express {
   const app = express();
+  const limits = createRateLimiters();
 
   app.disable('x-powered-by');
   app.set('trust proxy', env.TRUST_PROXY);
+  app.set('etag', false); // explicit ETags only (settings)
 
-  app.use(pinoHttp({ logger, autoLogging: { ignore: (req) => req.url === '/api/v1/health' } }));
-  app.use(helmet());
+  app.use(requestId);
   app.use(
-    cors({
-      origin: (origin, cb) => cb(null, !origin || env.CORS_ORIGINS.includes(origin)),
-      credentials: true,
+    pinoHttp({
+      logger,
+      genReqId: getRequestId,
+      autoLogging: { ignore: (req) => req.url === '/api/v1/health' },
+      serializers: {
+        req: (req: { id: string; method: string; url: string }) => ({
+          id: req.id,
+          method: req.method,
+          url: req.url,
+        }),
+      },
     }),
   );
+
+  // The API only returns JSON, so the CSP forbids everything; Swagger UI gets its own below.
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        useDefaults: false,
+        directives: {
+          defaultSrc: ["'none'"],
+          frameAncestors: ["'none'"],
+          baseUri: ["'none'"],
+          formAction: ["'none'"],
+        },
+      },
+      crossOriginResourcePolicy: { policy: 'same-site' },
+      referrerPolicy: { policy: 'no-referrer' },
+      strictTransportSecurity: isProd
+        ? { maxAge: 63072000, includeSubDomains: true, preload: true }
+        : false,
+    }),
+  );
+  app.use(
+    cors({
+      origin: (origin, cb) => cb(null, !origin || allowedOrigins.includes(origin)),
+      credentials: true,
+      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+      exposedHeaders: ['X-Request-Id', 'ETag', 'RateLimit', 'RateLimit-Policy'],
+      maxAge: 600,
+    }),
+  );
+  app.use(originCheck);
   app.use(compression());
-  app.use(express.json({ limit: '100kb' }));
+  app.use(express.json({ limit: '1mb' }));
   app.use(express.urlencoded({ extended: false, limit: '100kb' }));
   app.use(cookieParser());
   app.use(mongoSanitize());
   app.use(hpp());
-  app.use(
-    '/api',
-    rateLimit({
-      windowMs: 15 * 60_000,
-      limit: 300,
-      standardHeaders: 'draft-7',
-      legacyHeaders: false,
-    }),
-  );
+  app.use('/api', limits.global);
 
-  const v1 = express.Router();
-  v1.get('/health', (_req, res) => {
-    res.json({
-      data: {
-        status: 'ok',
-        db: mongoose.connection.readyState === 1 ? 'up' : 'down',
-        uptime: process.uptime(),
-      },
-    });
-  });
-  // Feature routers mount here: v1.use('/settings', settingsRouter), v1.use('/auth', authRouter), …
-  app.use('/api/v1', v1);
+  // OpenAPI spec + Swagger UI outside production only.
+  if (!isProd) mountDocs(app);
 
-  app.use('/api', notFound);
+  app.use('/api/v1', createApiRouter(limits));
+
+  app.use(notFound);
   app.use(errorHandler);
   return app;
 }

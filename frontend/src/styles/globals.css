@@ -14,7 +14,7 @@
  *   Copper deep #8A5236 = 20 44% 38% Silver #C9CDD3 = 216 10% 81%
  *   Off-white #F6F4F1 = 36 22% 95%
  * Contrast: text on copper buttons is graphite (5.0:1), never white (3.6:1).
- * In light mode copper *text* (links) uses copper-deep for AA (≈6:1 on off-white).
+ * Copper *text* uses --copper-ink: copper-deep on light (≈6:1), copper-light on dark (≈8:1).
  */
 @layer base {
   :root {
@@ -24,6 +24,7 @@
     --brand-copper-light: #dda27c;
     --brand-copper-deep: #8a5236;
     --brand-copper-gradient: linear-gradient(135deg, #8a5236 0%, #dda27c 50%, #a9663f 100%);
+    --copper-gradient: var(--brand-copper-gradient);
     --brand-silver: #c9cdd3;
     --brand-offwhite: #f6f4f1;
     --brand-rule: #c27a44;
@@ -40,19 +41,25 @@
     --secondary: 216 10% 90%;
     --secondary-foreground: 218 11% 19%;
     --muted: 36 12% 90%;
-    --muted-foreground: 218 8% 38%;
-    --accent: 20 44% 38%;
-    --accent-foreground: 36 22% 95%;
+    --muted-foreground: 218 8% 36%;
+    --accent: 36 14% 88%;
+    --accent-foreground: 218 11% 19%;
     --destructive: 0 70% 45%;
     --destructive-foreground: 0 0% 100%;
     --border: 216 10% 81%;
-    --input: 216 10% 81%;
+    --input: 216 10% 76%;
     --ring: 24 44% 51%;
     --link: 20 44% 38%;
+    --copper-ink: 20 44% 38%;
+    --charcoal: 218 11% 19%;
+    --silver: 216 10% 81%;
     --radius: 0.75rem;
 
+    /* Glass (spec: rgba(255,255,255,.55) light / rgba(20,23,28,.45) dark; copper hairline) */
     --glass-bg: 0 0% 100% / 0.55;
-    --glass-border: 0 0% 100% / 0.6;
+    --glass-bg-strong: 36 22% 97% / 0.78;
+    --glass-border: 24 59% 68% / 0.25;
+    --glass-shadow: 0 20px 60px rgb(43 47 54 / 0.14);
     --header-h: 4.5rem;
   }
 
@@ -68,18 +75,23 @@
     --secondary: 218 11% 19%;
     --secondary-foreground: 36 22% 95%;
     --muted: 218 11% 16%;
-    --muted-foreground: 216 10% 70%;
-    --accent: 24 59% 68%;
-    --accent-foreground: 218 17% 9%;
+    --muted-foreground: 216 10% 72%;
+    --accent: 218 11% 19%;
+    --accent-foreground: 36 22% 95%;
     --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 100%;
     --border: 218 11% 24%;
-    --input: 218 11% 24%;
+    --input: 218 11% 28%;
     --ring: 24 59% 68%;
     --link: 24 59% 68%;
+    --copper-ink: 24 59% 68%;
+    --charcoal: 218 11% 19%;
+    --silver: 216 10% 81%;
 
     --glass-bg: 218 17% 9% / 0.45;
-    --glass-border: 216 10% 81% / 0.14;
+    --glass-bg-strong: 218 17% 9% / 0.72;
+    --glass-border: 24 59% 68% / 0.25;
+    --glass-shadow: 0 20px 60px rgb(0 0 0 / 0.35);
   }
 
   * {
@@ -88,6 +100,7 @@
   html {
     -webkit-text-size-adjust: 100%;
     text-rendering: optimizeLegibility;
+    scroll-padding-top: calc(var(--header-h) + 1rem);
   }
   body {
     @apply bg-background font-sans text-foreground antialiased;
@@ -95,9 +108,13 @@
   }
   h1 {
     @apply font-extrabold tracking-tight;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    line-height: 1.02;
   }
   h2 {
     @apply font-bold tracking-tight;
+    font-size: clamp(1.875rem, 3.6vw, 3rem);
+    line-height: 1.1;
   }
   h3 {
     @apply font-semibold;
@@ -107,6 +124,9 @@
   }
   :focus-visible {
     @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+  ::selection {
+    background: hsl(var(--primary) / 0.35);
   }
 
   /* Lenis */
@@ -137,10 +157,67 @@
   .label {
     @apply text-xs font-medium uppercase tracking-label;
   }
+  .eyebrow {
+    @apply label flex items-center gap-3 text-copper-ink;
+  }
+  .eyebrow::before {
+    content: '';
+    @apply h-px w-8 bg-copper-gradient;
+  }
+  .text-copper,
   .text-copper-gradient {
     background: var(--brand-copper-gradient);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
+  .section {
+    @apply relative py-20 sm:py-24 lg:py-32;
+  }
+  .container-site {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+  /* Readable text over photography — same overlay in both themes. */
+  .photo-overlay {
+    background: linear-gradient(
+      to top,
+      rgb(0 0 0 / 0.7) 0%,
+      rgb(0 0 0 / 0.4) 45%,
+      rgb(0 0 0 / 0) 100%
+    );
+  }
+  .prose-site {
+    @apply max-w-3xl space-y-5 text-base leading-relaxed text-muted-foreground sm:text-lg;
+  }
+  .prose-site h2 {
+    @apply pt-6 text-2xl text-foreground sm:text-3xl;
+  }
+  .prose-site h3 {
+    @apply pt-4 text-xl text-foreground;
+  }
+  .prose-site ul {
+    @apply list-disc space-y-2 pl-6;
+  }
+  .prose-site strong {
+    @apply text-foreground;
+  }
+}
+
+/* Preloader: skipped when already seen; failsafe hides it if JS never hydrates. */
+html.preloaded .preloader {
+  display: none;
+}
+.preloader {
+  animation: preloader-failsafe 0.4s ease 3.2s forwards;
+}
+@keyframes preloader-failsafe {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* Placeholders for unknown business facts — visible on purpose until replaced. */
+.tbc {
+  @apply rounded-sm border border-dashed border-primary/50 px-1 text-copper-ink;
 }

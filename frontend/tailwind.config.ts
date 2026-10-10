@@ -33,6 +33,8 @@ export default {
         silver: '#C9CDD3',
         offwhite: '#F6F4F1',
         rule: '#C27A44',
+        'copper-ink': 'hsl(var(--copper-ink))',
+        link: 'hsl(var(--link))',
         // Semantic tokens (theme-aware, shadcn/ui contract).
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
@@ -54,15 +56,16 @@ export default {
         popover: { DEFAULT: 'hsl(var(--popover))', foreground: 'hsl(var(--popover-foreground))' },
       },
       fontFamily: {
-        sans: ['"Manrope Variable"', 'Manrope', 'system-ui', 'sans-serif'],
+        sans: ['"Manrope Variable"', 'system-ui', 'sans-serif'],
       },
+      maxWidth: { '7xl': '80rem' },
       letterSpacing: { label: '0.12em' },
       backgroundImage: {
         'copper-gradient': 'linear-gradient(135deg, #8A5236 0%, #DDA27C 50%, #A9663F 100%)',
       },
       boxShadow: {
         'copper-glow': '0 0 0 1px rgb(184 117 74 / 0.35), 0 8px 32px -8px rgb(184 117 74 / 0.45)',
-        glass: '0 8px 32px rgb(0 0 0 / 0.25)',
+        glass: 'var(--glass-shadow)',
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -70,6 +73,18 @@ export default {
         sm: 'calc(var(--radius) - 4px)',
       },
       transitionTimingFunction: { brand: 'cubic-bezier(0.22, 1, 0.36, 1)' },
+      keyframes: {
+        marquee: { from: { transform: 'translateX(0)' }, to: { transform: 'translateX(-50%)' } },
+        'scroll-cue': {
+          '0%': { transform: 'translateY(0)', opacity: '0' },
+          '30%': { opacity: '1' },
+          '100%': { transform: 'translateY(14px)', opacity: '0' },
+        },
+      },
+      animation: {
+        marquee: 'marquee var(--marquee-duration, 40s) linear infinite',
+        'scroll-cue': 'scroll-cue 1.8s cubic-bezier(0.22, 1, 0.36, 1) infinite',
+      },
     },
   },
   plugins: [animate],

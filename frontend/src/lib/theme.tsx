@@ -15,18 +15,20 @@ interface ThemeContextValue {
   theme: Theme;
   resolvedTheme: 'light' | 'dark';
   setTheme: (theme: Theme) => void;
+  /** Admin default (SiteSettings.theme.defaultMode) — applied only if the visitor never chose. */
+  applyDefault: (theme: Theme) => void;
 }
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 const media = '(prefers-color-scheme: dark)';
 
-function readStored(key: string, fallback: Theme): Theme {
-  if (typeof window === 'undefined') return fallback;
+function readStored(key: string): Theme | null {
+  if (typeof window === 'undefined') return null;
   try {
     const v = window.localStorage.getItem(key);
-    return v === 'light' || v === 'dark' || v === 'system' ? v : fallback;
+    return v === 'light' || v === 'dark' || v === 'system' ? v : null;
   } catch {
-    return fallback;
+    return null;
   }
 }
 
@@ -39,7 +41,7 @@ export function ThemeProvider({
   defaultTheme?: Theme;
   storageKey?: string;
 }) {
-  const [theme, setThemeState] = useState<Theme>(() => readStored(storageKey, defaultTheme));
+  const [theme, setThemeState] = useState<Theme>(() => readStored(storageKey) ?? defaultTheme);
   const [systemDark, setSystemDark] = useState(
     () => typeof window !== 'undefined' && window.matchMedia(media).matches,
   );
@@ -71,9 +73,16 @@ export function ThemeProvider({
     [storageKey],
   );
 
+  const applyDefault = useCallback(
+    (next: Theme) => {
+      if (readStored(storageKey) === null) setThemeState(next);
+    },
+    [storageKey],
+  );
+
   const value = useMemo(
-    () => ({ theme, resolvedTheme, setTheme }),
-    [theme, resolvedTheme, setTheme],
+    () => ({ theme, resolvedTheme, setTheme, applyDefault }),
+    [theme, resolvedTheme, setTheme, applyDefault],
   );
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }

@@ -238,16 +238,21 @@ route ──► middlewares (auth → requireRole → validate) ──► contro
 - **Services** hold business rules (slug generation, publish/rebuild triggers, audit logging,
   email, geocoding). They never touch `req`/`res`.
 - **Models** define schema, indexes and small instance helpers.
-- **Validators** are Zod schemas for `body`, `query` and `params`; `validate()` replaces
-  `req.body`/`req.query` with the parsed (stripped, coerced) values.
+- **Validators** are Zod schemas for `body`, `query` and `params`. Controllers call
+  `schema.parse(req.x)` themselves, so the parsed (stripped, coerced) value is fully typed;
+  a `ZodError` becomes `400 VALIDATION_ERROR` in the error handler.
 
 ### 5.2 Middleware order (`app.ts`)
 
 1. `trust proxy` (= `TRUST_PROXY`) so `req.ip` and rate limits see the real client.
-2. `pino-http` request logging (health checks skipped; cookies/authorization redacted).
-3. `helmet` (CSP is set at the static host for HTML; API responses are JSON-only).
-4. `cors` — allow-list from `CORS_ORIGINS`, `credentials: true`.
-5. `compression`, `express.json({ limit: '100kb' })`, `urlencoded`, `cookie-parser`.
+2. `requestId` (keeps a well-formed incoming `X-Request-Id`, else a UUID; echoed in the
+   response) → `pino-http` request logging with that id (health checks skipped; cookies,
+   authorization, passwords and tokens redacted).
+3. `helmet` with a strict API CSP (`default-src 'none'; frame-ancestors 'none'`); the HTML CSP
+   is set at the static host. Swagger UI (`/api/docs`, non-production) gets its own CSP.
+4. `cors` — allow-list `CLIENT_URL`, `ADMIN_URL` (+ `CORS_ORIGINS`), `credentials: true`; then
+   `originCheck` refuses state-changing requests from other origins.
+5. `compression`, `express.json({ limit: '1mb' })`, `urlencoded`, `cookie-parser`.
 6. `express-mongo-sanitize` (strips `$`/`.` keys), `hpp` (parameter pollution).
 7. `express-rate-limit`: global `/api` 300 / 15 min / IP; stricter per-route limits for
    `auth/login` (10 / 15 min), `auth/forgot` (5 / h), `contact`, `applications`, `newsletter`
@@ -441,9 +446,9 @@ sequenceDiagram
   participant M as SMTP
   B->>B: RHF + Zod validate (client)
   B->>A: POST /api/v1/contact {name, email, …, honeypot}
-  A->>A: rateLimit(5/10min/IP) → validate(Zod) → honeypot/spam heuristics
+  A->>A: rateLimit(5/hour/IP) → validate(Zod) → honeypot → Turnstile/reCAPTCHA
   A->>D: Message.create({…, ip, userAgent, status: new|spam})
-  A->>M: notify MAIL_TO_CONTACT (async; failure logged, not surfaced)
+  A->>M: notify CONTACT_INBOX + auto-reply (async; failure logged, not surfaced)
   A-->>B: 201 { data: { id } }
 ```
 
@@ -481,18 +486,22 @@ whether or not the email exists.
 ### 7.5 Admin write (e.g. publish a project)
 
 `PUT /admin/projects/:id` → `auth` → `requireRole('editor','admin','superadmin')` →
-`validate(projectUpdate)` → controller → `projectService.update()`:
+controller (`projectUpdate.parse`) → `projectService.update()`:
 
-1. sanitise `body` HTML (allow-list), regenerate slug if title changed and slug not locked;
-2. save; write `AuditLog` with the field diff;
-3. if `published` changed or a published doc changed → `jobs/sitemap` regenerate +
-   debounced `jobs/rebuild` call to `REBUILD_HOOK_URL`.
+1. sanitise `body` HTML (allow-list); the slug only changes when `slug` is sent explicitly
+   (title edits keep published URLs stable);
+2. save; write `AuditLog` with the field diff (+ `publish`/`unpublish` when visibility flips);
+3. if the document is or was public → debounced `jobs/rebuild` call to `REBUILD_HOOK_URL`.
+   The frontend build reads `GET /seo/sitemap-data` to write `sitemap.xml`.
 
 ### 7.6 Settings geocode
 
-`POST /admin/settings/geocode` (admin+) builds a query from `address`, calls Nominatim through
-`node-geocoder` (identifying `GEOCODER_EMAIL`, ≤ 1 req/s, cached), returns candidates. The admin
-picks one or drags the map pin; saving sets `location` and `manualOverride: true` when dragged.
+`services/geocode.service.ts` calls Nominatim directly (`format=json&limit=1&countrycodes=np`,
+`NOMINATIM_USER_AGENT`, ≤ 1 req/s process-wide, results cached 30 days in a Mongo TTL
+collection). `PUT /admin/settings` geocodes a changed address unless `location.manualOverride`;
+on failure the old pin stays and the response carries `meta.warnings`. `POST
+/admin/settings/geocode` previews coordinates without saving. Dragging the pin saves
+`location` with `manualOverride: true`.
 
 ### 7.7 Media upload
 
@@ -507,11 +516,14 @@ through `srcset`.
 
 Detail in [SECURITY.md](./SECURITY.md). Highlights: argon2id hashes; short-lived access JWT +
 rotating refresh JWT in httpOnly `Secure` `SameSite=Strict` cookies; account lockout; per-route
-rate limits; Zod validation on every input; Mongo operator stripping (`express-mongo-sanitize`
+rate limits; Zod validation on every input (query values coerced to primitives); Mongo operator
+stripping (`express-mongo-sanitize`); HTML sanitising for rich text; helmet headers + strict API
+CSP (page CSP at the host); CORS allow-list + Origin check; role checks on every admin route;
+append-only audit log; secrets only in env, validated at boot (the API refuses to start in
+production with placeholder secrets or missing service credentials).
 
-- `sanitizeFilter`); HTML sanitising for rich text; helmet headers + CSP at the host; CORS
-  allow-list; role checks on every admin route; append-only audit log; secrets only in env, validated
-  at boot (the API refuses to start in production with placeholder secrets).
+Mongoose `sanitizeFilter` is deliberately **off**: it also wraps the API's own operators
+(`$gt`, `$text`, `$in`). Injection is stopped before the query layer instead.
 
 ---
 
