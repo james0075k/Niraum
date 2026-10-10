@@ -14,13 +14,29 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { api } from '@/lib/api';
+import { api, type ApiErrorBody } from '@/lib/api';
 import { newPasswordSchema, type NewPasswordValues } from '../auth/passwordRules';
 import { AuthCard } from '../components/AuthCard';
 import { PasswordInput } from '../components/PasswordInput';
 import { PasswordStrength } from '../components/PasswordStrength';
 
 const schema = newPasswordSchema(false);
+
+type ResetError = 'invalid-link' | 'rate-limited' | 'failed';
+
+const MESSAGES: Record<ResetError, string> = {
+  'invalid-link': 'This reset link is invalid or has expired. Request a new one.',
+  'rate-limited': 'Too many attempts — wait a few minutes.',
+  failed: 'Could not reset the password. Please try again.',
+};
+
+/** Backend password rule messages (Zod `flatten()` → details.fieldErrors.password). */
+function passwordFieldError(details: unknown): string | undefined {
+  const fieldErrors = (details as { fieldErrors?: Record<string, unknown> } | undefined)
+    ?.fieldErrors;
+  const list = fieldErrors?.password;
+  return Array.isArray(list) && typeof list[0] === 'string' ? list[0] : undefined;
+}
 
 const linkClass = 'text-sm font-medium text-link underline-offset-4 hover:underline';
 
@@ -29,7 +45,7 @@ export default function ResetPassword() {
   const [params] = useSearchParams();
   const token = params.get('token') ?? '';
   const navigate = useNavigate();
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<ResetError | null>(null);
   const form = useForm<NewPasswordValues>({
     resolver: zodResolver(schema),
     defaultValues: { newPassword: '', confirmPassword: '' },
@@ -43,14 +59,19 @@ export default function ResetPassword() {
       toast.success('Password updated', { description: 'Sign in with your new password.' });
       navigate('/admin/login', { replace: true });
     } catch (err) {
-      const status = isAxiosError(err) ? err.response?.status : undefined;
-      setError(
-        status === 400
-          ? 'This reset link is invalid or has expired. Request a new one.'
-          : status === 429
-            ? 'Too many attempts — wait a few minutes.'
-            : 'Could not reset the password. Please try again.',
-      );
+      const response = isAxiosError<ApiErrorBody>(err) ? err.response : undefined;
+      const body = response?.data?.error;
+      const fieldMessage = passwordFieldError(body?.details);
+      if (body?.code === 'VALIDATION_ERROR' && fieldMessage) {
+        form.setError('newPassword', { message: fieldMessage });
+      } else if (response?.status === 400) {
+        // Unknown, used or expired token (VALIDATION_ERROR "Reset link is invalid or has expired").
+        setError('invalid-link');
+      } else if (response?.status === 429) {
+        setError('rate-limited');
+      } else {
+        setError('failed');
+      }
     }
   }
 
@@ -75,8 +96,8 @@ export default function ResetPassword() {
               role="alert"
               className="rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive"
             >
-              <p>{error}</p>
-              {error.includes('expired') && (
+              <p>{MESSAGES[error]}</p>
+              {error === 'invalid-link' && (
                 <Link to="/admin/forgot-password" className={linkClass}>
                   Request a new link
                 </Link>

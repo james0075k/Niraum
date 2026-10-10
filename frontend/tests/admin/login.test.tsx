@@ -17,6 +17,7 @@ beforeEach(() => {
   apiGet.mockReset();
   apiPost.mockReset();
   toast.success.mockReset();
+  localStorage.clear();
 });
 
 async function signIn(email = 'a@b.co', password = 'whatever-password') {
@@ -110,16 +111,20 @@ describe('Login', () => {
     });
   });
 
-  it.each(['//evil.example/admin', 'https://evil.example/admin', '/en/about', '/administrator'])(
-    'ignores an unsafe next=%s and goes to /admin',
-    async (next) => {
-      apiPost.mockResolvedValueOnce(ok(editor));
-      const { router } = renderAdmin(`/admin/login?next=${encodeURIComponent(next)}`);
-      await signIn();
-      expect(await screen.findByRole('heading', { name: 'Dashboard' })).toBeInTheDocument();
-      expect(router.state.location.pathname).toBe('/admin');
-    },
-  );
+  it.each([
+    '//evil.example/admin',
+    'https://evil.example/admin',
+    '/en/about',
+    '/administrator',
+    '/admin/../en/about',
+    '/admin/%2e%2e/en/about',
+  ])('ignores an unsafe next=%s and goes to /admin', async (next) => {
+    apiPost.mockResolvedValueOnce(ok(editor));
+    const { router } = renderAdmin(`/admin/login?next=${encodeURIComponent(next)}`);
+    await signIn();
+    expect(await screen.findByRole('heading', { name: 'Dashboard' })).toBeInTheDocument();
+    expect(router.state.location.pathname).toBe('/admin');
+  });
 
   it('remembers only the email when "Remember this device" is ticked', async () => {
     apiPost.mockResolvedValueOnce(ok(editor));
@@ -240,13 +245,29 @@ describe('forgot / reset password', () => {
   });
 
   it('explains an expired reset link', async () => {
-    apiPost.mockRejectedValueOnce(axiosError(400, 'INVALID_TOKEN'));
+    // Backend: AppError.badRequest('Reset link is invalid or has expired') → VALIDATION_ERROR.
+    apiPost.mockRejectedValueOnce(axiosError(400, 'VALIDATION_ERROR'));
     renderAdmin(`/admin/reset-password?token=${'b'.repeat(64)}`);
     await user.type(await screen.findByLabelText('New password'), 'copper ridge lantern 42');
     await user.type(screen.getByLabelText('Confirm new password'), 'copper ridge lantern 42');
     await user.click(screen.getByRole('button', { name: 'Set new password' }));
     const alert = await screen.findByRole('alert');
     expect(within(alert).getByText(/link is invalid or has expired/i)).toBeInTheDocument();
+  });
+
+  it('shows a backend password rule as a field error', async () => {
+    apiPost.mockRejectedValueOnce(
+      axiosError(400, 'VALIDATION_ERROR', {
+        formErrors: [],
+        fieldErrors: { password: ['Password is too common'] },
+      }),
+    );
+    renderAdmin(`/admin/reset-password?token=${'c'.repeat(64)}`);
+    await user.type(await screen.findByLabelText('New password'), 'copper ridge lantern 42');
+    await user.type(screen.getByLabelText('Confirm new password'), 'copper ridge lantern 42');
+    await user.click(screen.getByRole('button', { name: 'Set new password' }));
+    expect(await screen.findByText('Password is too common')).toBeInTheDocument();
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 
   it('asks for a new link when the token is missing', async () => {

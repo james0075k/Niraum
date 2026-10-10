@@ -1,13 +1,18 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { PageSpinner } from '../components/PageSpinner';
 import { ReauthDialog } from '../components/ReauthDialog';
-import { ME_KEY, useMe, type AdminUser } from './useMe';
+import { lastSignedInId, ME_KEY, useMe, type AdminUser } from './useMe';
 
 const AUTH_EXPIRED_EVENT = 'niraum:auth-expired';
 const CHANGE_PASSWORD = '/admin/change-password';
+
+interface Expired {
+  email?: string | undefined;
+  id?: string | undefined;
+}
 
 /**
  * Gate for every signed-in admin route.
@@ -21,18 +26,25 @@ export function RequireAuth() {
   const qc = useQueryClient();
   const me = useMe();
   const location = useLocation();
-  // Set while the session expired under an open page; holds the last user's email.
-  const [expired, setExpired] = useState<{ email?: string | undefined } | null>(null);
+  const navigate = useNavigate();
+  // Set while the session expired under an open page; holds who was signed in.
+  const [expired, setExpired] = useState<Expired | null>(null);
 
   useEffect(() => {
     const onExpired = () => {
       const previous = qc.getQueryData<AdminUser | null>(ME_KEY);
-      setExpired({ email: previous?.email });
+      // Every request waiting on the same failed refresh fires this; keep the first snapshot.
+      setExpired((current) => current ?? { email: previous?.email, id: lastSignedInId(qc) });
       qc.setQueryData(ME_KEY, null);
     };
     window.addEventListener(AUTH_EXPIRED_EVENT, onExpired);
     return () => window.removeEventListener(AUTH_EXPIRED_EVENT, onExpired);
   }, [qc]);
+
+  const user = me.data;
+  // Signed in again by other means (another tab's login refetched ME, …) → no dialog.
+  // Adjusted during render (React's "state from props" pattern) rather than in an effect.
+  if (user && expired) setExpired(null);
 
   const path = location.pathname + location.search;
 
@@ -44,7 +56,9 @@ export function RequireAuth() {
     );
   }
 
-  if (me.isError) {
+  // Only when there is nothing to show: a failed background refetch keeps the open page
+  // (and its unsaved input) on screen with the cached user.
+  if (me.isError && me.data === undefined) {
     return (
       <div className="grid min-h-screen place-items-center bg-background p-6 text-center">
         <div className="space-y-4">
@@ -57,7 +71,6 @@ export function RequireAuth() {
     );
   }
 
-  const user = me.data;
   if (!user && !expired) {
     return <Navigate to={`/admin/login?next=${encodeURIComponent(path)}`} replace />;
   }
@@ -73,8 +86,15 @@ export function RequireAuth() {
         <ReauthDialog
           email={expired.email}
           next={path}
-          onSignedIn={() => {
+          onSignedIn={(signedIn) => {
+            const sameUser = !expired.id || expired.id === signedIn.id;
             setExpired(null);
+            if (!sameUser) {
+              // Another account: the draft belonged to the previous user (its cached data was
+              // already dropped by useLogin), so start over on the dashboard.
+              navigate('/admin', { replace: true });
+              return;
+            }
             // Requests that failed while signed out can try again now.
             void qc.invalidateQueries({ predicate: (q) => q.state.status === 'error' });
           }}

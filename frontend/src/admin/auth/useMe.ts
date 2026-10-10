@@ -2,6 +2,7 @@ import {
   useMutation,
   useQuery,
   useQueryClient,
+  type QueryClient,
   type UseMutationResult,
   type UseQueryResult,
 } from '@tanstack/react-query';
@@ -53,8 +54,42 @@ async function fetchMe(): Promise<AdminUser | null> {
   }
 }
 
+/** Last signed-in user per cache — survives ME being set to `null` when a session expires. */
+const lastUserId = new WeakMap<QueryClient, string>();
+
+const isMeKey = (key: readonly unknown[]) =>
+  key.length === 2 && key[0] === ME_KEY[0] && key[1] === ME_KEY[1];
+
+/**
+ * Stores a freshly signed-in user. When it is a different account from the last one, every
+ * other `['admin', …]` query is dropped first so no data leaks from one user to the next.
+ */
+export function setSignedInUser(qc: QueryClient, user: AdminUser) {
+  const previous = qc.getQueryData<AdminUser | null>(ME_KEY)?.id ?? lastUserId.get(qc);
+  if (previous && previous !== user.id) {
+    qc.removeQueries({ predicate: (q) => q.queryKey[0] === 'admin' && !isMeKey(q.queryKey) });
+  }
+  lastUserId.set(qc, user.id);
+  qc.setQueryData(ME_KEY, user);
+}
+
+/** The id of the last signed-in user of this cache, if any. */
+export function lastSignedInId(qc: QueryClient): string | undefined {
+  return qc.getQueryData<AdminUser | null>(ME_KEY)?.id ?? lastUserId.get(qc);
+}
+
 export function useMe(): UseQueryResult<AdminUser | null> {
-  return useQuery({ queryKey: ME_KEY, queryFn: fetchMe, retry: false, staleTime: 60_000 });
+  const qc = useQueryClient();
+  return useQuery({
+    queryKey: ME_KEY,
+    queryFn: async () => {
+      const user = await fetchMe();
+      if (user) lastUserId.set(qc, user.id);
+      return user;
+    },
+    retry: false,
+    staleTime: 60_000,
+  });
 }
 
 export function useLogin(): UseMutationResult<AdminUser, AxiosError<ApiErrorBody>, LoginInput> {
@@ -64,7 +99,7 @@ export function useLogin(): UseMutationResult<AdminUser, AxiosError<ApiErrorBody
       const res = await api.post<ApiItem<AdminUser>>('/auth/login', input);
       return res.data.data;
     },
-    onSuccess: (user) => qc.setQueryData(ME_KEY, user),
+    onSuccess: (user) => setSignedInUser(qc, user),
   });
 }
 
@@ -77,6 +112,7 @@ export function useLogout(): UseMutationResult<void, Error, void> {
     // Signed out locally even if the request failed (cookies may already be gone).
     onSettled: () => {
       qc.removeQueries({ predicate: (q) => q.queryKey[0] === 'admin' });
+      lastUserId.delete(qc);
       qc.setQueryData(ME_KEY, null);
     },
   });
