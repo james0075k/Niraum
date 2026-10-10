@@ -1,7 +1,8 @@
 import { Fragment, type ReactNode } from 'react';
 import { Link } from '@/components/common/LangLink';
 import { Parallax } from '@/components/motion/Parallax';
-import { Reveal } from '@/components/motion/Reveal';
+import { enterUp } from '@/lib/motion';
+import { cn } from '@/lib/utils';
 import { SplitText } from '@/components/motion/SplitText';
 import {
   Breadcrumb,
@@ -68,9 +69,7 @@ export function PageHero({
             ))}
           </BreadcrumbList>
         </Breadcrumb>
-        <Reveal as="p" className="eyebrow mb-4 !text-copper-light">
-          {eyebrow}
-        </Reveal>
+        <p className={cn('eyebrow mb-4 !text-copper-light', enterUp)}>{eyebrow}</p>
         <SplitText
           as="h1"
           id="page-title"
@@ -81,9 +80,12 @@ export function PageHero({
           className="max-w-4xl !text-[clamp(2.5rem,5.5vw,4.75rem)]"
         />
         {intro && (
-          <Reveal as="p" delay={0.3} className="mt-6 max-w-2xl text-lg text-silver sm:text-xl">
+          <p
+            className={cn('mt-6 max-w-2xl text-lg text-silver sm:text-xl', enterUp)}
+            style={{ animationDelay: '0.3s' }}
+          >
             {intro}
-          </Reveal>
+          </p>
         )}
         {children}
       </div>

@@ -207,12 +207,16 @@
   }
 }
 
-/* Preloader: skipped when already seen; failsafe hides it if JS never hydrates. */
+/*
+ * Preloader: skipped when already seen, on phones and under reduced motion (index.html).
+ * CSS dismisses it at 1.6 s (spec max 1.8 s) without waiting for hydration, so it never
+ * holds back the first contentful content (LCP) on slow connections.
+ */
 html.preloaded .preloader {
   display: none;
 }
 .preloader {
-  animation: preloader-failsafe 0.4s ease 3.2s forwards;
+  animation: preloader-failsafe 0.45s ease 1.6s forwards;
 }
 @keyframes preloader-failsafe {
   to {

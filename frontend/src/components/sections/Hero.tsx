@@ -3,13 +3,13 @@ import { Link } from '@/components/common/LangLink';
 import { Img } from '@/components/common/Img';
 import { MagneticButton } from '@/components/motion/MagneticButton';
 import { Parallax } from '@/components/motion/Parallax';
-import { Reveal } from '@/components/motion/Reveal';
 import { SplitText } from '@/components/motion/SplitText';
 import { Button } from '@/components/ui/button';
 import { siteImages } from '@/content/siteImages';
 import { HERO_VIDEO_URL } from '@/content/placeholders';
 import { useSettings } from '@/features/settings/useSettings';
 import { useLang, useT } from '@/hooks/useLang';
+import { enterUp } from '@/lib/motion';
 import { cn } from '@/lib/utils';
 
 /**
@@ -64,9 +64,12 @@ export function Hero() {
       <div className="copper-haze absolute inset-0 -z-10 opacity-70" />
 
       <div className="container-site">
-        <Reveal as="p" className="eyebrow mb-6 !text-copper-light" delay={0.1}>
+        <p
+          className={cn('eyebrow mb-6 !text-copper-light', enterUp)}
+          style={{ animationDelay: '0.1s' }}
+        >
           {t('hero.eyebrow')}
-        </Reveal>
+        </p>
         <SplitText
           as="h1"
           id="hero-title"
@@ -76,10 +79,16 @@ export function Hero() {
           delay={0.2}
           className="max-w-5xl !text-[clamp(2.5rem,7vw,5.5rem)]"
         />
-        <Reveal as="p" delay={0.55} className="mt-6 max-w-xl text-lg text-silver sm:text-xl">
+        <p
+          className={cn('mt-6 max-w-xl text-lg text-silver sm:text-xl', enterUp)}
+          style={{ animationDelay: '0.55s' }}
+        >
           {t('hero.sub')}
-        </Reveal>
-        <Reveal delay={0.7} className="mt-10 flex flex-wrap gap-3">
+        </p>
+        <div
+          className={cn('mt-10 flex flex-wrap gap-3', enterUp)}
+          style={{ animationDelay: '0.7s' }}
+        >
           <MagneticButton>
             <Button asChild size="lg">
               <Link to="/contact?topic=supply#inquiry">
@@ -92,7 +101,7 @@ export function Hero() {
               <Link to="/technical-data">{t('common:cta.viewTechnical')}</Link>
             </Button>
           </MagneticButton>
-        </Reveal>
+        </div>
       </div>
 
       <a

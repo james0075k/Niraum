@@ -45,9 +45,33 @@ export function SplitText({
     );
   }
 
-  const trigger = immediate
-    ? { animate: 'visible' as const }
-    : { whileInView: 'visible' as const, viewport: { once: true, margin: '0px 0px -10% 0px' } };
+  // Above-the-fold headings (immediate): CSS animation, so the prerendered text paints at
+  // first paint instead of waiting for hydration (keeps LCP close to FCP).
+  if (immediate) {
+    return (
+      <Tag id={id} className={className}>
+        {words.map((w, i) => (
+          <span key={i} className="inline-block overflow-hidden pb-[0.08em] align-bottom">
+            <span
+              className={cn(
+                'inline-block duration-700 ease-brand animate-in fade-in slide-in-from-bottom-full fill-mode-both motion-reduce:animate-none',
+                highlight.includes(i) && 'text-copper',
+              )}
+              style={{ animationDelay: `${(delay + i * 0.07).toFixed(2)}s` }}
+            >
+              {w}
+            </span>
+            {i < words.length - 1 && ' '}
+          </span>
+        ))}
+      </Tag>
+    );
+  }
+
+  const trigger = {
+    whileInView: 'visible' as const,
+    viewport: { once: true, margin: '0px 0px -10% 0px' },
+  };
 
   return (
     <Tag id={id} className={className}>

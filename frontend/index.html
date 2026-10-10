@@ -17,11 +17,12 @@
           t === 'dark' || (t === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
         document.documentElement.classList.toggle('dark', d);
       } catch (e) {}
-      // Preloader: once per session, never under reduced motion (see Preloader.tsx).
+      // Preloader: once per session, desktop only, never under reduced motion (Preloader.tsx).
       try {
         if (
           sessionStorage.getItem('niraum-preloaded') ||
-          matchMedia('(prefers-reduced-motion: reduce)').matches
+          matchMedia('(prefers-reduced-motion: reduce)').matches ||
+          matchMedia('(max-width: 767px)').matches
         )
           document.documentElement.classList.add('preloaded');
       } catch (e) {}

@@ -30,3 +30,10 @@ export const pageTransition: Variants = {
 
 export const prefersReducedMotion = () =>
   typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/**
+ * CSS fade-up for above-the-fold text (hero, page hero): paints with the prerendered HTML,
+ * no hydration wait. Pair with `style={{ animationDelay }}`.
+ */
+export const enterUp =
+  'duration-700 ease-brand animate-in fade-in slide-in-from-bottom-4 fill-mode-both motion-reduce:animate-none';

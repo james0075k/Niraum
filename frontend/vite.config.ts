@@ -144,7 +144,8 @@ export default defineConfig(({ isSsrBuild, mode }) => {
     ssgOptions: {
       script: 'async',
       formatting: 'none',
-      beastiesOptions: { preload: 'media' },
+      // Fonts are preloaded selectively in onPageRendered, not by beasties.
+      beastiesOptions: { preload: 'media', preloadFonts: false },
       dirStyle: 'nested',
       // Dynamic routes (projects/:slug, news/:slug, legal/:page) are expanded via each
       // route's getStaticPaths() (local content) plus the API's published slugs; unexpanded
@@ -165,7 +166,20 @@ export default defineConfig(({ isSsrBuild, mode }) => {
         return out;
       },
       // Embed the page's API item so the client hydrates with what was prerendered.
-      onPageRendered: (route, html) => {
+      onPageRendered: (route, rendered) => {
+        // vite-react-ssg preloads every image in the module graph (siteImages.ts / images.ts
+        // import all photos at all widths → ~28 MB per page). Images load from <img>/<picture>
+        // instead: the hero is eager + fetchpriority=high, everything else lazy.
+        // It also preloads every font file (all Manrope subsets, Mukta in woff + woff2). Keep
+        // only what the first paint needs: Manrope Latin, plus Mukta 400 on Nepali pages.
+        const keepFont = (href: string) =>
+          /manrope-latin-wght/.test(href) ||
+          (/^\/ne(\/|$)/.test(route) && /mukta-devanagari-400-normal-[^/]+\.woff2$/.test(href));
+        const html = rendered
+          .replace(/<link rel="preload" as="image"[^>]*>/g, '')
+          .replace(/<link rel="preload" as="font"[^>]*>/g, (tag) =>
+            keepFont(/href="([^"]+)"/.exec(tag)?.[1] ?? '') ? tag : '',
+          );
         const page = apiPages.get(route);
         if (!page || !apiItems[page.api]) return html;
         return html.replace(
@@ -203,6 +217,8 @@ export default defineConfig(({ isSsrBuild, mode }) => {
       globals: true,
       environment: 'jsdom',
       setupFiles: ['./tests/setup.ts'],
+      // userEvent typing in jsdom is slow when files run in parallel; 5 s was borderline.
+      testTimeout: 15_000,
       include: ['tests/**/*.test.{ts,tsx}', 'src/**/*.test.{ts,tsx}'],
       css: false,
     },
