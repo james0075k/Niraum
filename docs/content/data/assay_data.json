@@ -1,0 +1,655 @@
+{
+  "source": {
+    "report": "Mine Scheme, Katujpani Iron Deposit (proposed by Ms Niru Upreti), prepared by Shubharambha Mining and Engineering Services Pvt. Ltd., Tarkeshwor-07, Kathmandu",
+    "method": "Grab, chip and channel sampling; chemical analysis presented under DMG guidelines"
+  },
+  "units": "weight %, length in metres",
+  "summary": {
+    "deposit_weighted_average": {
+      "total_sample_thickness_m": 62.55,
+      "SiO2": 53.05,
+      "Fe": 23.48,
+      "Fe2O3": 33.59,
+      "Al2O3": 3.22,
+      "note": "Table 14, length-weighted across sections A, B, C, D and K/X/Y"
+    },
+    "grab_B_C_average": {
+      "n": 20,
+      "SiO2": 32.22,
+      "LOI": 8.95,
+      "Fe": 31.39,
+      "Fe2O3": 44.88,
+      "Al2O3": 12.82,
+      "CaO": 0.54,
+      "MgO": 0.51,
+      "note": "Table 7 simple average of grab samples; grab samples are indicative only"
+    },
+    "highest_sample_Fe": {
+      "sample": "N-2",
+      "Fe": 41.87,
+      "Fe2O3": 59.85
+    }
+  },
+  "weighted_by_section": [
+    {
+      "section": "A",
+      "thickness_m": 13.9,
+      "SiO2": 49.79,
+      "Fe": 25.63,
+      "Fe2O3": 36.63,
+      "Al2O3": 3.34
+    },
+    {
+      "section": "B",
+      "thickness_m": 10.75,
+      "SiO2": 51.04,
+      "Fe": 24.82,
+      "Fe2O3": 35.49,
+      "Al2O3": 2.25
+    },
+    {
+      "section": "C",
+      "thickness_m": 9.15,
+      "SiO2": 54.22,
+      "Fe": 22.15,
+      "Fe2O3": 31.67,
+      "Al2O3": 2.65
+    },
+    {
+      "section": "D",
+      "thickness_m": 12.35,
+      "SiO2": 55.22,
+      "Fe": 21.03,
+      "Fe2O3": 30.07,
+      "Al2O3": 2.89
+    },
+    {
+      "section": "K, X, Y",
+      "thickness_m": 16.4,
+      "SiO2": 54.84,
+      "Fe": 23.35,
+      "Fe2O3": 33.48,
+      "Al2O3": 4.34
+    }
+  ],
+  "grab_area_B_C": [
+    {
+      "sample": "N-1",
+      "SiO2": 45.68,
+      "LOI": 10.23,
+      "Fe": 20.6,
+      "Fe2O3": 29.45,
+      "Al2O3": 13.15,
+      "CaO": 0.44,
+      "MgO": 0.32
+    },
+    {
+      "sample": "N-2",
+      "SiO2": 17.42,
+      "LOI": 10.66,
+      "Fe": 41.87,
+      "Fe2O3": 59.85,
+      "Al2O3": 10.68,
+      "CaO": 0.45,
+      "MgO": 0.32
+    },
+    {
+      "sample": "N-3",
+      "SiO2": 33.52,
+      "LOI": 9.23,
+      "Fe": 29.83,
+      "Fe2O3": 42.65,
+      "Al2O3": 14.48,
+      "CaO": 0.46,
+      "MgO": 0.33
+    },
+    {
+      "sample": "N-4",
+      "SiO2": 27.16,
+      "LOI": 8.72,
+      "Fe": 33.19,
+      "Fe2O3": 47.45,
+      "Al2O3": 16.51,
+      "CaO": 0.44,
+      "MgO": 0.63
+    },
+    {
+      "sample": "N-5",
+      "SiO2": 29.89,
+      "LOI": 8.73,
+      "Fe": 32.25,
+      "Fe2O3": 46.11,
+      "Al2O3": 14.72,
+      "CaO": 0.43,
+      "MgO": 0.62
+    },
+    {
+      "sample": "N-6",
+      "SiO2": 35.65,
+      "LOI": 7.68,
+      "Fe": 29.01,
+      "Fe2O3": 41.47,
+      "Al2O3": 14.32,
+      "CaO": 0.44,
+      "MgO": 1.28
+    },
+    {
+      "sample": "N-7",
+      "SiO2": 30.06,
+      "LOI": 9.23,
+      "Fe": 32.78,
+      "Fe2O3": 46.86,
+      "Al2O3": 12.92,
+      "CaO": 0.44,
+      "MgO": 0.63
+    },
+    {
+      "sample": "N-8",
+      "SiO2": 29.31,
+      "LOI": 7.56,
+      "Fe": 33.21,
+      "Fe2O3": 47.47,
+      "Al2O3": 16.18,
+      "CaO": 0.42,
+      "MgO": 0.6
+    },
+    {
+      "sample": "N-9",
+      "SiO2": 26.73,
+      "LOI": 8.93,
+      "Fe": 32.61,
+      "Fe2O3": 46.62,
+      "Al2O3": 16.23,
+      "CaO": 0.42,
+      "MgO": 0.6
+    },
+    {
+      "sample": "N-10",
+      "SiO2": 22.55,
+      "LOI": 8.12,
+      "Fe": 39.32,
+      "Fe2O3": 56.21,
+      "Al2O3": 12.2,
+      "CaO": 0.44,
+      "MgO": 0.32
+    },
+    {
+      "sample": "N-11",
+      "SiO2": 18.44,
+      "LOI": 9.21,
+      "Fe": 29.76,
+      "Fe2O3": 42.54,
+      "Al2O3": 28.64,
+      "CaO": 0.46,
+      "MgO": 0.33
+    },
+    {
+      "sample": "N-12",
+      "SiO2": 24.7,
+      "LOI": 10.02,
+      "Fe": 34.96,
+      "Fe2O3": 49.97,
+      "Al2O3": 13.78,
+      "CaO": 0.44,
+      "MgO": 0.63
+    },
+    {
+      "sample": "MN-1",
+      "SiO2": 55.01,
+      "LOI": 9.25,
+      "Fe": 21.96,
+      "Fe2O3": 31.39,
+      "Al2O3": 2.52,
+      "CaO": 0.45,
+      "MgO": 0.32
+    },
+    {
+      "sample": "MN-2",
+      "SiO2": 47.23,
+      "LOI": 9.12,
+      "Fe": 25.48,
+      "Fe2O3": 36.43,
+      "Al2O3": 4.72,
+      "CaO": 2.35,
+      "MgO": 0.34
+    },
+    {
+      "sample": "MN-3",
+      "SiO2": 52.84,
+      "LOI": 9.17,
+      "Fe": 22.04,
+      "Fe2O3": 31.5,
+      "Al2O3": 4.41,
+      "CaO": 0.46,
+      "MgO": 0.66
+    },
+    {
+      "sample": "MN-4",
+      "SiO2": 35.32,
+      "LOI": 8.21,
+      "Fe": 37.04,
+      "Fe2O3": 52.96,
+      "Al2O3": 3.38,
+      "CaO": 0.45,
+      "MgO": 0.33
+    },
+    {
+      "sample": "MN-5",
+      "SiO2": 23.24,
+      "LOI": 8.61,
+      "Fe": 30.28,
+      "Fe2O3": 43.28,
+      "Al2O3": 23.16,
+      "CaO": 0.46,
+      "MgO": 0.66
+    },
+    {
+      "sample": "MN-6",
+      "SiO2": 40.23,
+      "LOI": 10.02,
+      "Fe": 27.49,
+      "Fe2O3": 39.31,
+      "Al2O3": 8.91,
+      "CaO": 0.45,
+      "MgO": 0.33
+    },
+    {
+      "sample": "MN-7",
+      "SiO2": 24.75,
+      "LOI": 6.97,
+      "Fe": 41.32,
+      "Fe2O3": 59.07,
+      "Al2O3": 8.05,
+      "CaO": 0.46,
+      "MgO": 0.66
+    },
+    {
+      "sample": "MN-8",
+      "SiO2": 24.75,
+      "LOI": 9.24,
+      "Fe": 32.85,
+      "Fe2O3": 46.97,
+      "Al2O3": 17.43,
+      "CaO": 0.44,
+      "MgO": 0.32
+    }
+  ],
+  "grab_area_A_quarry": [
+    {
+      "sample": "DM-1",
+      "SiO2": 53.41,
+      "LOI": 13.69,
+      "Fe": 16.31,
+      "Fe2O3": 23.32,
+      "Al2O3": 8.85
+    },
+    {
+      "sample": "DM-2",
+      "SiO2": 45.31,
+      "LOI": 10.08,
+      "Fe": 29.77,
+      "Fe2O3": 42.57,
+      "Al2O3": 0.65
+    },
+    {
+      "sample": "DM-3",
+      "SiO2": 50.6,
+      "LOI": 12.57,
+      "Fe": 19.9,
+      "Fe2O3": 28.45,
+      "Al2O3": 7.7
+    },
+    {
+      "sample": "DM-4",
+      "SiO2": 47.36,
+      "LOI": 13.69,
+      "Fe": 18.19,
+      "Fe2O3": 26.0,
+      "Al2O3": 11.42
+    },
+    {
+      "sample": "DM-5",
+      "SiO2": 50.92,
+      "LOI": 13.19,
+      "Fe": 19.41,
+      "Fe2O3": 27.75,
+      "Al2O3": 6.22
+    },
+    {
+      "sample": "DM-6",
+      "SiO2": 50.88,
+      "LOI": 10.46,
+      "Fe": 26.62,
+      "Fe2O3": 38.06,
+      "Al2O3": 0.39
+    },
+    {
+      "sample": "DM-7",
+      "SiO2": 49.1,
+      "LOI": 9.51,
+      "Fe": 26.37,
+      "Fe2O3": 37.7,
+      "Al2O3": 2.16
+    },
+    {
+      "sample": "DM-8",
+      "SiO2": 49.93,
+      "LOI": 11.57,
+      "Fe": 23.99,
+      "Fe2O3": 34.29,
+      "Al2O3": 3.78
+    },
+    {
+      "sample": "DM-9",
+      "SiO2": 38.82,
+      "LOI": 10.38,
+      "Fe": 33.18,
+      "Fe2O3": 47.44,
+      "Al2O3": 3.27
+    }
+  ],
+  "channel_section_B": [
+    {
+      "sample": "CH-B-1",
+      "SiO2": 41.95,
+      "LOI": 8.94,
+      "Fe": 31.96,
+      "Fe2O3": 45.69,
+      "Al2O3": 3.05,
+      "length_m": 0.6
+    },
+    {
+      "sample": "CH-B-2",
+      "SiO2": 50.62,
+      "LOI": 10.12,
+      "Fe": 25.58,
+      "Fe2O3": 36.57,
+      "Al2O3": 2.62,
+      "length_m": 0.9
+    },
+    {
+      "sample": "CH-B-3",
+      "SiO2": 48.95,
+      "LOI": 10.02,
+      "Fe": 26.26,
+      "Fe2O3": 37.54,
+      "Al2O3": 3.26,
+      "length_m": 1.0
+    },
+    {
+      "sample": "CH-B-4",
+      "SiO2": 44.44,
+      "LOI": 9.07,
+      "Fe": 30.64,
+      "Fe2O3": 43.8,
+      "Al2O3": 2.36,
+      "length_m": 0.8
+    },
+    {
+      "sample": "CH-B-5",
+      "SiO2": 55.4,
+      "LOI": 10.84,
+      "Fe": 21.79,
+      "Fe2O3": 31.16,
+      "Al2O3": 1.99,
+      "length_m": 0.85
+    },
+    {
+      "sample": "CH-B-6",
+      "SiO2": 40.78,
+      "LOI": 11.2,
+      "Fe": 30.47,
+      "Fe2O3": 43.56,
+      "Al2O3": 3.26,
+      "length_m": 0.6
+    },
+    {
+      "sample": "CH-B-7",
+      "SiO2": 37.14,
+      "LOI": 9.67,
+      "Fe": 35.01,
+      "Fe2O3": 50.05,
+      "Al2O3": 1.44,
+      "length_m": 1.2
+    },
+    {
+      "sample": "CH-B-8",
+      "SiO2": 71.68,
+      "LOI": 12.12,
+      "Fe": 9.28,
+      "Fe2O3": 13.27,
+      "Al2O3": 2.31,
+      "length_m": 1.1
+    },
+    {
+      "sample": "CH-B-9",
+      "SiO2": 50.95,
+      "LOI": 10.79,
+      "Fe": 26.21,
+      "Fe2O3": 37.47,
+      "Al2O3": 0.61,
+      "length_m": 0.5
+    },
+    {
+      "sample": "CH-B-10",
+      "SiO2": 47.81,
+      "LOI": 10.09,
+      "Fe": 26.89,
+      "Fe2O3": 38.44,
+      "Al2O3": 1.74,
+      "length_m": 1.2
+    },
+    {
+      "sample": "CH-B-11",
+      "SiO2": 55.92,
+      "LOI": 10.49,
+      "Fe": 21.33,
+      "Fe2O3": 30.49,
+      "Al2O3": 1.32,
+      "length_m": 1.0
+    },
+    {
+      "sample": "CH-B-12",
+      "SiO2": 59.67,
+      "LOI": 10.55,
+      "Fe": 18.16,
+      "Fe2O3": 25.96,
+      "Al2O3": 3.18,
+      "length_m": 1.0
+    }
+  ],
+  "channel_section_C": [
+    {
+      "sample": "CH-C-1",
+      "SiO2": 57.85,
+      "LOI": 10.67,
+      "Fe": 19.78,
+      "Fe2O3": 28.27,
+      "Al2O3": 2.01,
+      "length_m": 1.5
+    },
+    {
+      "sample": "CH-C-2",
+      "SiO2": 50.13,
+      "LOI": 10.1,
+      "Fe": 26.14,
+      "Fe2O3": 37.37,
+      "Al2O3": 0.97,
+      "length_m": 1.0
+    },
+    {
+      "sample": "CH-C-3",
+      "SiO2": 43.24,
+      "LOI": 8.45,
+      "Fe": 31.25,
+      "Fe2O3": 44.67,
+      "Al2O3": 1.99,
+      "length_m": 0.5
+    },
+    {
+      "sample": "CH-C-4",
+      "SiO2": 45.29,
+      "LOI": 8.27,
+      "Fe": 30.16,
+      "Fe2O3": 43.12,
+      "Al2O3": 2.18,
+      "length_m": 0.4
+    },
+    {
+      "sample": "CH-C-5",
+      "SiO2": 50.59,
+      "LOI": 9.77,
+      "Fe": 25.22,
+      "Fe2O3": 36.06,
+      "Al2O3": 2.39,
+      "length_m": 0.75
+    },
+    {
+      "sample": "CH-C-6",
+      "SiO2": 52.11,
+      "LOI": 9.91,
+      "Fe": 24.17,
+      "Fe2O3": 34.56,
+      "Al2O3": 2.52,
+      "length_m": 0.9
+    },
+    {
+      "sample": "CH-C-7",
+      "SiO2": 51.4,
+      "LOI": 9.99,
+      "Fe": 24.72,
+      "Fe2O3": 35.34,
+      "Al2O3": 3.18,
+      "length_m": 1.2
+    },
+    {
+      "sample": "CH-C-8",
+      "SiO2": 51.81,
+      "LOI": 10.32,
+      "Fe": 22.27,
+      "Fe2O3": 31.84,
+      "Al2O3": 5.06,
+      "length_m": 0.7
+    }
+  ],
+  "channel_section_KXY": [
+    {
+      "sample": "CPK-1",
+      "SiO2": 48.61,
+      "Fe": 26.7,
+      "Fe2O3": 38.16,
+      "Al2O3": 6.54,
+      "length_m": 1.2
+    },
+    {
+      "sample": "CPK-2",
+      "SiO2": 61.7,
+      "Fe": 18.19,
+      "Fe2O3": 26.01,
+      "Al2O3": 5.12,
+      "length_m": 1.0
+    },
+    {
+      "sample": "CPK-3",
+      "SiO2": 72.48,
+      "Fe": 12.16,
+      "Fe2O3": 17.39,
+      "Al2O3": 3.45,
+      "length_m": 1.1
+    },
+    {
+      "sample": "CPK-4",
+      "SiO2": 72.12,
+      "Fe": 10.04,
+      "Fe2O3": 14.36,
+      "Al2O3": 7.38,
+      "length_m": 1.0
+    },
+    {
+      "sample": "CPK-5",
+      "SiO2": 48.53,
+      "Fe": 27.39,
+      "Fe2O3": 39.16,
+      "Al2O3": 2.66,
+      "length_m": 1.5
+    },
+    {
+      "sample": "CPX-1",
+      "SiO2": 52.8,
+      "Fe": 19.85,
+      "Fe2O3": 28.38,
+      "Al2O3": 4.11,
+      "length_m": 1.3
+    },
+    {
+      "sample": "CPX-2",
+      "SiO2": 44.1,
+      "Fe": 30.81,
+      "Fe2O3": 45.48,
+      "Al2O3": 1.32,
+      "length_m": 1.3
+    },
+    {
+      "sample": "CPX-3",
+      "SiO2": 51.23,
+      "Fe": 27.17,
+      "Fe2O3": 38.85,
+      "Al2O3": 2.52,
+      "length_m": 1.0
+    },
+    {
+      "sample": "CPX-4",
+      "SiO2": 51.02,
+      "Fe": 21.47,
+      "Fe2O3": 30.69,
+      "Al2O3": 3.86,
+      "length_m": 0.9
+    },
+    {
+      "sample": "CPY-1",
+      "SiO2": 49.84,
+      "Fe": 31.2,
+      "Fe2O3": 44.07,
+      "Al2O3": 4.04,
+      "length_m": 0.7
+    },
+    {
+      "sample": "CPY-2",
+      "SiO2": 39.56,
+      "Fe": 35.82,
+      "Fe2O3": 51.21,
+      "Al2O3": 3.82,
+      "length_m": 1.5
+    },
+    {
+      "sample": "CPY-3",
+      "SiO2": 79.8,
+      "Fe": 8.15,
+      "Fe2O3": 11.65,
+      "Al2O3": 5.88,
+      "length_m": 1.1
+    },
+    {
+      "sample": "CPY-4",
+      "SiO2": 58.94,
+      "Fe": 22.19,
+      "Fe2O3": 31.72,
+      "Al2O3": 4.72,
+      "length_m": 2.0
+    },
+    {
+      "sample": "CPY-5",
+      "SiO2": 39.62,
+      "Fe": 33.75,
+      "Fe2O3": 48.24,
+      "Al2O3": 6.82,
+      "length_m": 0.8
+    }
+  ],
+  "notes": [
+    "Sections A and D detailed sample sheets were not in the supplied pages; only their weighted grades (Table 14) are included.",
+    "DM-9 Fe and Al2O3 partly hidden by a stamp in the scan: Fe derived from Fe2O3 (47.44/1.4297); Al2O3 3.27 is a best reading \u2014 verify with the consultant.",
+    "Section C: only samples CH-C-1 to CH-C-8 (6.95 m) were visible in the supplied pages; the report's Table 14 uses 9.15 m, so further rows exist. Use Table 14 values for Section C on the website."
+  ],
+  "verification": "Table 7 averages, Section B, Section K/X/Y and the deposit weighted average were recomputed from the transcribed rows and match the report."
+}

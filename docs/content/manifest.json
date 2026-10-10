@@ -1,0 +1,152 @@
+[
+  {
+    "file": "maps/Location_Map_Katujpani_Satellite.png",
+    "section": "Project / Location section",
+    "size": "1912x994",
+    "source_page": 1
+  },
+  {
+    "file": "maps/Geology_Map_Regional_Lease_Area.png",
+    "section": "Geology & Resource section",
+    "size": "1558x1106",
+    "source_page": 2
+  },
+  {
+    "file": "maps/Geology_Map_Legend.png",
+    "section": "Geology & Resource section (legend under map)",
+    "size": "884x348",
+    "source_page": 2
+  },
+  {
+    "file": "maps/Lease_Map_Deposit_Areas_A_B_C.png",
+    "section": "Project / Lease Area section",
+    "size": "1676x1192",
+    "source_page": 3
+  },
+  {
+    "file": "maps/Location_Map_Katujpani_Topo_Sheet.png",
+    "section": "Project / Location section (topo map)",
+    "size": "1740x878",
+    "source_page": 13
+  },
+  {
+    "file": "tables/Assay_Table7_Grab_Samples_B_C.png",
+    "section": "Technical Data (reference image; rebuild as HTML table)",
+    "size": "1332x1132",
+    "source_page": 4
+  },
+  {
+    "file": "tables/Assay_Table10_Channel_Section_B.png",
+    "section": "Technical Data (reference image; rebuild as HTML table)",
+    "size": "1328x840",
+    "source_page": 5
+  },
+  {
+    "file": "tables/Assay_Table14_Weighted_Average.png",
+    "section": "Technical Data (reference image; rebuild as HTML table)",
+    "size": "1378x596",
+    "source_page": 6
+  },
+  {
+    "file": "photos/Product_Hematite_Ore_Closeup.png",
+    "section": "Products / Hematite Ore card",
+    "size": "1104x844",
+    "source_page": 8
+  },
+  {
+    "file": "photos/Hero_Banner_Hematite_Slope_Katujpani.png",
+    "section": "Home Hero (desktop+mobile) / About banner",
+    "size": "1116x836",
+    "source_page": 8
+  },
+  {
+    "file": "photos/Gallery_Hematite_Boulder_SW_Slope.png",
+    "section": "Project Gallery",
+    "size": "676x652",
+    "source_page": 7
+  },
+  {
+    "file": "photos/Gallery_Hematite_Specimen_Detail.png",
+    "section": "Project Gallery / Products",
+    "size": "744x672",
+    "source_page": 7
+  },
+  {
+    "file": "photos/Lab_Assay_Channel_Chip_Samples.png",
+    "section": "Technical Data / Quality Assurance",
+    "size": "894x894",
+    "source_page": 7
+  },
+  {
+    "file": "photos/Texture_Weathered_Hematite.png",
+    "section": "Section background texture / Products",
+    "size": "720x724",
+    "source_page": 9
+  },
+  {
+    "file": "photos/Sustainability_Southern_Slope_Vegetation.png",
+    "section": "Sustainability & Environment",
+    "size": "1232x908",
+    "source_page": 9
+  },
+  {
+    "file": "photos/Field_Survey_Bed_Measurement.png",
+    "section": "Operations / Exploration step",
+    "size": "944x946",
+    "source_page": 10
+  },
+  {
+    "file": "photos/Field_Survey_Benchmark_Marker.png",
+    "section": "Operations / Survey step",
+    "size": "744x654",
+    "source_page": 10
+  },
+  {
+    "file": "photos/Sustainability_Topsoil_Vegetation.png",
+    "section": "Sustainability & Environment",
+    "size": "732x730",
+    "source_page": 11
+  },
+  {
+    "file": "photos/Gallery_Hematite_Boulder_Forest.png",
+    "section": "Project Gallery",
+    "size": "642x850",
+    "source_page": 11
+  },
+  {
+    "file": "photos/Field_Sampling_Team.png",
+    "section": "Operations / Team & Safety",
+    "size": "668x670",
+    "source_page": 12
+  },
+  {
+    "file": "photos/Field_Sampling_Channel_Safety.png",
+    "section": "Safety section",
+    "size": "668x672",
+    "source_page": 12
+  },
+  {
+    "file": "photos/Channel_Sample_Line.png",
+    "section": "Technical Data / Sampling method",
+    "size": "630x632",
+    "source_page": 12
+  },
+  {
+    "file": "photos/Channel_Sample_CH-B-1.png",
+    "section": "Technical Data / Sampling method",
+    "size": "628x664",
+    "source_page": 12
+  },
+  {
+    "file": "brand/Brand_Logo_Full.png",
+    "section": "Navbar / Footer / Preloader",
+    "size": "1568x1944",
+    "source_page": 15
+  },
+  {
+    "file": "brand/Brand_Logo_Emblem.png",
+    "section": "Favicon / Preloader / Map marker",
+    "size": "906x1372",
+    "source_page": 15
+  }
+]

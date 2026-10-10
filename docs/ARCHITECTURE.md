@@ -1,6 +1,7 @@
 # Niraum Metals — Architecture
 
-> Status: **v0.1 skeleton** · Owner: engineering · Last updated: 2026-10-08
+> Status: **v0.1 skeleton** · Owner: engineering · Last updated: 2026-10-10 (§13 adds the
+> planned Phase 4.5 changes: real content, bilingual EN/NE, bulk inquiries, assay data)
 >
 > This document describes how the Niraum Metals website and admin CMS are built and how a request
 > moves through the system. Decisions that were contested or are hard to reverse are recorded as
@@ -579,7 +580,109 @@ by a pre-release check (`grep PLACEHOLDER dist/`) before go-live.
 ## 12. Open questions
 
 1. Hosting targets for the static site and the API (drives `deploy-*.yml` and the rebuild hook).
-2. Is Nepali (ने) localisation required at launch? (Affects routing: `/ne/...` + `hreflang`.)
+2. ~~Is Nepali (ने) localisation required at launch?~~ **Yes** — Phase 4.5 adds `/en` + `/ne`
+   path-prefix routing with `hreflang` (see §13).
 3. Newsletter: own double-opt-in list (current plan) or an external provider?
 4. Retention period for contact messages and job applications (privacy notice).
 5. Production email: company SMTP or a transactional provider (Resend is the fallback option).
+
+---
+
+## 13. Phase 4.5 additions (planned — real content, bilingual, inquiries)
+
+> Source: `docs/content/PHASE_4.5_CONTENT_INTEGRATION_PROMPT.md` and the incoming architecture
+> v2.0 (10 Oct 2026). Nothing here is built yet. Everything above stays valid; these are
+> additive changes. Where the incoming v2.0 described the existing system differently, the code
+> (and the sections above) win — see SKILLS.md §8.
+
+### 13.1 Context change
+
+The business focus narrows to one asset, the **Katujpani Iron Deposit** (Bakaiya-09,
+Makawanpur), and one product, **industrial hematite iron ore** for cement plants (iron
+corrective) plus evaluation lots for foundry/metallurgical buyers. Primary goal: bulk supply
+inquiries, then investor credibility. Content and numbers come only from
+`docs/content/NIRAUM_MASTER_BLUEPRINT.md` and `docs/content/data/assay_data.json`.
+
+### 13.2 Frontend
+
+- **i18n:** react-i18next + language detector; namespaces per page; `en` + `ne` JSON in
+  `src/locales/`, missing `ne` keys fall back to `en`. Public routes move under
+  `/:lang(en|ne)/*`; `/` redirects by saved or browser language; existing unprefixed URLs keep
+  working (redirect). `<html lang>` and the font switch (Manrope / Mukta for Devanagari) follow
+  the language. `/admin` stays English-only.
+- **Pages:** Our Project (Katujpani — replaces Projects as the main entry; `/projects` routes
+  keep working), Products, Technical Data, Investors. Home, About and Contact get the blueprint
+  copy.
+- **Components:** `LanguageToggle`, `InquiryForm`, `AssaySummaryTable`, `AssaySampleTable`,
+  `FeBySectionChart` (Recharts with a table fallback), `MapGallery` (tabbed maps + lightbox),
+  `FounderCard`, `DataOriginNote`.
+- **SEO:** per-language meta, canonical, `hreflang` (en, ne, x-default), JSON-LD Organization,
+  LocalBusiness and Product; both language trees prerendered by `vite-react-ssg`; the sitemap
+  lists both.
+- **Assets:** report imagery in `src/assets/site/{photos,maps,brand}` (WebP) through the existing
+  `?picture` imagetools pipeline (AVIF/WebP/JPEG at several widths). Originals live in
+  `/design-assets` (not shipped).
+- **Data:** new hooks follow the existing pattern — `features/<x>/use*.ts` on
+  `useContentList` / `useContentItem`, with a local fallback built from the same assay JSON, so
+  the stats strip and tables are prerendered and never hard-coded.
+
+### 13.3 Data model changes
+
+| Model                                                                 | Change    | Key fields                                                                                                                                                |
+| --------------------------------------------------------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| SiteSettings                                                          | changed   | motto, footer.about → LocalizedString; **new** `publicAssayDetail` (default false), `defaultLanguage`                                                     |
+| Project, Post, Service, Job                                           | changed   | user-facing text → LocalizedString                                                                                                                        |
+| TeamMember                                                            | changed   | role, bio → LocalizedString; **new** `isFounder`, `otherVentures[]`                                                                                       |
+| User, Message, Application, Media, AuditLog, Subscriber, GeocodeCache | unchanged | —                                                                                                                                                         |
+| **Product**                                                           | new       | name, slug, chemicalFormula, summary, applications[], typicalChemistry[], sizes, minOrder, packing, image, published                                      |
+| **Deposit**                                                           | new       | location (district, municipality, ward, province, topoSheet, easting, northing, spotHeightM, lat?, lng?), areas, land, geologySummary, consultant, status |
+| **AssaySample**                                                       | new       | sample, dataset (grab_B_C, grab_A, channel_B, channel_C, channel_KXY), SiO2, LOI?, Fe, Fe2O3, Al2O3, CaO?, MgO?, lengthM?                                 |
+| **AssaySummary**                                                      | new       | section, thicknessM, SiO2, Fe, Fe2O3, Al2O3 (+ overall row)                                                                                               |
+| **Inquiry**                                                           | new       | companyName, contactName, email, phone, buyerType, quantity + unit, deliveryLocation, specRequirement, message, lang, status, sourcePage, ip, userAgent   |
+
+`LocalizedString = { en: string; ne?: string }` (Mongoose sub-schema). Public endpoints resolve it
+with `?lang=` (fallback `en`), so their response shapes stay the same; admin endpoints return
+both. A new idempotent migration (`backend/src/migrations/2026-10-localize-fields.ts`, `migrate`
+script) wraps existing strings as `{ en }`.
+
+### 13.4 API additions (`/api/v1`)
+
+| Method     | Path                                                   | Access                                    |
+| ---------- | ------------------------------------------------------ | ----------------------------------------- |
+| GET        | `/products`, `/products/:slug`                         | public                                    |
+| GET        | `/deposits/:slug`                                      | public                                    |
+| GET        | `/assay/summary`                                       | public                                    |
+| GET        | `/assay/samples?dataset=`                              | public if `publicAssayDetail`, else admin |
+| POST       | `/inquiries`                                           | public (captcha, honeypot, 5/hour/IP)     |
+| GET, PATCH | `/admin/inquiries`, `/admin/inquiries/:id`, CSV export | admin                                     |
+| CRUD       | `/admin/products`, `/admin/deposits`, `/admin/assay`   | admin/editor (Phase 5 UI)                 |
+
+Implementation follows §5: Zod schemas in `validators/`, services take an `Actor` and audit
+writes, existing middleware (`auth.ts`, `rateLimits.ts`, `originCheck.ts`) — no separate
+`validate` middleware.
+
+### 13.5 Inquiry flow (primary business goal)
+
+1. Visitor submits the Bulk Supply Inquiry (any page CTA or the Contact tab).
+2. API validates (Zod), checks captcha + honeypot + rate limit, stores `Inquiry` (status `new`).
+3. Email to `CONTACT_INBOX` (+ optional `INQUIRY_CC`) and an auto-reply in the visitor's language.
+4. Admin moves it through `contacted → quoted → won / lost` (or `spam`); CSV export for follow-up.
+
+### 13.6 Seed
+
+`seed/assay.seed.ts` loads `docs/content/data/assay_data.json`; a unit test recomputes the
+length-weighted averages (Fe 23.48 / Fe₂O₃ 33.59 / SiO₂ 53.05, ±0.02). Seeds also create the
+Katujpani Deposit, the hematite Product and the Founder. Mine lat/lng stays empty until WGS-84
+coordinates are confirmed (the report uses a local grid).
+
+### 13.7 Decisions to record as ADRs
+
+| Proposed ADR | Decision                               | Reason                                                                        |
+| ------------ | -------------------------------------- | ----------------------------------------------------------------------------- |
+| 0005         | Keep Manrope; add Mukta for Nepali     | Manrope already shipped and fits the same industrial style as the suggestions |
+| 0006         | Path-prefix i18n (`/en`, `/ne`)        | Best for SEO and prerendering vs. query/cookie switching                      |
+| 0007         | LocalizedString sub-schema + migration | Additive; existing content preserved as `en`                                  |
+| 0008         | Assay data as models, not images       | Searchable, sortable, chartable, accessible; scans kept only as reference     |
+| 0009         | Mine pin waits for WGS-84 coordinates  | Guessing a grid conversion risks a wrong public location                      |
+
+The incoming v2.0 numbered these 0007–0011; renumbered here to follow the existing 0001–0004.

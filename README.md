@@ -3,22 +3,28 @@
 **Strength Forged For Generations** — website and content management system for
 **Niraum Metals Pvt. Ltd.**, Lalitpur-13, Nepal (iron ore, metal minerals, stone and aggregate).
 
+Phase 4.5 refocuses the site on the **Katujpani Iron Deposit** (Bakaiya-09, Makawanpur):
+bilingual (English / नेपाली), bulk iron ore supply inquiries from cement plants, metal buyers and
+traders, and verified technical data for investors. Content source of truth:
+[`docs/content/NIRAUM_MASTER_BLUEPRINT.md`](docs/content/NIRAUM_MASTER_BLUEPRINT.md).
+
 > Status: **public website + backend API built (Phases 3–4 done)**. The REST API serves
 > settings, content, forms, media and admin auth; the admin panel (Phase 5) comes next.
 > Detailed tracker: [SKILLS.md](SKILLS.md).
 
 ## Progress
 
-| Phase                      | Status                                                      |
-| -------------------------- | ----------------------------------------------------------- |
-| 1 — Design (Google Stitch) | 🟡 Partial — Home page only (dark, desktop); see note below |
-| 2 — Architecture           | ✅ Done                                                     |
-| 3 — Frontend (public site) | ✅ Done                                                     |
-| 4 — Backend API            | ✅ Done                                                     |
-| 5 — Admin panel            | ⬜ Next                                                     |
-| 6 — Security hardening     | ⬜ To do                                                    |
-| 7 — CI/CD + deploy         | ⬜ To do                                                    |
-| 8 — Docs + final QA        | ⬜ To do                                                    |
+| Phase                                | Status                                                              |
+| ------------------------------------ | ------------------------------------------------------------------- |
+| 1 — Design (Google Stitch)           | 🟡 Partial — Home page only (dark, desktop); see note below         |
+| 2 — Architecture                     | ✅ Done                                                             |
+| 3 — Frontend (public site)           | ✅ Done                                                             |
+| 4 — Backend API                      | ✅ Done                                                             |
+| 4.5 — Real content, EN/NE, inquiries | 🟡 In progress — content, data and assets in repo; code not started |
+| 5 — Admin panel                      | ⬜ Next                                                             |
+| 6 — Security hardening               | ⬜ To do                                                            |
+| 7 — CI/CD + deploy                   | ⬜ To do                                                            |
+| 8 — Docs + final QA                  | ⬜ To do                                                            |
 
 Phase 1 note: the Stitch export (`code.html`, `screen.png`, `DESIGN.md`) covers the Home page
 only. The build follows the Brand Brief where Stitch differed (Manrope instead of Domine, exact
@@ -68,6 +74,17 @@ brand hex values, no invented facts).
 - [x] Turnstile captcha widget on the contact and job-application forms
 - [x] Build prerenders admin-published projects, articles and jobs (from `/seo/sitemap-data`)
 
+### Phase 4.5 — real content, bilingual, inquiries
+
+Prompt: [`docs/content/PHASE_4.5_CONTENT_INTEGRATION_PROMPT.md`](docs/content/PHASE_4.5_CONTENT_INTEGRATION_PROMPT.md).
+
+- [x] Master blueprint, assay data (JSON + CSV), report images and logos added to the repo
+- [ ] Real imagery + logo on the site, favicons regenerated
+- [ ] English / नेपाली (`/en`, `/ne`, hreflang, Mukta) + LocalizedString migration
+- [ ] Product, Deposit, AssaySample, AssaySummary, Inquiry models, API and seeds
+- [ ] Our Project, Products, Technical Data, Investors pages; Bulk Supply Inquiry form
+- [ ] Tests (assay averages, i18n, inquiry, migration) + Lighthouse ≥ 90 on `/en` and `/ne`
+
 ### Waiting on Niraum Metals
 
 - [ ] Official logo files (site shows a text wordmark and a temporary "N" favicon)
@@ -75,6 +92,10 @@ brand hex values, no invented facts).
 - [ ] Founding year, licences, registration numbers, leadership, real projects and figures
 - [ ] Hero video and more site photography
 - [ ] Legal review of the Privacy, Terms and Cookie pages
+- [ ] Phase 4.5 confirm list: one legal name, Katujpani lease holder and credit, public phone,
+      WGS-84 mine pin, land figures, product sizes/minimum order/delivery, permission to publish
+      sample-level assay data, consent for people in field photos, original photos + founder
+      portrait, EIA/IEE commitments, Nepali review
 
 Every unknown is shown on the site as `[PLACEHOLDER: …]`; full list in SKILLS.md §11.
 
@@ -132,6 +153,19 @@ Other commands: `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm test:e2e`,
 - **Page looks outdated after installing packages** — stop the dev server, start it again and
   hard-reload the browser (Ctrl+Shift+R).
 
+## Content and data
+
+- All copy and numbers come from `docs/content/NIRAUM_MASTER_BLUEPRINT.md`; image placement is in
+  `docs/content/manifest.json`.
+- Assay data: `docs/content/data/assay_data.json` (+ CSV copies). Phase 4.5 seeds it into
+  `AssaySample` / `AssaySummary`, and a unit test re-checks the weighted averages
+  (Fe 23.48 % · Fe₂O₃ 33.59 % · SiO₂ 53.05 %).
+- Data credit: Shubharambha Mining and Engineering Services Pvt. Ltd., mine scheme under DMG
+  guidelines. Figures are indicative of the sampled zones, not a JORC/NI 43-101 reserve statement.
+- Never describe the ore as "high-grade".
+- Site imagery (WebP) is in `frontend/src/assets/site/{photos,maps,brand}`; high-quality JPG
+  originals and report table scans are in `design-assets/` (not shipped).
+
 ## Pages
 
 Home · About · Operations · Projects (filters) · Project detail (facts, gallery, map) ·
@@ -144,9 +178,11 @@ scroll-reveal, pinned project gallery, reduced-motion support, sitemap and JSON-
 ```
 frontend/   React app — public site (prerendered) + /admin CMS
 backend/    Express REST API (/api/v1)
-docs/       ARCHITECTURE · API · SECURITY · DEPLOYMENT · adr/
+docs/       ARCHITECTURE · API · SECURITY · DEPLOYMENT · adr/ · content/ (blueprint + assay data)
+design-assets/  high-quality image originals + report table scans (not shipped)
 .github/    CI and deploy workflows
 SKILLS.md   progress tracker + playbook (status, recipes, brand tokens, placeholders)
+CLAUDE.md   rules for AI coding sessions (read SKILLS.md first, facts from the blueprint only)
 ```
 
 ## Documentation
@@ -160,12 +196,14 @@ SKILLS.md   progress tracker + playbook (status, recipes, brand tokens, placehol
 
 Charcoal `#2B2F36` · Graphite `#14171C` · Copper `#B8754A` · Copper light `#DDA27C` ·
 Copper deep `#8A5236` · Silver `#C9CDD3` · Off-white `#F6F4F1` · Rule `#C27A44`.
-Typeface: Manrope. Logo: supplied files only — never redrawn or recoloured.
+Typeface: Manrope (Mukta for Nepali from Phase 4.5). Logo: supplied files only
+(`frontend/src/assets/site/brand/`) — never redrawn or recoloured.
 
 Unknown company facts (founding year, licences, site names, tonnage, staff count, contact
 details, social links, registration numbers) are kept as visible `[PLACEHOLDER: …]` values
 until confirmed — see ARCHITECTURE.md §11 and SKILLS.md §11. Demo projects and articles carry a
-"Sample" badge. The site photos are Niraum's own field photographs (`Assets/`).
+"Sample" badge. The site photos are Niraum's own field photographs (`Assets/`). Report photos, maps and data:
+© Niraum Metals / Shubharambha Mining and Engineering Services, used with permission.
 
 ## Licence
 
