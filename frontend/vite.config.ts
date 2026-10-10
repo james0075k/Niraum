@@ -183,14 +183,31 @@ export default defineConfig(({ isSsrBuild, mode }) => {
         // import all photos at all widths → ~28 MB per page). Images load from <img>/<picture>
         // instead: the hero is eager + fetchpriority=high, everything else lazy.
         // It also preloads every font file (all Manrope subsets, Mukta in woff + woff2). Keep
-        // only what the first paint needs: Manrope Latin, plus Mukta 400 on Nepali pages.
+        // only what the first paint needs: Manrope Latin, plus Mukta 400 + 700 on Nepali pages
+        // (without the 700 preload, headings swap fonts late on slow networks — CLS).
+        const preloads: string[] = [];
         const keepFont = (href: string) =>
           /manrope-latin-wght/.test(href) ||
-          (/^\/ne(\/|$)/.test(route) && /mukta-devanagari-400-normal-[^/]+\.woff2$/.test(href));
+          (/^\/ne(\/|$)/.test(route) &&
+            /mukta-devanagari-(400|700)-normal-[^/]+\.woff2$/.test(href));
         const html = rendered
           .replace(/<link rel="preload" as="image"[^>]*>/g, '')
           .replace(/<link rel="preload" as="font"[^>]*>/g, (tag) =>
             keepFont(/href="([^"]+)"/.exec(tag)?.[1] ?? '') ? tag : '',
+          )
+          // The prerendered HTML is complete without JS, so the app (hydration, motion) starts
+          // right after the first frame is painted instead of competing with it on slow
+          // networks: no modulepreload hints, entry module injected after paint.
+          .replace(/<link rel="modulepreload"[^>]*>/g, (tag) => {
+            const href = /href="([^"]+)"/.exec(tag)?.[1];
+            if (href) preloads.push(href);
+            return '';
+          })
+          .replace(
+            /<script type="module"[^>]*\ssrc="([^"]+)"[^>]*><\/script>/,
+            (_tag, src: string) =>
+              // Same chunks as the removed modulepreload hints, requested in parallel after paint.
+              `<script>(function(){var p=${JSON.stringify(preloads)};function go(){p.forEach(function(h){var l=document.createElement('link');l.rel='modulepreload';l.crossOrigin='';l.href=h;document.head.appendChild(l)});var s=document.createElement('script');s.type='module';s.crossOrigin='';s.src=${JSON.stringify(src)};document.head.appendChild(s)}function later(){requestAnimationFrame(function(){requestAnimationFrame(function(){setTimeout(go,0)})})}document.readyState==='loading'?document.addEventListener('DOMContentLoaded',later):later()})()</script>`,
           );
         const page = apiPages.get(route);
         if (!page || !apiItems[page.api]) return html;

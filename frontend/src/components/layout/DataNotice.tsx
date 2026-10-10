@@ -6,8 +6,13 @@ import { useT } from '@/hooks/useLang';
 import { readConsent, saveConsent } from '@/lib/visitorPrefs';
 import { ease } from '@/lib/motion';
 
+/** Analytics is optional (VITE_ANALYTICS_ID); without it the site sets essential cookies only. */
+const ANALYTICS_ENABLED = !!import.meta.env.VITE_ANALYTICS_ID;
+
 /**
- * Essential vs analytics consent banner (see lib/visitorPrefs.ts).
+ * Essential vs analytics consent banner (see lib/visitorPrefs.ts). Shown only when analytics is
+ * configured — essential cookies need no consent, and a banner about analytics that doesn't
+ * exist would only get in the way (it also became the late LCP element on /ne pages).
  * File names here avoid "cookie", "consent", "banner" and "social": ad-blocker lists block
  * URLs containing them, and one blocked module stops the whole app from loading in dev.
  */
@@ -16,6 +21,7 @@ export function DataNotice() {
   const { t } = useT();
 
   useEffect(() => {
+    if (!ANALYTICS_ENABLED) return;
     // Wait a beat so the banner never competes with the preloader / LCP.
     const timer = window.setTimeout(() => setOpen(readConsent() === null), 2200);
     return () => window.clearTimeout(timer);

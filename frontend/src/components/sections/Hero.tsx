@@ -63,7 +63,7 @@ export function Hero() {
       <div className="container-site">
         <p
           className={cn('eyebrow mb-6 !text-copper-light', enterUp)}
-          style={{ animationDelay: '0.1s' }}
+          style={{ animationDelay: '0s' }}
         >
           {t('hero.eyebrow')}
         </p>
@@ -73,18 +73,14 @@ export function Hero() {
           text={title}
           highlight={lang === 'ne' ? [1] : [2, 3]}
           immediate
-          delay={0.2}
+          delay={0.05}
           className="max-w-5xl !text-[clamp(2.5rem,7vw,5.5rem)]"
         />
-        <p
-          className={cn('mt-6 max-w-xl text-lg text-silver sm:text-xl', enterUp)}
-          style={{ animationDelay: '0.55s' }}
-        >
-          {t('hero.sub')}
-        </p>
+        {/* LCP text: painted with the HTML, no entrance animation. */}
+        <p className="mt-6 max-w-xl text-lg text-silver sm:text-xl">{t('hero.sub')}</p>
         <div
           className={cn('mt-10 flex flex-wrap gap-3', enterUp)}
-          style={{ animationDelay: '0.7s' }}
+          style={{ animationDelay: '0.2s' }}
         >
           <MagneticButton>
             <Button asChild size="lg">

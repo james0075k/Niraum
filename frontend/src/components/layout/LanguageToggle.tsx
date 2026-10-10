@@ -43,7 +43,15 @@ export function LanguageToggle({ className }: { className?: string }) {
                     : 'text-foreground/75 hover:bg-foreground/10 hover:text-foreground',
                 )}
               >
-                {l === 'en' ? LANG_LABELS.en.short : LANG_LABELS.ne.native}
+                {l === 'en' ? (
+                  LANG_LABELS.en.short
+                ) : (
+                  // System Devanagari font: this label alone must not make English pages
+                  // download Mukta.
+                  <span className="[font-family:system-ui,sans-serif]">
+                    {LANG_LABELS.ne.native}
+                  </span>
+                )}
               </Link>
             </li>
           );

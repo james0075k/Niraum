@@ -19,6 +19,10 @@ test.beforeEach(async ({ page }) => {
   await quietStart(page);
 });
 
+/** Waits until the prerendered page has hydrated (see App.tsx). */
+const hydrated = (page: Page) =>
+  page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+
 test('home loads with the motto, what we supply and footer', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
@@ -43,6 +47,7 @@ test('home loads with the motto, what we supply and footer', async ({ page }) =>
 test('theme toggle switches and remembers the theme', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'light' });
   await page.goto('/');
+  await hydrated(page);
   const html = page.locator('html');
   await expect(html).not.toHaveClass(/\bdark\b/);
 
@@ -63,6 +68,7 @@ test('contact form validates, submits and confirms', async ({ page }) => {
   });
 
   await page.goto('/en/contact?tab=message&subject=Quote%20request');
+  await hydrated(page);
   const form = page.getByRole('form', { name: 'Contact form' });
   await expect(form.getByLabel('Subject *')).toHaveValue('Quote request');
 
@@ -95,6 +101,7 @@ test('language toggle switches /en ↔ /ne, keeps the page and sets <html lang>'
   page,
 }) => {
   await page.goto('/en/technical-data');
+  await hydrated(page);
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await page
     .getByRole('navigation', { name: 'Language' })
@@ -150,6 +157,7 @@ for (const lang of ['en', 'ne'] as const) {
           };
 
     await page.goto(`/${lang}/contact`);
+    await hydrated(page);
     const form = page.locator('form').filter({ has: page.getByRole('button', { name: L.submit }) });
     await form.getByLabel(L.company).fill('Himal Cement');
     await form.getByLabel(L.contact).fill('Sita Sharma');
@@ -174,6 +182,7 @@ for (const lang of ['en', 'ne'] as const) {
 
 test('technical data shows Table 14, the chart and the data-origin note', async ({ page }) => {
   await page.goto('/en/technical-data');
+  await hydrated(page);
   const table = page.getByRole('table', { name: /Length-weighted average grade/ });
   await expect(table.getByRole('row', { name: /Weighted average/ })).toContainText('33.59');
   await expect(page.getByRole('figure', { name: 'Fe₂O₃ by section' })).toBeVisible();
@@ -186,6 +195,19 @@ test('new pages render in dark mode', async ({ page }) => {
   for (const path of ['/en/our-project', '/ne/products', '/en/investors']) {
     await page.goto(path);
     await expect(page.locator('html')).toHaveClass(/\bdark\b/);
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+  }
+});
+
+test('retired pages redirect to their replacement in the same language', async ({ page }) => {
+  for (const [from, to] of [
+    ['/en/projects', '/en/our-project'],
+    ['/ne/operations', '/ne/products'],
+    ['/en/news/how-iron-ore-exploration-starts', '/en/about'],
+    ['/careers', '/en/contact'],
+  ] as const) {
+    await page.goto(from);
+    await expect(page).toHaveURL(new RegExp(`${to}$`));
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   }
 });

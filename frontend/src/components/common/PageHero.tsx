@@ -76,17 +76,10 @@ export function PageHero({
           text={title}
           highlight={highlight}
           immediate
-          delay={0.15}
+          delay={0.05}
           className="max-w-4xl !text-[clamp(2.5rem,5.5vw,4.75rem)]"
         />
-        {intro && (
-          <p
-            className={cn('mt-6 max-w-2xl text-lg text-silver sm:text-xl', enterUp)}
-            style={{ animationDelay: '0.3s' }}
-          >
-            {intro}
-          </p>
-        )}
+        {intro && <p className="mt-6 max-w-2xl text-lg text-silver sm:text-xl">{intro}</p>}
         {children}
       </div>
     </section>

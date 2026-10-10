@@ -108,7 +108,7 @@ export default function TechnicalData() {
 
       <section id="weighted-average" aria-labelledby="table-title" className="section bg-muted/40">
         <div className="container-site grid gap-10 lg:grid-cols-12">
-          <div className="lg:col-span-7">
+          <div className="min-w-0 lg:col-span-7">
             <SectionHeading
               id="table-title"
               eyebrow={t('table.eyebrow')}
@@ -116,7 +116,7 @@ export default function TechnicalData() {
             />
             <AssaySummaryTable data={assay} />
           </div>
-          <div className="lg:col-span-5 lg:pt-28">
+          <div className="min-w-0 lg:col-span-5 lg:pt-28">
             <FeBySectionChart sections={assay.sections} />
             <DataOriginNote />
           </div>
@@ -134,11 +134,11 @@ export default function TechnicalData() {
             <AssaySampleTable rows={samples} />
           ) : (
             <div className="grid gap-10 lg:grid-cols-12">
-              <Reveal className="lg:col-span-5">
+              <Reveal className="min-w-0 lg:col-span-5">
                 <h3 className="text-2xl">{t('samples.privateTitle')}</h3>
                 <p className="mt-3 text-muted-foreground">{t('samples.privateBody')}</p>
               </Reveal>
-              <div className="lg:col-span-7">
+              <div className="min-w-0 lg:col-span-7">
                 <InquiryForm topic="technical_report" />
               </div>
             </div>

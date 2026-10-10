@@ -1,8 +1,31 @@
 @import '@fontsource-variable/manrope';
-/* Devanagari for /ne pages (Manrope has no Devanagari glyphs; unicode-range keeps Latin pages from downloading it). */
-@import '@fontsource/mukta/devanagari-400.css';
-@import '@fontsource/mukta/devanagari-600.css';
-@import '@fontsource/mukta/devanagari-700.css';
+/*
+ * Mukta for Devanagari (/ne). Own @font-face instead of the fontsource CSS:
+ *  - unicode-range: only Devanagari text ever downloads it (English pages don't);
+ *  - two weights (600 renders with 700) — fewer bytes on slow connections;
+ *  - font-display: optional — preloaded on /ne pages (vite.config.ts), so it is normally ready
+ *    for first paint; if not, the system Devanagari font stays and nothing shifts (CLS 0).
+ */
+@font-face {
+  font-family: 'Mukta';
+  font-style: normal;
+  font-weight: 400;
+  font-display: optional;
+  src: url('../../node_modules/@fontsource/mukta/files/mukta-devanagari-400-normal.woff2')
+    format('woff2');
+  unicode-range:
+    U+0900-097F, U+1CD0-1CF9, U+200C-200D, U+20A8, U+20B9, U+25CC, U+A830-A839, U+A8E0-A8FF;
+}
+@font-face {
+  font-family: 'Mukta';
+  font-style: normal;
+  font-weight: 700;
+  font-display: optional;
+  src: url('../../node_modules/@fontsource/mukta/files/mukta-devanagari-700-normal.woff2')
+    format('woff2');
+  unicode-range:
+    U+0900-097F, U+1CD0-1CF9, U+200C-200D, U+20A8, U+20B9, U+25CC, U+A830-A839, U+A8E0-A8FF;
+}
 @import './glass.css';
 @import './textures.css';
 

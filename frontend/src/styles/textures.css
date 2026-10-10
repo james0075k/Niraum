@@ -43,7 +43,8 @@
   z-index: -1;
   opacity: 0.08;
   pointer-events: none;
-  background: url('../assets/site/photos/Texture_Weathered_Hematite.webp') center / 360px repeat;
+  /* 320 px tile, heavily compressed — it is shown at 8 % opacity (was a 154 KB photo). */
+  background: url('../assets/site/textures/hematite-tile.webp') center / 320px repeat;
 }
 
 .rule-copper {

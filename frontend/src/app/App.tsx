@@ -27,6 +27,11 @@ function SiteChrome() {
     () => applyDefault(settings.theme.defaultMode),
     [applyDefault, settings.theme.defaultMode],
   );
+  // Hydration marker: the app JS starts after first paint (vite.config.ts), so e2e tests and
+  // tooling wait for this before interacting.
+  useEffect(() => {
+    document.documentElement.dataset.hydrated = 'true';
+  }, []);
 
   return (
     <>
