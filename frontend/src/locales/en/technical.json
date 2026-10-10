@@ -14,7 +14,7 @@
     "fe2o3": "Weighted average Fe₂O₃",
     "fe": "Weighted average Fe",
     "sio2Al2o3": "Weighted average SiO₂ / Al₂O₃",
-    "top": "Highest grab sample ({{sample}})",
+    "top": "Highest grab sample Fe₂O₃ ({{sample}})",
     "grab": "Grab samples, Areas B & C — {{n}} samples, average Fe₂O₃",
     "thickness": "Total sample thickness, 5 sections"
   },
@@ -57,5 +57,9 @@
     "title": "How the samples were taken.",
     "body": "Geologists cut channel samples along painted lines across the ore face, took chip and grab samples from outcrops and boulders, and bagged and labelled each sample for laboratory analysis. Sample lengths are recorded so that section grades can be length-weighted."
   },
-  "request": "Request full assay report"
+  "request": "Request full assay report",
+  "cta": {
+    "title": "Need iron ore that meets your specification?",
+    "body": "Ask for the full assay report, samples or a bulk supply quote."
+  }
 }

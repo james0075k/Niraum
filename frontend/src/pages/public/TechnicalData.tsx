@@ -5,6 +5,7 @@ import { PageHero } from '@/components/common/PageHero';
 import { SectionHeading } from '@/components/common/SectionHeading';
 import { Reveal, RevealGroup, RevealItem } from '@/components/motion/Reveal';
 import { AssaySampleTable } from '@/components/sections/AssaySampleTable';
+import { CtaBand } from '@/components/sections/CtaBand';
 import { AssaySummaryTable } from '@/components/sections/AssaySummaryTable';
 import { DataOriginNote } from '@/components/sections/DataOriginNote';
 import { FeBySectionChart } from '@/components/sections/FeBySectionChart';
@@ -14,7 +15,9 @@ import { Seo } from '@/components/seo/Seo';
 import { Button } from '@/components/ui/button';
 import { photos, siteImages } from '@/content/siteImages';
 import { useAssaySamples, useAssaySummary } from '@/features/assay/useAssay';
-import { useT } from '@/hooks/useLang';
+import { localePath } from '@/app/i18n';
+import { useLang, useT } from '@/hooks/useLang';
+import { assayDatasetLd } from '@/lib/seo';
 import { formatPct } from '@/lib/format';
 import type { Stat } from '@/lib/types';
 
@@ -24,6 +27,7 @@ const REPORT_HREF = '/contact?topic=technical_report#inquiry';
 export default function TechnicalData() {
   const { t } = useT(['technical', 'common']);
   const assay = useAssaySummary();
+  const lang = useLang();
   const samples = useAssaySamples();
   const o = assay.overall;
   const top = assay.highlights.highestSample;
@@ -39,7 +43,7 @@ export default function TechnicalData() {
     {
       label: t('key.top', { sample: top?.sample ?? '' }),
       value: top?.Fe2O3 ?? null,
-      suffix: '% Fe₂O₃',
+      suffix: '%',
       decimals: 2,
     },
     {
@@ -58,6 +62,13 @@ export default function TechnicalData() {
         description={t('seo.description')}
         crumbs={crumbs}
         image={photos.channelWide.src}
+        jsonLd={[
+          assayDatasetLd(
+            t('table.caption'),
+            t('seo.description'),
+            localePath(lang, '/technical-data'),
+          ),
+        ]}
       />
       <PageHero
         eyebrow={t('hero.eyebrow')}
@@ -76,7 +87,10 @@ export default function TechnicalData() {
       <section id="key-figures" aria-labelledby="key-title" className="section grain">
         <div className="container-site">
           <SectionHeading id="key-title" eyebrow={t('key.eyebrow')} title={t('key.title')} />
-          <RevealGroup as="ul" className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-5">
+          <RevealGroup
+            as="ul"
+            className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 2xl:grid-cols-5"
+          >
             {key.map((s) => (
               <RevealItem as="li" key={s.label}>
                 <StatCard stat={s} className="h-full" />
@@ -163,6 +177,13 @@ export default function TechnicalData() {
           </RevealGroup>
         </div>
       </section>
+
+      <CtaBand
+        title={t('cta.title')}
+        body={t('cta.body')}
+        primaryTo="/contact?topic=supply#inquiry"
+        primaryLabel={t('common:cta.bulkSupply')}
+      />
     </>
   );
 }

@@ -172,3 +172,21 @@ export function depositLd(d: Deposit, url: string): Ld {
       }),
   };
 }
+
+/** Dataset JSON-LD for the assay data (Technical Data) — source credited, no claims. */
+export function assayDatasetLd(name: string, description: string, url: string): Ld {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Dataset',
+    name,
+    description,
+    url: absoluteUrl(url),
+    creator: {
+      '@type': 'Organization',
+      name: 'Shubharambha Mining and Engineering Services Pvt. Ltd.',
+    },
+    publisher: { '@id': `${SITE_URL}/#organization` },
+    variableMeasured: ['Fe', 'Fe2O3', 'SiO2', 'Al2O3'],
+    spatialCoverage: { '@type': 'Place', name: 'Katujpani, Makawanpur, Nepal' },
+  };
+}
