@@ -1,5 +1,12 @@
 import type { FilterQuery, Model, SortOrder } from 'mongoose';
 import { rebuild } from '../jobs/rebuild.js';
+import {
+  adminLocalized,
+  isLocalized,
+  mergeLocalized,
+  resolveLocalized,
+  type Lang,
+} from '../models/schemas/LocalizedString.js';
 import type { ContentBase } from '../models/shared.js';
 import { AppError } from '../utils/AppError.js';
 import { diffFields } from '../utils/diff.js';
@@ -28,6 +35,11 @@ export interface ContentConfig<T extends ContentBase> {
   adminSort: Sort;
   /** Rich-text fields sanitised on every write. */
   richText?: readonly string[];
+  /**
+   * LocalizedString fields `{ en, ne? }` (Phase 4.5). Public reads resolve them to the
+   * requested language; admin reads return English plus `translations`; updates merge.
+   */
+  localized?: readonly string[];
 }
 
 export interface ListInput extends Plain {
@@ -35,6 +47,8 @@ export interface ListInput extends Plain {
   limit: number;
   sort?: string | undefined;
   q?: string | undefined;
+  /** Public reads only; defaults to English. */
+  lang?: Lang | undefined;
 }
 
 export interface AdminListInput extends ListInput {
@@ -75,12 +89,32 @@ export function createContentService<T extends ContentBase>(cfg: ContentConfig<T
   function cleanInput(input: Plain): Plain {
     const out = { ...input };
     for (const field of cfg.richText ?? []) {
-      if (typeof out[field] === 'string') out[field] = cleanHtml(out[field]);
+      const value = out[field];
+      if (typeof value === 'string') out[field] = cleanHtml(value);
+      else if (isLocalized(value)) {
+        out[field] = {
+          en: cleanHtml(value.en),
+          ...(value.ne !== undefined && { ne: cleanHtml(value.ne) }),
+        };
+      }
     }
     return out;
   }
 
-  async function list(filter: Plain, input: ListInput, sort: Sort, projection?: string) {
+  const localizedFields = cfg.localized ?? [];
+  /** Admin shape: English strings as before + `translations` (only for localized models). */
+  const adminView = (doc: Plain): Plain =>
+    localizedFields.length ? adminLocalized(doc, localizedFields) : doc;
+  const publicView = (doc: Plain, lang: Lang = 'en'): Plain =>
+    localizedFields.length ? resolveLocalized(doc, lang) : doc;
+
+  async function list(
+    filter: Plain,
+    input: ListInput,
+    sort: Sort,
+    view: (doc: Plain) => Plain,
+    projection?: string,
+  ) {
     const query: Plain = { ...filter, ...(cfg.filters?.(input) ?? {}) };
     let order = parseSort(input.sort, cfg.sortable, {}) as Sort;
     let score: Plain | undefined;
@@ -104,7 +138,7 @@ export function createContentService<T extends ContentBase>(cfg: ContentConfig<T
     return {
       data: docs.map((d) => {
         const { score: _s, ...rest } = serialize(d);
-        return rest;
+        return view(rest);
       }),
       meta: listMeta(input.page, input.limit, total),
     };
@@ -120,35 +154,47 @@ export function createContentService<T extends ContentBase>(cfg: ContentConfig<T
     entity,
 
     listPublic(input: ListInput): Promise<{ data: Plain[]; meta: ListMeta }> {
-      return list(publicFilter(), input, cfg.publicSort, PUBLIC_EXCLUDE);
+      return list(
+        publicFilter(),
+        input,
+        cfg.publicSort,
+        (d) => publicView(d, input.lang),
+        PUBLIC_EXCLUDE,
+      );
     },
 
-    async getPublic(slug: string): Promise<Plain> {
+    async getPublic(slug: string, lang: Lang = 'en'): Promise<Plain> {
       const doc = await model
         .findOne({ ...publicFilter(), slug } as FilterQuery<T>)
         .select(PUBLIC_EXCLUDE)
         .lean<Plain>();
       if (!doc) throw AppError.notFound(entity);
-      return serialize(doc);
+      return publicView(serialize(doc), lang);
     },
 
     listAdmin(input: AdminListInput) {
       const filter: Plain = { isDeleted: input.trash === true };
       if (input.state === 'published') filter[visibleField] = true;
       if (input.state === 'draft') filter[visibleField] = false;
-      return list(filter, input, cfg.adminSort);
+      return list(filter, input, cfg.adminSort, adminView);
     },
 
     async getAdmin(id: string): Promise<Plain> {
       const doc = await model.findById(id).lean<Plain>();
       if (!doc) throw AppError.notFound(entity);
-      return serialize(doc);
+      return adminView(serialize(doc));
     },
 
     async create(input: Plain, actor: Actor): Promise<Plain> {
       const data = cleanInput(input);
       if (cfg.slugFrom) {
-        const source = typeof data.slug === 'string' && data.slug ? data.slug : data[cfg.slugFrom];
+        const from = data[cfg.slugFrom];
+        const source =
+          typeof data.slug === 'string' && data.slug
+            ? data.slug
+            : isLocalized(from)
+              ? from.en
+              : from;
         data.slug = await slugFor(String(source ?? ''));
       }
       if (data[visibleField] === true && 'publishedAt' in model.schema.paths && !data.publishedAt) {
@@ -157,7 +203,7 @@ export function createContentService<T extends ContentBase>(cfg: ContentConfig<T
       if (actor.userId) data.createdBy = data.updatedBy = actor.userId;
 
       const doc = await model.create(data);
-      const created = serialize(toPlain(doc));
+      const created = adminView(serialize(toPlain(doc)));
       await auditService.record(actor, {
         action: 'create',
         entity,
@@ -175,6 +221,9 @@ export function createContentService<T extends ContentBase>(cfg: ContentConfig<T
       const doc = await findAdmin(id);
       const before = toPlain(doc);
       const data = cleanInput(input);
+      for (const field of localizedFields) {
+        if (field in data) data[field] = mergeLocalized(before[field], data[field]);
+      }
 
       if (cfg.slugFrom && typeof data.slug === 'string' && data.slug !== before.slug) {
         // Slugs only change on request — published URLs stay stable when a title is edited.
@@ -204,7 +253,7 @@ export function createContentService<T extends ContentBase>(cfg: ContentConfig<T
         });
       }
       if (isVisible(before) || isVisible(after)) rebuild.schedule(`${entity} updated`);
-      return serialize(after);
+      return adminView(serialize(after));
     },
 
     /** Soft delete: hidden everywhere except the admin trash; slug stays reserved. */
@@ -225,7 +274,7 @@ export function createContentService<T extends ContentBase>(cfg: ContentConfig<T
       const after = toPlain(doc);
       await auditService.record(actor, { action: 'restore', entity, entityId: id });
       if (isVisible(after)) rebuild.schedule(`${entity} restored`);
-      return serialize(after);
+      return adminView(serialize(after));
     },
 
     /** Slugs + updatedAt of every public document (sitemap generation). */

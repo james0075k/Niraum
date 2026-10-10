@@ -2,7 +2,7 @@ import type { RequestHandler } from 'express';
 import type { ZodType, ZodTypeDef } from 'zod';
 import type { AdminListInput, ContentService, ListInput } from '../services/content.service.js';
 import { ah } from '../utils/asyncHandler.js';
-import { idParams, slugParams } from '../validators/common.js';
+import { idParams, langQuery, slugParams } from '../validators/common.js';
 import { actorOf } from './helpers.js';
 
 type Schema<T> = ZodType<T, ZodTypeDef, unknown>;
@@ -30,7 +30,8 @@ export function contentController(service: ContentService, schemas: ContentSchem
 
     getPublic: ah(async (req, res) => {
       const { slug } = slugParams.parse(req.params);
-      res.json({ data: await service.getPublic(slug) });
+      const { lang } = langQuery.parse(req.query);
+      res.json({ data: await service.getPublic(slug, lang) });
     }),
 
     listAdmin: ah(async (req, res) => {

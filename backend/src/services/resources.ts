@@ -27,6 +27,7 @@ export const projectService = createContentService({
   publicSort: { featured: -1, publishedAt: -1, createdAt: -1 },
   adminSort: { updatedAt: -1 },
   richText: ['body'],
+  localized: ['title', 'summary', 'body'],
 });
 
 export const postService = createContentService({
@@ -39,6 +40,7 @@ export const postService = createContentService({
   publicSort: { publishedAt: -1 },
   adminSort: { updatedAt: -1 },
   richText: ['body'],
+  localized: ['title', 'excerpt', 'body'],
 });
 
 export const jobService = createContentService({
@@ -62,6 +64,7 @@ export const jobService = createContentService({
   publicSort: { createdAt: -1 },
   adminSort: { updatedAt: -1 },
   richText: ['description'],
+  localized: ['title', 'description'],
 });
 
 export const teamService = createContentService({
@@ -71,6 +74,7 @@ export const teamService = createContentService({
   sortable: ['order', 'name', 'createdAt'],
   publicSort: { order: 1, name: 1 },
   adminSort: { order: 1, name: 1 },
+  localized: ['role', 'bio'],
 });
 
 export const serviceService = createContentService({
@@ -82,4 +86,5 @@ export const serviceService = createContentService({
   publicSort: { order: 1 },
   adminSort: { order: 1 },
   richText: ['body'],
+  localized: ['title', 'summary', 'body'],
 });

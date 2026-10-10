@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import { localizedPath, type LocalizedString } from './schemas/LocalizedString.js';
 import {
   contentBaseFields,
   imageSchema,
@@ -17,11 +18,11 @@ export interface ServiceStat {
 }
 
 export interface IService extends ContentBase {
-  title: string;
+  title: LocalizedString;
   slug: string;
   icon: (typeof SERVICE_ICONS)[number];
-  summary: string;
-  body: string;
+  summary: LocalizedString;
+  body: LocalizedString;
   image: ImageRef | null;
   highlights: string[];
   stats: ServiceStat[];
@@ -32,11 +33,11 @@ export interface IService extends ContentBase {
 
 const serviceSchema = new Schema<IService>(
   {
-    title: { type: String, required: true, trim: true, maxlength: 150 },
+    title: localizedPath({ required: true, maxlength: 150 }),
     slug: { type: String, required: true, unique: true, lowercase: true, trim: true },
     icon: { type: String, enum: SERVICE_ICONS, default: 'pickaxe' },
-    summary: { type: String, default: '', maxlength: 300 },
-    body: { type: String, default: '' },
+    summary: localizedPath({ maxlength: 300 }),
+    body: localizedPath(),
     image: { type: imageSchema, default: null },
     highlights: { type: [String], default: [] },
     stats: {
@@ -62,6 +63,11 @@ const serviceSchema = new Schema<IService>(
 );
 
 serviceSchema.index({ published: 1, order: 1 });
-serviceSchema.index({ title: 'text', summary: 'text' });
+serviceSchema.index({
+  'title.en': 'text',
+  'title.ne': 'text',
+  'summary.en': 'text',
+  'summary.ne': 'text',
+});
 
 export const Service = model<IService>('Service', serviceSchema);

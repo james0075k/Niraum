@@ -1,6 +1,7 @@
 import { isValidObjectId } from 'mongoose';
 import { z } from 'zod';
-import { paginationQuery } from '../utils/pagination.js';
+import type { LocalizedString } from '../models/schemas/LocalizedString.js';
+import { langQuery, paginationQuery } from '../utils/pagination.js';
 
 export const objectId = z.string().refine((v) => isValidObjectId(v), 'Invalid id');
 export const idParams = z.object({ id: objectId });
@@ -48,4 +49,14 @@ export const adminListQuery = paginationQuery.extend({
   trash: boolQuery.optional(),
 });
 
-export { paginationQuery };
+/**
+ * LocalizedString input (Phase 4.5): a plain string (English) or `{ en, ne? }`.
+ * `en` uses the field's own rules; `ne` may be empty (falls back to English).
+ */
+export function localized(en: z.ZodString, ne: z.ZodString = z.string().trim().max(100_000)) {
+  return z
+    .union([en, z.object({ en, ne: ne.optional() }).strict()])
+    .transform((v): LocalizedString => (typeof v === 'string' ? { en: v } : v));
+}
+
+export { langQuery, paginationQuery };

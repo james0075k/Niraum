@@ -1,4 +1,10 @@
 import { Schema, model, type Types } from 'mongoose';
+import {
+  LANGS,
+  localizedPath,
+  type Lang,
+  type LocalizedString,
+} from './schemas/LocalizedString.js';
 
 export const SOCIAL_PLATFORMS = [
   'facebook',
@@ -43,7 +49,7 @@ export interface ISiteSettings {
   _id: string;
   companyName: string;
   legalName: string;
-  motto: string;
+  motto: LocalizedString;
   logo: { light: string | null; dark: string | null };
   contact: { phone: string[]; email: string[]; whatsapp: string | null };
   address: Address;
@@ -51,8 +57,12 @@ export interface ISiteSettings {
   officeHours: string;
   social: SocialLink[];
   seo: { defaultTitle: string; defaultDescription: string; ogImage: string; keywords: string[] };
-  footer: { about: string; links: { label: string; href: string }[] };
+  footer: { about: LocalizedString; links: { label: string; href: string }[] };
   theme: { defaultMode: 'light' | 'dark' | 'system' };
+  /** Phase 4.5: sample-level assay rows are public only when this is on (default off). */
+  publicAssayDetail: boolean;
+  /** Phase 4.5: language for visitors with no saved or detectable preference. */
+  defaultLanguage: Lang;
   updatedBy?: Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
@@ -78,7 +88,7 @@ const settingsSchema = new Schema<ISiteSettings>(
     _id: { type: String, default: SETTINGS_ID },
     companyName: { type: String, default: 'Niraum Metals' },
     legalName: { type: String, default: 'Niraum Metals Pvt. Ltd.' },
-    motto: { type: String, default: 'Strength Forged For Generations' },
+    motto: localizedPath({ maxlength: 150, default: 'Strength Forged For Generations' }),
     logo: { light: { type: String, default: null }, dark: { type: String, default: null } },
     contact: {
       phone: { type: [String], default: ['[PLACEHOLDER: phone]'] },
@@ -126,7 +136,7 @@ const settingsSchema = new Schema<ISiteSettings>(
       keywords: { type: [String], default: [] },
     },
     footer: {
-      about: { type: String, default: '' },
+      about: localizedPath({ maxlength: 600 }),
       links: {
         type: [new Schema({ label: String, href: String }, { _id: false })],
         default: [],
@@ -135,6 +145,8 @@ const settingsSchema = new Schema<ISiteSettings>(
     theme: {
       defaultMode: { type: String, enum: ['light', 'dark', 'system'], default: 'system' },
     },
+    publicAssayDetail: { type: Boolean, default: false },
+    defaultLanguage: { type: String, enum: LANGS, default: 'en' },
     updatedBy: { type: Schema.Types.ObjectId, ref: 'User' },
   },
   { timestamps: true, versionKey: false },

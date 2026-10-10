@@ -1,4 +1,13 @@
 import { z } from 'zod';
+import { LANGS } from '../models/schemas/LocalizedString.js';
+
+/** `?lang=en|ne` on public reads (Phase 4.5); unknown values fall back to English. */
+export const langQuery = z.object({
+  lang: z.preprocess(
+    (v) => ((LANGS as readonly unknown[]).includes(v) ? v : undefined),
+    z.enum(LANGS).default('en'),
+  ),
+});
 
 export const paginationQuery = z.object({
   page: z.coerce.number().int().min(1).default(1),
@@ -8,6 +17,7 @@ export const paginationQuery = z.object({
     .regex(/^-?[a-zA-Z]+$/)
     .optional(),
   q: z.string().trim().min(1).max(100).optional(),
+  lang: langQuery.shape.lang,
 });
 export type PaginationQuery = z.infer<typeof paginationQuery>;
 

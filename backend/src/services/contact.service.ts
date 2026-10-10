@@ -1,4 +1,5 @@
 import { env } from '../config/env.js';
+import { pickLang } from '../models/schemas/LocalizedString.js';
 import { mailer } from '../config/mailer.js';
 import { Message, type IMessage } from '../models/Message.js';
 import { AppError } from '../utils/AppError.js';
@@ -51,7 +52,7 @@ export const contactService = {
       text:
         `Hello ${input.name},\n\nThank you for contacting ${site.companyName}. ` +
         `We have received your message "${input.subject}" and will reply as soon as we can.\n\n` +
-        `— ${site.companyName}\n${site.motto}\n\n` +
+        `— ${site.companyName}\n${pickLang(site.motto, 'en')}\n\n` +
         `This is an automatic reply; you don't need to answer it.\n`,
     });
     return { id: String(msg._id) };

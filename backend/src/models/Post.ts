@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import { localizedPath, type LocalizedString } from './schemas/LocalizedString.js';
 import {
   contentBaseFields,
   imageSchema,
@@ -10,10 +11,10 @@ import {
 } from './shared.js';
 
 export interface IPost extends ContentBase {
-  title: string;
+  title: LocalizedString;
   slug: string;
-  excerpt: string;
-  body: string;
+  excerpt: LocalizedString;
+  body: LocalizedString;
   coverImage: ImageRef | null;
   tags: string[];
   /** Display name shown on the article. */
@@ -26,10 +27,10 @@ export interface IPost extends ContentBase {
 
 const postSchema = new Schema<IPost>(
   {
-    title: { type: String, required: true, trim: true, maxlength: 150 },
+    title: localizedPath({ required: true, maxlength: 150 }),
     slug: { type: String, required: true, unique: true, lowercase: true, trim: true },
-    excerpt: { type: String, default: '', maxlength: 300 },
-    body: { type: String, default: '' },
+    excerpt: localizedPath({ maxlength: 300 }),
+    body: localizedPath(),
     coverImage: { type: imageSchema, default: null },
     tags: { type: [String], default: [], index: true },
     author: { type: String, default: 'Niraum Metals' },
@@ -43,7 +44,10 @@ const postSchema = new Schema<IPost>(
 );
 
 // A post's "summary" is its excerpt.
-postSchema.index({ title: 'text', excerpt: 'text' }, { weights: { title: 5, excerpt: 1 } });
+postSchema.index(
+  { 'title.en': 'text', 'title.ne': 'text', 'excerpt.en': 'text', 'excerpt.ne': 'text' },
+  { weights: { 'title.en': 5, 'title.ne': 5, 'excerpt.en': 1, 'excerpt.ne': 1 } },
+);
 postSchema.index({ published: 1, publishedAt: -1 });
 postSchema.index({ publishedAt: -1 });
 

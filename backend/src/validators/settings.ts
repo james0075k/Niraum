@@ -1,5 +1,7 @@
 import { z } from 'zod';
+import { LANGS } from '../models/schemas/LocalizedString.js';
 import { SOCIAL_PLATFORMS } from '../models/SiteSettings.js';
+import { localized } from './common.js';
 
 const text = (max: number) => z.string().trim().max(max);
 const urlOrPath = z
@@ -42,7 +44,7 @@ export const settingsUpdateBody = z
   .object({
     companyName: text(100).min(1),
     legalName: text(150).min(1),
-    motto: text(150),
+    motto: localized(text(150), text(150)),
     logo: z.object({ light: urlOrPath.nullable(), dark: urlOrPath.nullable() }).partial(),
     contact: z
       .object({
@@ -65,11 +67,13 @@ export const settingsUpdateBody = z
       .partial(),
     footer: z
       .object({
-        about: text(600),
+        about: localized(text(600), text(600)),
         links: z.array(z.object({ label: text(60), href: urlOrPath })).max(20),
       })
       .partial(),
     theme: z.object({ defaultMode: z.enum(['light', 'dark', 'system']) }),
+    publicAssayDetail: z.boolean(),
+    defaultLanguage: z.enum(LANGS),
   })
   .partial()
   .strict();

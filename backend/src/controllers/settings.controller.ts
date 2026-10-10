@@ -1,12 +1,14 @@
-import { settingsService } from '../services/settings.service.js';
+import { settingsAdminView, settingsService } from '../services/settings.service.js';
 import { ah } from '../utils/asyncHandler.js';
+import { langQuery } from '../validators/common.js';
 import { geocodeBody, settingsUpdateBody } from '../validators/settings.js';
 import { actorOf } from './helpers.js';
 
 export const settingsController = {
   /** ETag + short cache; `If-None-Match` → 304 so the site revalidates cheaply. */
   getPublic: ah(async (req, res) => {
-    const { body, etag } = await settingsService.getPublic();
+    const { lang } = langQuery.parse(req.query);
+    const { body, etag } = await settingsService.getPublic(lang);
     res.setHeader('ETag', etag);
     res.setHeader('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
     if (req.get('if-none-match') === etag) {
@@ -18,7 +20,7 @@ export const settingsController = {
 
   getAdmin: ah(async (_req, res) => {
     res.setHeader('Cache-Control', 'no-store');
-    res.json({ data: await settingsService.get() });
+    res.json({ data: settingsAdminView(await settingsService.get()) });
   }),
 
   update: ah(async (req, res) => {

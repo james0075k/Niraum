@@ -1,4 +1,5 @@
 import { env } from '../config/env.js';
+import { pickLang, type LocalizedString } from '../models/schemas/LocalizedString.js';
 import { mailer } from '../config/mailer.js';
 import { storage } from '../config/cloudinary.js';
 import { Application, type IApplication } from '../models/Application.js';
@@ -23,7 +24,7 @@ export const applicationService = {
     const { file: cvFile } = checkFile(file, ['application/pdf']);
     await captchaService.verify(input.captchaToken, visitor.ip);
 
-    let job: { _id: unknown; title: string } | null = null;
+    let job: { _id: unknown; title: LocalizedString } | null = null;
     if (input.job) {
       job = await Job.findOne({
         slug: input.job,
@@ -32,7 +33,7 @@ export const applicationService = {
         $or: [{ deadline: null }, { deadline: { $gte: new Date() } }],
       })
         .select('title')
-        .lean<{ _id: unknown; title: string }>();
+        .lean<{ _id: unknown; title: LocalizedString }>();
       if (!job) throw AppError.badRequest('This position is no longer open');
     }
 
@@ -43,7 +44,7 @@ export const applicationService = {
     });
     const app = await Application.create({
       job: job?._id ?? null,
-      jobTitle: job?.title ?? 'General application',
+      jobTitle: job ? pickLang(job.title, 'en') : 'General application',
       name: input.name,
       email: input.email,
       phone: input.phone,

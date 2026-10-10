@@ -1,5 +1,5 @@
 /**
- * `pnpm seed` — idempotent. Creates:
+ * `pnpm seed` — idempotent. First runs the migrations (src/migrations), then creates:
  *  1. the first superadmin from SEED_ADMIN_EMAIL / SEED_ADMIN_PASSWORD (must change password
  *     on first login);
  *  2. the SiteSettings singleton with the Lalitpur-13 address, geocoded through Nominatim.
@@ -10,6 +10,7 @@
 import { connectDb, disconnectDb } from '../config/db.js';
 import { env } from '../config/env.js';
 import { logger } from '../config/logger.js';
+import { runMigrations } from '../migrations/run.js';
 import { Post } from '../models/Post.js';
 import { Project } from '../models/Project.js';
 import { Service } from '../models/Service.js';
@@ -87,6 +88,7 @@ export async function seedContent(): Promise<Record<'services' | 'projects' | 'p
 
 async function main() {
   await connectDb(env.MONGODB_URI, 3);
+  await runMigrations();
   const admin = await seedAdmin();
   logger.info({ admin }, 'Superadmin');
   logger.info({ location: await seedSettings() }, 'Site settings');

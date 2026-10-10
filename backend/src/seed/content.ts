@@ -9,6 +9,7 @@
 import type { IPost } from '../models/Post.js';
 import type { IProject } from '../models/Project.js';
 import type { IService } from '../models/Service.js';
+import type { LocalizedString } from '../models/schemas/LocalizedString.js';
 import type { ImageRef } from '../models/shared.js';
 
 const tbc = (label: string) => `[PLACEHOLDER: ${label}]`;
@@ -54,7 +55,10 @@ const images = {
   ),
 };
 
-type Seed<T, K extends keyof T> = Pick<T, K>;
+/** Sample rows may give LocalizedString fields as plain English strings (the model wraps them). */
+type Seed<T, K extends keyof T> = {
+  [P in K]: T[P] extends LocalizedString ? string | LocalizedString : T[P];
+};
 
 export const sampleServices: Seed<
   IService,

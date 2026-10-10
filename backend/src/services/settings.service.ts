@@ -6,6 +6,12 @@ import {
   type ISiteSettings,
 } from '../models/SiteSettings.js';
 import { rebuild } from '../jobs/rebuild.js';
+import {
+  mergeLocalized,
+  pickLang,
+  resolveLocalized,
+  type Lang,
+} from '../models/schemas/LocalizedString.js';
 import { diffFields } from '../utils/diff.js';
 import type { SettingsUpdateBody } from '../validators/settings.js';
 import { auditService, type Actor } from './audit.service.js';
@@ -21,11 +27,11 @@ export interface Warning {
 export type PublicSettings = ReturnType<typeof toPublic>;
 
 /** Only what the public site needs — no audit fields, no manualOverride, no inactive socials. */
-function toPublic(s: ISiteSettings) {
+function toPublic(s: ISiteSettings, lang: Lang) {
   return {
     companyName: s.companyName,
     legalName: s.legalName,
-    motto: s.motto,
+    motto: pickLang(s.motto, lang),
     logo: { light: s.logo?.light ?? null, dark: s.logo?.dark ?? null },
     contact: {
       phone: s.contact.phone,
@@ -45,12 +51,28 @@ function toPublic(s: ISiteSettings) {
       .sort((a, b) => a.order - b.order)
       .map((l) => ({ platform: l.platform, url: l.url, isActive: l.isActive, order: l.order })),
     seo: { ...s.seo, keywords: [...s.seo.keywords] },
-    footer: { about: s.footer.about, links: s.footer.links.map((l) => ({ ...l })) },
+    footer: {
+      about: pickLang(s.footer.about, lang),
+      links: s.footer.links.map((l) => ({ ...l })),
+    },
     theme: { defaultMode: s.theme.defaultMode },
+    publicAssayDetail: s.publicAssayDetail ?? false,
+    defaultLanguage: s.defaultLanguage ?? 'en',
   };
 }
 
-let cache: { body: PublicSettings; etag: string; expires: number } | null = null;
+/**
+ * Admin shape: English strings where the API used to return strings, plus `translations`
+ * with the full `{ en, ne }` values (Phase 4.5 — keeps existing clients working).
+ */
+export function settingsAdminView(s: ISiteSettings) {
+  return {
+    ...resolveLocalized(s, 'en'),
+    translations: { motto: s.motto, footer: { about: s.footer?.about } },
+  };
+}
+
+const cache = new Map<Lang, { body: PublicSettings; etag: string; expires: number }>();
 
 export const settingsService = {
   /** The singleton, created with defaults on first access. */
@@ -67,17 +89,19 @@ export const settingsService = {
     }
   },
 
-  /** Public projection with a strong ETag, cached in memory for 60 s. */
-  async getPublic(): Promise<{ body: PublicSettings; etag: string }> {
-    if (cache && cache.expires > Date.now()) return cache;
-    const body = toPublic(await settingsService.get());
+  /** Public projection for one language with a strong ETag, cached in memory for 60 s. */
+  async getPublic(lang: Lang = 'en'): Promise<{ body: PublicSettings; etag: string }> {
+    const hit = cache.get(lang);
+    if (hit && hit.expires > Date.now()) return hit;
+    const body = toPublic(await settingsService.get(), lang);
     const etag = `"${createHash('sha1').update(JSON.stringify(body)).digest('base64url')}"`;
-    cache = { body, etag, expires: Date.now() + CACHE_TTL_MS };
-    return cache;
+    const entry = { body, etag, expires: Date.now() + CACHE_TTL_MS };
+    cache.set(lang, entry);
+    return entry;
   },
 
   invalidate(): void {
-    cache = null;
+    cache.clear();
   },
 
   /** Admin preview: coordinates for an address, nothing saved. */
@@ -98,12 +122,21 @@ export const settingsService = {
     const before = doc.toObject();
     const warnings: Warning[] = [];
 
-    const { address, location, logo, contact, seo, footer, ...rest } = input;
+    const { address, location, logo, contact, seo, footer, motto, ...rest } = input;
     doc.set(rest);
+    if (motto) doc.set('motto', mergeLocalized(before.motto, motto));
     if (logo) doc.set('logo', { ...before.logo, ...logo });
     if (contact) doc.set('contact', { ...before.contact, ...contact });
     if (seo) doc.set('seo', { ...before.seo, ...seo });
-    if (footer) doc.set('footer', { ...before.footer, ...footer });
+    if (footer) {
+      doc.set('footer', {
+        ...before.footer,
+        ...footer,
+        about: footer.about
+          ? mergeLocalized(before.footer.about, footer.about)
+          : before.footer.about,
+      });
+    }
 
     const nextAddress: Address = { ...before.address, ...address };
     const addressChanged =
@@ -159,6 +192,6 @@ export const settingsService = {
       ),
     });
     rebuild.schedule('settings');
-    return { settings: after, warnings };
+    return { settings: settingsAdminView(after), warnings };
   },
 };
