@@ -12,8 +12,8 @@ import { actorOf, userIdOf } from './helpers.js';
 
 export const authController = {
   login: ah(async (req, res) => {
-    const { email, password } = loginBody.parse(req.body);
-    const { user, session } = await authService.login(email, password, actorOf(req));
+    const { email, password, captchaToken } = loginBody.parse(req.body);
+    const { user, session } = await authService.login(email, password, actorOf(req), captchaToken);
     setAuthCookies(res, session);
     res.json({ data: user.toJSON() });
   }),

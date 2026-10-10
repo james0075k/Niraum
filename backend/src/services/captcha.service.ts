@@ -11,6 +11,9 @@ interface VerifyResponse {
 const TURNSTILE_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
 const RECAPTCHA_URL = 'https://www.google.com/recaptcha/api/siteverify';
 
+/** True when a captcha secret is set (Turnstile or reCAPTCHA). */
+export const captchaConfigured = () => Boolean(env.TURNSTILE_SECRET ?? env.RECAPTCHA_SECRET);
+
 export const captchaService = {
   /**
    * Verifies a Cloudflare Turnstile (preferred) or Google reCAPTCHA token. With neither secret

@@ -53,11 +53,11 @@ export function buildOpenApiSpec() {
 
   const errors = {
     400: {
-      description: 'VALIDATION_ERROR',
+      description: 'VALIDATION_ERROR (login: CAPTCHA_REQUIRED, CAPTCHA_FAILED)',
       content: { 'application/json': { schema: errorEnvelope } },
     },
     401: {
-      description: 'UNAUTHENTICATED',
+      description: 'UNAUTHENTICATED (login: details.captcha tells the UI to show the captcha)',
       content: { 'application/json': { schema: errorEnvelope } },
     },
     403: { description: 'FORBIDDEN', content: { 'application/json': { schema: errorEnvelope } } },
@@ -119,7 +119,8 @@ export function buildOpenApiSpec() {
   // Auth
   add('post', '/auth/login', {
     tag: 'Auth',
-    summary: 'Sign in (sets na_at + na_rt cookies)',
+    summary:
+      'Sign in (sets na_at + na_rt cookies). 401 carries details.captcha; after 3 failures 400 CAPTCHA_REQUIRED unless captchaToken is sent',
     body: loginBody,
     status: 200,
   });

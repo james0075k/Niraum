@@ -4,6 +4,7 @@ import { env } from '../config/env.js';
 import { mailer } from '../config/mailer.js';
 import { User, type IUser, type UserDoc } from '../models/User.js';
 import { AppError } from '../utils/AppError.js';
+import { captchaConfigured, captchaService } from './captcha.service.js';
 import { auditService, type Actor } from './audit.service.js';
 import { verifyAccessToken, verifyRefreshToken } from './token.service.js';
 
@@ -16,7 +17,9 @@ export const sha256 = (s: string) => createHash('sha256').update(s).digest('hex'
 let dummyHash: Promise<string> | null = null;
 const getDummyHash = () => (dummyHash ??= hashPassword('not-a-real-password-xx'));
 
-const invalidCredentials = () => AppError.unauthenticated('Invalid email or password');
+// `captcha` tells the UI whether to show the widget next time. Unknown emails always get false.
+const invalidCredentials = (captcha: boolean) =>
+  AppError.unauthenticated('Invalid email or password', { captcha });
 
 export interface SessionUser {
   id: string;
@@ -30,18 +33,27 @@ const toSession = (u: Pick<UserDoc, '_id' | 'role' | 'refreshTokenVersion'>): Se
 });
 
 export const authService = {
-  async login(email: string, password: string, actor: Actor) {
+  async login(email: string, password: string, actor: Actor, captchaToken?: string) {
     const user = await User.findOne({ email }).select('+passwordHash');
     if (!user || !user.isActive) {
       await argon2.verify(await getDummyHash(), password).catch(() => false);
       await auditService.record(actor, { action: 'login_failed', entity: 'User', diff: { email } });
-      throw invalidCredentials();
+      throw invalidCredentials(false);
     }
 
     if (user.lockUntil && user.lockUntil > new Date()) {
       throw new AppError(423, 'ACCOUNT_LOCKED', 'Account temporarily locked — try again later', {
         retryAt: user.lockUntil.toISOString(),
       });
+    }
+
+    if (user.failedLoginCount >= env.LOGIN_CAPTCHA_AFTER && captchaConfigured()) {
+      if (!captchaToken) {
+        throw new AppError(400, 'CAPTCHA_REQUIRED', 'Please complete the verification', {
+          captcha: true,
+        });
+      }
+      await captchaService.verify(captchaToken, actor.ip ?? '');
     }
 
     const ok = await argon2.verify(user.passwordHash, password).catch(() => false);
@@ -77,7 +89,7 @@ export const authService = {
           minutes: env.LOGIN_LOCK_MINUTES,
         });
       }
-      throw invalidCredentials();
+      throw invalidCredentials(attempts >= env.LOGIN_CAPTCHA_AFTER);
     }
 
     user.failedLoginCount = 0;

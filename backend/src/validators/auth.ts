@@ -9,7 +9,11 @@ export const password = z
   .min(12, 'Use at least 12 characters')
   .max(128, 'Use at most 128 characters');
 
-export const loginBody = z.object({ email, password: z.string().min(1).max(128) });
+export const loginBody = z.object({
+  email,
+  password: z.string().min(1).max(128),
+  captchaToken: z.string().max(2048).optional(),
+});
 export const forgotBody = z.object({ email });
 export const resetBody = z.object({ token: z.string().regex(/^[a-f0-9]{64}$/), password });
 export const changePasswordBody = z

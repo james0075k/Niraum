@@ -44,6 +44,7 @@ const schema = z
     COOKIE_DOMAIN: optionalString,
 
     LOGIN_MAX_ATTEMPTS: z.coerce.number().int().positive().default(5),
+    LOGIN_CAPTCHA_AFTER: z.coerce.number().int().positive().default(3),
     LOGIN_LOCK_MINUTES: z.coerce.number().int().positive().default(15),
 
     CLOUDINARY_CLOUD_NAME: optionalString,

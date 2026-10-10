@@ -9,6 +9,7 @@ export type ErrorCode =
   | 'PAYLOAD_TOO_LARGE'
   | 'UNSUPPORTED_MEDIA_TYPE'
   | 'CAPTCHA_FAILED'
+  | 'CAPTCHA_REQUIRED'
   | 'RATE_LIMITED'
   | 'STORAGE_UNAVAILABLE'
   | 'STORAGE_ERROR'
@@ -29,8 +30,8 @@ export class AppError extends Error {
   static badRequest(message: string, details?: unknown) {
     return new AppError(400, 'VALIDATION_ERROR', message, details);
   }
-  static unauthenticated(message = 'Authentication required') {
-    return new AppError(401, 'UNAUTHENTICATED', message);
+  static unauthenticated(message = 'Authentication required', details?: unknown) {
+    return new AppError(401, 'UNAUTHENTICATED', message, details);
   }
   static forbidden(message = 'You do not have permission to do that') {
     return new AppError(403, 'FORBIDDEN', message);
