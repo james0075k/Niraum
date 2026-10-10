@@ -196,8 +196,8 @@ export default defineConfig(({ isSsrBuild, mode }) => {
             keepFont(/href="([^"]+)"/.exec(tag)?.[1] ?? '') ? tag : '',
           )
           // The prerendered HTML is complete without JS, so the app (hydration, motion) starts
-          // right after the first frame is painted instead of competing with it on slow
-          // networks: no modulepreload hints, entry module injected after paint.
+          // when the browser reports first-contentful-paint (fallback 3 s) instead of competing
+          // with it on slow networks: modulepreload hints and the entry module are injected then.
           .replace(/<link rel="modulepreload"[^>]*>/g, (tag) => {
             const href = /href="([^"]+)"/.exec(tag)?.[1];
             if (href) preloads.push(href);
@@ -207,7 +207,7 @@ export default defineConfig(({ isSsrBuild, mode }) => {
             /<script type="module"[^>]*\ssrc="([^"]+)"[^>]*><\/script>/,
             (_tag, src: string) =>
               // Same chunks as the removed modulepreload hints, requested in parallel after paint.
-              `<script>(function(){var p=${JSON.stringify(preloads)};function go(){p.forEach(function(h){var l=document.createElement('link');l.rel='modulepreload';l.crossOrigin='';l.href=h;document.head.appendChild(l)});var s=document.createElement('script');s.type='module';s.crossOrigin='';s.src=${JSON.stringify(src)};document.head.appendChild(s)}function later(){requestAnimationFrame(function(){requestAnimationFrame(function(){setTimeout(go,0)})})}document.readyState==='loading'?document.addEventListener('DOMContentLoaded',later):later()})()</script>`,
+              `<script>(function(){var p=${JSON.stringify(preloads)};function go(){p.forEach(function(h){var l=document.createElement('link');l.rel='modulepreload';l.crossOrigin='';l.href=h;document.head.appendChild(l)});var s=document.createElement('script');s.type='module';s.crossOrigin='';s.src=${JSON.stringify(src)};document.head.appendChild(s)}var done=false;function run(){if(!done){done=true;setTimeout(go,0)}}try{new PerformanceObserver(function(l){if(l.getEntriesByName('first-contentful-paint').length)run()}).observe({type:'paint',buffered:true})}catch(e){}setTimeout(run,3000)})()</script>`,
           );
         const page = apiPages.get(route);
         if (!page || !apiItems[page.api]) return html;
