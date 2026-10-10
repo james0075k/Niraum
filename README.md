@@ -94,7 +94,7 @@ Prompt: [`docs/content/PHASE_4.5_CONTENT_INTEGRATION_PROMPT.md`](docs/content/PH
 - [ ] Founding year, licences, registration numbers, leadership, real projects and figures
 - [ ] Hero video and more site photography
 - [ ] Legal review of the Privacy, Terms and Cookie pages
-- [ ] Phase 4.5 confirm list: one legal name, Katujpani lease holder and credit, public phone,
+- [ ] Phase 4.5 confirm list: Katujpani lease holder and credit, public phone,
       WGS-84 mine pin, land figures, product sizes/minimum order/delivery, permission to publish
       sample-level assay data, consent for people in field photos, original photos + founder
       portrait, EIA/IEE commitments, Nepali review

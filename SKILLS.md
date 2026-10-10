@@ -15,7 +15,7 @@
 
 | Item             | Value                                                                                                                                 |
 | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| Company          | Niraum Metals Pvt. Ltd. _(confirm legal name — letterhead footer says "Limited")_                                                     |
+| Company          | Niraum Metals Pvt. Ltd. (NIRAUM METALS PVT. LTD. — confirmed legal name)                                                              |
 | Motto            | Strength Forged For Generations                                                                                                       |
 | Address          | Lalitpur-13, Nepal                                                                                                                    |
 | Purpose          | Corporate website for a Nepal mining & metals company (iron ore, metal minerals, stone & aggregates) with an admin panel              |
@@ -367,7 +367,6 @@ Status values: Not started · In progress · Review · Done · Blocked
 
 ## 8. Known issues / tech debt
 
-- Legal name inconsistency: "Pvt. Ltd." vs "Limited" — resolve before launch.
 - `useContentList` only falls back to local content on errors/404. Once the API answers, an
   **empty** collection renders an empty page — run `pnpm seed` on every fresh database.
 - Sample content lives twice: `frontend/src/content` (offline fallback) and
@@ -452,7 +451,7 @@ Status values: Not started · In progress · Review · Done · Blocked
 
 1. Decide on mobile performance (SKILLS §8): defer framer-motion / GSAP / Lenis after first
    paint or trim mobile motion, then re-run Lighthouse on `/en` and `/ne` (target ≥ 90).
-2. Get the founder to answer the confirm list (§11) — legal name, lease holder, phone, WGS-84 pin.
+2. Get the founder to answer the confirm list (§11) — lease holder, phone, WGS-84 pin.
 3. Native-speaker review of the Nepali strings.
 4. Phase 5 — admin panel on the documented `/admin` endpoints, plus the 4.5 managers (resolve
    `/images/*.jpg` refs with `withLocalImages` in previews).
@@ -522,7 +521,6 @@ code.
 
 ### Phase 4.5 confirm list (blueprint [CONFIRM] items — admin-editable placeholders until answered)
 
-- [ ] One legal name (Pvt. Ltd. vs Limited)
 - [ ] Lease ownership of Katujpani and how to credit Ms Niru Upreti
 - [ ] Public phone/WhatsApp (+977 985 109 0957?) and email (niraummetals@gmail.com)
 - [ ] WGS-84 lat/lng of the mine main point

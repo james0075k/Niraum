@@ -10,7 +10,7 @@
 
 | Field                 | Value                                                                                                                        |
 | --------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| Legal name            | NIRAUM METALS PVT. LTD. **[CONFIRM — letterhead footer says "Niraum Metals Limited"; use one name everywhere]**              |
+| Legal name            | NIRAUM METALS PVT. LTD. (short form: Niraum Metals Pvt. Ltd.) — confirmed 10 Oct 2026                                        |
 | Tagline               | Strength Forged For Generations                                                                                              |
 | Established           | 2026                                                                                                                         |
 | Head office           | Lalitpur-13, Nepal                                                                                                           |
@@ -243,7 +243,6 @@ Use `/en/...` and `/ne/...` URLs with `hreflang` links, `Organization` + `LocalB
 
 ## 9. Before launch — confirm list
 
-- [ ] One legal name (Pvt. Ltd. vs Limited)
 - [ ] Lease ownership and how to credit Ms Niru Upreti
 - [ ] Public phone number and email
 - [ ] WGS-84 coordinates for the mine pin
