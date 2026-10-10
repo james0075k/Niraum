@@ -10,6 +10,7 @@ import {
 import { assayController } from '../controllers/assay.controller.js';
 import { authController } from '../controllers/auth.controller.js';
 import { contentController, type ContentSchemas } from '../controllers/content.controller.js';
+import { dashboardController } from '../controllers/dashboard.controller.js';
 import { inquiryController } from '../controllers/inquiry.controller.js';
 import { publicController } from '../controllers/public.controller.js';
 import { settingsController } from '../controllers/settings.controller.js';
@@ -187,6 +188,8 @@ export function createApiRouter(limits: RateLimiters): Router {
     admin.delete(`/${r.path}/:id`, content, c.remove);
     admin.post(`/${r.path}/:id/restore`, content, c.restore);
   }
+
+  admin.get('/dashboard', content, dashboardController.stats);
 
   admin.get('/media', content, mediaController.list);
   admin.post('/media', content, uploadSingle('file', 50 * MB), mediaController.upload);

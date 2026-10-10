@@ -416,6 +416,12 @@ export function buildOpenApiSpec() {
     status: 200,
     auth: true,
   });
+  add('get', '/admin/dashboard', {
+    tag: 'Dashboard',
+    summary:
+      'Content counts + assay summary for every admin role; admin+ also get `inbox` (new inquiries/messages/applications) and the last 10 audit entries (`recent`)',
+    auth: true,
+  });
   add('get', '/admin/audit', {
     tag: 'Audit',
     summary: 'Audit log',

@@ -84,16 +84,17 @@ a **private** raw file (`niraum/applications/`); admins get a short-lived signed
 
 ## Admin endpoints (`/admin`, cookie auth)
 
-| Resource                                        | Routes                                                                                                          | Roles      |
-| ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | ---------- |
-| `projects`, `posts`, `jobs`, `team`, `services` | `GET /` · `POST /` · `GET /:id` · `PUT /:id` · `DELETE /:id` (soft) · `POST /:id/restore`                       | editor+    |
-| `media`                                         | `GET /?type=image\|video\|document` · `POST /` (multipart `file`, `alt`) · `PATCH /:id { alt }` · `DELETE /:id` | editor+    |
-| `settings`                                      | `GET /` · `PUT /` · `POST /geocode { address }`                                                                 | admin+     |
-| `messages`                                      | `GET /?status=` · `PATCH /:id { status: new\|read\|replied\|spam }`                                             | admin+     |
-| `applications`                                  | `GET /?status=` · `GET /:id` (+ signed `cvUrl`) · `PATCH /:id { status }`                                       | admin+     |
-| `audit`                                         | `GET /?entity=&entityId=&user=`                                                                                 | admin+     |
-| `rebuild`                                       | `POST /` — call the frontend deploy hook now                                                                    | admin+     |
-| `users`                                         | `GET /` · `POST /` · `PUT /:id { name?, role?, isActive? }` · `DELETE /:id` (deactivate)                        | superadmin |
+| Resource                                        | Routes                                                                                                                                       | Roles      |
+| ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| `projects`, `posts`, `jobs`, `team`, `services` | `GET /` · `POST /` · `GET /:id` · `PUT /:id` · `DELETE /:id` (soft) · `POST /:id/restore`                                                    | editor+    |
+| `media`                                         | `GET /?type=image\|video\|document` · `POST /` (multipart `file`, `alt`) · `PATCH /:id { alt }` · `DELETE /:id`                              | editor+    |
+| `settings`                                      | `GET /` · `PUT /` · `POST /geocode { address }`                                                                                              | admin+     |
+| `messages`                                      | `GET /?status=` · `PATCH /:id { status: new\|read\|replied\|spam }`                                                                          | admin+     |
+| `applications`                                  | `GET /?status=` · `GET /:id` (+ signed `cvUrl`) · `PATCH /:id { status }`                                                                    | admin+     |
+| `dashboard`                                     | `GET /` — content counts + assay summary; admin+ also get `inbox` (new inquiries/messages/applications) and `recent` (last 10 audit entries) | editor+    |
+| `audit`                                         | `GET /?entity=&entityId=&user=`                                                                                                              | admin+     |
+| `rebuild`                                       | `POST /` — call the frontend deploy hook now                                                                                                 | admin+     |
+| `users`                                         | `GET /` · `POST /` · `PUT /:id { name?, role?, isActive? }` · `DELETE /:id` (deactivate)                                                     | superadmin |
 
 Roles: **editor** — content and media · **admin** — + settings, inbox, audit, rebuild ·
 **superadmin** — + users. The last active superadmin can't be demoted or deactivated, and
