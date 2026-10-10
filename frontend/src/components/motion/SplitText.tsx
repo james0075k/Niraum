@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { Fragment, type ReactNode } from 'react';
 import { ease } from '@/lib/motion';
 import { cn } from '@/lib/utils';
 import { usePrefersReducedMotion } from '@/hooks/useMediaQuery';
@@ -18,6 +19,10 @@ interface SplitTextProps {
 /**
  * Word-by-word heading reveal. The full sentence stays in the DOM as real text
  * (screen readers and crawlers read it normally); reduced motion renders it static.
+ *
+ * Each word is its own inline-block and the space between words is a plain text node
+ * *outside* the inline-blocks. (A space inside an inline-block is trailing whitespace and the
+ * browser drops it — that produced "StrengthForgedFor Generations".)
  */
 export function SplitText({
   text,
@@ -30,16 +35,22 @@ export function SplitText({
 }: SplitTextProps) {
   const reduce = usePrefersReducedMotion();
   const Tag = as;
-  const words = text.split(' ');
+  const words = text.trim().split(/\s+/);
+
+  /** word, space, word, space … — the space never sits inside an inline-block. */
+  const join = (render: (word: string, i: number) => ReactNode) =>
+    words.map((w, i) => (
+      <Fragment key={i}>
+        {render(w, i)}
+        {i < words.length - 1 && ' '}
+      </Fragment>
+    ));
 
   if (reduce) {
     return (
       <Tag id={id} className={className}>
-        {words.map((w, i) => (
-          <span key={i} className={cn(highlight.includes(i) && 'text-copper')}>
-            {w}
-            {i < words.length - 1 && ' '}
-          </span>
+        {join((w, i) => (
+          <span className={cn(highlight.includes(i) && 'text-copper')}>{w}</span>
         ))}
       </Tag>
     );
@@ -50,8 +61,8 @@ export function SplitText({
   if (immediate) {
     return (
       <Tag id={id} className={className}>
-        {words.map((w, i) => (
-          <span key={i} className="inline-block overflow-hidden pb-[0.08em] align-bottom">
+        {join((w, i) => (
+          <span className="inline-block overflow-hidden pb-[0.08em] align-bottom">
             <span
               className={cn(
                 'inline-block duration-700 ease-brand animate-in fade-in slide-in-from-bottom-full fill-mode-both motion-reduce:animate-none',
@@ -61,28 +72,23 @@ export function SplitText({
             >
               {w}
             </span>
-            {i < words.length - 1 && ' '}
           </span>
         ))}
       </Tag>
     );
   }
 
-  const trigger = {
-    whileInView: 'visible' as const,
-    viewport: { once: true, margin: '0px 0px -10% 0px' },
-  };
-
   return (
     <Tag id={id} className={className}>
       <motion.span
         className="inline"
         initial="hidden"
-        {...trigger}
+        whileInView="visible"
+        viewport={{ once: true, margin: '0px 0px -10% 0px' }}
         transition={{ staggerChildren: 0.07, delayChildren: delay }}
       >
-        {words.map((w, i) => (
-          <span key={i} className="inline-block overflow-hidden pb-[0.08em] align-bottom">
+        {join((w, i) => (
+          <span className="inline-block overflow-hidden pb-[0.08em] align-bottom">
             <motion.span
               className={cn('inline-block', highlight.includes(i) && 'text-copper')}
               variants={{
@@ -92,7 +98,6 @@ export function SplitText({
             >
               {w}
             </motion.span>
-            {i < words.length - 1 && ' '}
           </span>
         ))}
       </motion.span>
