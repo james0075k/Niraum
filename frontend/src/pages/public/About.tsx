@@ -1,4 +1,4 @@
-import { Award, Linkedin, UserRound } from 'lucide-react';
+import { Award } from 'lucide-react';
 import { Img } from '@/components/common/Img';
 import { PageHero } from '@/components/common/PageHero';
 import { SectionHeading } from '@/components/common/SectionHeading';
@@ -6,34 +6,34 @@ import { TbcText } from '@/components/common/Tbc';
 import { Reveal, RevealGroup, RevealItem } from '@/components/motion/Reveal';
 import { TiltCard } from '@/components/motion/TiltCard';
 import { CtaBand } from '@/components/sections/CtaBand';
+import { FounderCard } from '@/components/sections/FounderCard';
 import { Seo } from '@/components/seo/Seo';
-import { Badge } from '@/components/ui/badge';
-import { certifications, milestones, values } from '@/content/about';
+import { certifications, milestones } from '@/content/about';
 import { images } from '@/content/images';
 import { siteImages } from '@/content/siteImages';
-import { useTeam } from '@/features/team/useTeam';
+import { useFounder } from '@/features/team/useTeam';
+import { useT } from '@/hooks/useLang';
 
-const crumbs = [
-  { name: 'Home', path: '/' },
-  { name: 'About', path: '/about' },
-];
-
-/** Primary keyword: "Nepal mining company". */
+/** Primary keyword: "Nepal mining company". Copy: blueprint §5 About. */
 export default function About() {
-  const { data: team } = useTeam();
+  const { t } = useT(['about', 'common']);
+  const founder = useFounder();
+  const crumbs = [
+    { name: t('common:nav.home'), path: '/' },
+    { name: t('common:nav.about'), path: '/about' },
+  ];
+  const values = (['safety', 'integrity', 'community', 'longTerm'] as const).map((k) => ({
+    title: t(`values.${k}`),
+    body: t(`values.${k}Body`),
+  }));
 
   return (
     <>
-      <Seo
-        title="About Our Nepal Mining Company"
-        description="Meet Niraum Metals, a Nepal mining company in Lalitpur supplying iron ore, metal minerals and aggregates with safety and engineering discipline."
-        crumbs={crumbs}
-      />
+      <Seo title={t('seo.title')} description={t('seo.description')} crumbs={crumbs} />
       <PageHero
-        eyebrow="About Niraum Metals"
-        title="A Nepal mining company built to last."
-        highlight={[5, 6]}
-        intro="Rooted in Lalitpur, working across Nepal. We find, extract and deliver the minerals that roads, plants and buildings depend on."
+        eyebrow={t('hero.eyebrow')}
+        title={t('hero.title')}
+        intro={t('hero.intro')}
         image={siteImages.heroSlope}
         crumbs={crumbs}
       />
@@ -43,25 +43,13 @@ export default function About() {
           <div>
             <SectionHeading
               id="story-title"
-              eyebrow="Our story"
-              title="Engineering first. Promises second."
-              highlight={[0, 1]}
+              eyebrow={t('story.eyebrow')}
+              title={t('story.title')}
               className="!mb-8"
             />
             <Reveal className="prose-site">
-              <p>
-                Niraum Metals Pvt. Ltd. is a Nepal mining company registered in Lalitpur-13. We work
-                in iron ore, metal minerals and stone aggregates — the raw materials of Nepal&apos;s
-                growth.
-              </p>
-              <p>
-                Our approach is simple: measure before you move. Every project starts with geology,
-                sampling and honest data, and every tonne leaves with paperwork you can trust.
-              </p>
-              <p>
-                Founded in <TbcText text="[PLACEHOLDER: Founding year]" />. Our story will be filled
-                in as the company shares its history.
-              </p>
+              <p>{t('story.p1')}</p>
+              <p>{t('story.p2')}</p>
             </Reveal>
           </div>
           <Reveal className="relative">
@@ -69,10 +57,7 @@ export default function About() {
               <Img image={images.sampleCh8} sizes="(min-width: 1024px) 50vw, 100vw" />
             </div>
             <div className="glass absolute -bottom-6 -left-4 max-w-[16rem] p-5 sm:-left-8">
-              <p className="text-sm font-semibold text-foreground">
-                Strength Forged For Generations
-              </p>
-              <p className="mt-1 text-xs text-muted-foreground">Our motto, and our standard.</p>
+              <p className="text-sm font-semibold text-foreground">{t('home:hero.tagline')}</p>
             </div>
           </Reveal>
         </div>
@@ -82,12 +67,12 @@ export default function About() {
         <div className="container-site">
           <SectionHeading
             id="mission-title"
-            eyebrow="Mission, vision & values"
-            title="What guides every decision."
-            highlight={[2, 3]}
+            eyebrow={t('values.eyebrow')}
+            title={t('values.title')}
             align="center"
+            intro={`${t('values.mission')}: ${t('values.missionBody')}`}
           />
-          <RevealGroup as="ul" className="grid gap-5 md:grid-cols-3">
+          <RevealGroup as="ul" className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {values.map((v) => (
               <RevealItem as="li" key={v.title}>
                 <TiltCard className="glass h-full p-7">
@@ -101,64 +86,28 @@ export default function About() {
       </section>
 
       <section id="leadership" aria-labelledby="leadership-title" className="section grain">
-        <div className="container-site">
+        <div className="container-site max-w-5xl">
           <SectionHeading
             id="leadership-title"
-            eyebrow="Leadership"
-            title="The people accountable."
-            highlight={[2]}
-            intro="Leadership profiles will appear here once confirmed."
+            eyebrow={t('founder.eyebrow')}
+            title={t('founder.title')}
           />
-          <RevealGroup as="ul" className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {team.map((m) => (
-              <RevealItem as="li" key={`${m.name}-${m.order}`}>
-                <article className="glass group relative h-full overflow-hidden" tabIndex={0}>
-                  <div className="relative aspect-[4/5] bg-gradient-to-br from-charcoal to-graphite">
-                    {m.photo ? (
-                      <Img image={m.photo} sizes="(min-width: 1024px) 25vw, 50vw" />
-                    ) : (
-                      <UserRound
-                        className="absolute inset-0 m-auto h-20 w-20 text-silver/40"
-                        aria-hidden="true"
-                      />
-                    )}
-                    {/* Bio reveals on hover/focus; always visible on touch. */}
-                    <div className="dark absolute inset-0 flex items-end bg-gradient-to-t from-black/85 via-black/55 to-transparent p-5 transition-opacity duration-500 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-focus:opacity-100">
-                      <p className="text-sm text-silver">
-                        <TbcText text={m.bio} />
-                      </p>
-                    </div>
-                    {m.isSample && (
-                      <Badge className="absolute left-3 top-3 bg-black/50 text-copper-light">
-                        Placeholder
-                      </Badge>
-                    )}
-                  </div>
-                  <div className="flex items-start justify-between gap-2 p-5">
-                    <div>
-                      <h3 className="font-semibold text-foreground">
-                        <TbcText text={m.name} />
-                      </h3>
-                      <p className="mt-1 text-sm text-muted-foreground">
-                        <TbcText text={m.role} />
-                      </p>
-                    </div>
-                    {m.linkedin && (
-                      <a
-                        href={m.linkedin}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={`${m.name} on LinkedIn`}
-                        className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-accent"
-                      >
-                        <Linkedin className="h-4 w-4" aria-hidden="true" />
-                      </a>
-                    )}
-                  </div>
-                </article>
-              </RevealItem>
-            ))}
-          </RevealGroup>
+          <FounderCard member={founder} />
+        </div>
+      </section>
+
+      <section
+        id="partner"
+        aria-labelledby="partner-title"
+        className="texture-hematite section dark bg-graphite text-offwhite"
+      >
+        <div className="container-site max-w-4xl">
+          <SectionHeading
+            id="partner-title"
+            eyebrow={t('partner.eyebrow')}
+            title={t('partner.title')}
+            intro={t('partner.body')}
+          />
         </div>
       </section>
 
@@ -212,7 +161,12 @@ export default function About() {
         </div>
       </section>
 
-      <CtaBand />
+      <CtaBand
+        title={t('home:cta.title')}
+        body={t('home:cta.body')}
+        primaryTo="/contact?topic=supply#inquiry"
+        primaryLabel={t('common:cta.bulkSupply')}
+      />
     </>
   );
 }

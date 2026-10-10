@@ -1,0 +1,36 @@
+{
+  "seo": {
+    "title": "Hematite Ore for Cement Plants",
+    "description": "Industrial hematite iron ore (Fe₂O₃) from Katujpani, Makawanpur: iron corrective for cement plants and evaluation lots for foundry buyers. Typical chemistry inside."
+  },
+  "hero": {
+    "eyebrow": "Products",
+    "title": "Industrial hematite iron ore.",
+    "intro": "Fe₂O₃ from the Katujpani deposit, Makawanpur."
+  },
+  "applications": {
+    "eyebrow": "Applications",
+    "title": "Where it is used."
+  },
+  "chemistry": {
+    "eyebrow": "Typical chemistry",
+    "title": "The real numbers.",
+    "oxide": "Component",
+    "value": "Value",
+    "basis": "Basis",
+    "caption": "Typical chemistry of Katujpani hematite ore",
+    "note": "Deposit average 23.48% Fe with high silica; selected samples reach higher grades. See Technical Data for every section."
+  },
+  "supply": {
+    "eyebrow": "Supply",
+    "title": "Sizes, orders and delivery.",
+    "sizes": "Sizes",
+    "minOrder": "Minimum order",
+    "packing": "Packing & delivery",
+    "tbc": "To be confirmed — ask us for current terms."
+  },
+  "cta": {
+    "title": "Tell us your tonnage and specification.",
+    "body": "We reply with availability, samples and a quote."
+  }
+}

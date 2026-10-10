@@ -84,11 +84,11 @@ export const processSteps = [
 export const navLinks = [
   { to: '/', label: 'Home', key: 'home' },
   { to: '/about', label: 'About', key: 'about' },
-  { to: '/operations', label: 'Operations', key: 'operations' },
-  { to: '/projects', label: 'Projects', key: 'projects' },
+  { to: '/our-project', label: 'Our Project', key: 'project' },
+  { to: '/products', label: 'Products', key: 'products' },
+  { to: '/technical-data', label: 'Technical Data', key: 'technical' },
   { to: '/sustainability', label: 'Sustainability', key: 'sustainability' },
-  { to: '/news', label: 'News', key: 'news' },
-  { to: '/careers', label: 'Careers', key: 'careers' },
+  { to: '/investors', label: 'Investors', key: 'investors' },
   { to: '/contact', label: 'Contact', key: 'contact' },
 ] as const;
 

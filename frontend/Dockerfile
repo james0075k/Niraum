@@ -7,6 +7,8 @@ COPY pnpm-lock.yaml pnpm-workspace.yaml package.json .npmrc tsconfig.base.json .
 COPY frontend/package.json frontend/
 RUN pnpm install --frozen-lockfile --filter frontend...
 COPY frontend frontend
+# Phase 4.5: the site bundles the assay data (docs/content/data/assay_data.json).
+COPY docs/content/data docs/content/data
 ARG VITE_API_URL=/api/v1
 ARG VITE_SITE_URL
 ARG SSG_API_URL

@@ -1,0 +1,74 @@
+{
+  "seo": {
+    "title": "Iron Ore Supplier in Nepal",
+    "description": "Hematite iron ore from the Katujpani deposit, Makawanpur — supplied to Nepal's cement and metals industry. Request bulk supply or view the assay data."
+  },
+  "hero": {
+    "eyebrow": "Katujpani · Makawanpur · Nepal",
+    "tagline": "Strength Forged For Generations",
+    "sub": "Hematite iron ore from the Katujpani deposit, Makawanpur — supplied to Nepal's cement and metals industry.",
+    "scroll": "Scroll to key figures"
+  },
+  "stats": {
+    "title": "Katujpani in numbers",
+    "fe2o3Avg": "Deposit average Fe₂O₃",
+    "topSample": "Top sample Fe₂O₃ ({{sample}})",
+    "sampled": "Sampled across 5 sections",
+    "zones": "Mapped deposit zones (A, B, C)"
+  },
+  "supply": {
+    "eyebrow": "What we supply",
+    "title": "Hematite ore for Nepal's industry.",
+    "cement": {
+      "title": "Hematite ore for cement plants",
+      "body": "An iron corrective for the raw mix: it adjusts the iron and silica moduli and acts as a flux."
+    },
+    "foundry": {
+      "title": "Evaluation lots for foundry and metallurgical buyers",
+      "body": "Supplied for evaluation and blending. Suitability depends on your grade requirements."
+    },
+    "assay": {
+      "title": "Sampling and assay support",
+      "body": "Full assay sheets and samples are available on request."
+    }
+  },
+  "project": {
+    "eyebrow": "The Katujpani Project",
+    "title": "An iron deposit in Makawanpur, mapped and sampled.",
+    "body": "Katujpani lies in Bakaiya Gaupalika-09, Makawanpur District, Bagmati Province. Field mapping identified three deposit zones — Areas A, B and C — and grab, chip and channel sampling covered 62.55 m across five sections.",
+    "cta": "Explore Our Project"
+  },
+  "timeline": {
+    "eyebrow": "How we work",
+    "title": "From field to supply.",
+    "intro": "Each stage hands verified data to the next.",
+    "survey": {
+      "title": "Survey",
+      "body": "Topographic and geological mapping of the lease area."
+    },
+    "sampling": {
+      "title": "Sampling",
+      "body": "Grab, chip and channel samples across the deposit zones."
+    },
+    "assay": {
+      "title": "Laboratory assay",
+      "body": "Samples analysed for Fe, Fe₂O₃, SiO₂ and Al₂O₃."
+    },
+    "permitting": {
+      "title": "Permitting",
+      "body": "Mine scheme prepared under Department of Mines and Geology (DMG) guidelines."
+    },
+    "extraction": {
+      "title": "Extraction",
+      "body": "Planned quarrying within the approved area."
+    },
+    "delivery": {
+      "title": "Delivery",
+      "body": "Ore supplied to cement plants and metals buyers."
+    }
+  },
+  "cta": {
+    "title": "Need iron ore for your kiln mix?",
+    "body": "Tell us your tonnage and specification."
+  }
+}

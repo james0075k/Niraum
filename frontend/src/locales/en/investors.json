@@ -1,0 +1,37 @@
+{
+  "seo": {
+    "title": "Mining Investment in Nepal",
+    "description": "Invest in the Katujpani iron project, Makawanpur. Project overview, milestones, founder background and a request form for the investor deck."
+  },
+  "hero": {
+    "eyebrow": "Investors",
+    "title": "Invest in Nepal’s iron ore.",
+    "intro": "The Katujpani iron project: studies complete, development toward commercial mining in progress."
+  },
+  "overview": {
+    "eyebrow": "Overview",
+    "title": "The project in brief.",
+    "deposit": "Deposit",
+    "location": "Location",
+    "product": "Product",
+    "grade": "Deposit average",
+    "status": "Status"
+  },
+  "milestones": {
+    "eyebrow": "Milestones",
+    "title": "Our path.",
+    "est": "Niraum Metals established in Lalitpur.",
+    "studies": "Government procedures and geological studies completed.",
+    "development": "Development toward commercial mining in progress.",
+    "now": "Now"
+  },
+  "founder": {
+    "eyebrow": "Founder",
+    "title": "Who is behind the project."
+  },
+  "deck": {
+    "eyebrow": "Investor deck",
+    "title": "Request the investor deck.",
+    "body": "Tell us about your interest and we will send the project deck. No financial projections are published on this site."
+  }
+}

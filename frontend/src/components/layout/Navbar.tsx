@@ -1,18 +1,14 @@
 import { motion } from 'framer-motion';
 import { Menu } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 import { Link, NavLink } from '@/components/common/LangLink';
 import { Logo } from '@/components/common/Logo';
 import { MagneticButton } from '@/components/motion/MagneticButton';
 import { Button } from '@/components/ui/button';
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu';
 import {
   Sheet,
@@ -22,8 +18,6 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { navLinks } from '@/content/site';
-import { stripLang } from '@/app/i18n';
-import { useServices } from '@/features/services/useServices';
 import { useT } from '@/hooks/useLang';
 import { ease } from '@/lib/motion';
 import { cn } from '@/lib/utils';
@@ -43,8 +37,6 @@ const linkClass = ({ isActive }: { isActive: boolean }) =>
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const pathname = stripLang(useLocation().pathname);
-  const { data: services } = useServices();
   const { t } = useT();
 
   useEffect(() => {
@@ -68,58 +60,13 @@ export function Navbar() {
 
         <NavigationMenu className="hidden lg:flex" aria-label={t('nav.main')}>
           <NavigationMenuList className="gap-3 xl:gap-5">
-            {navLinks.map((l) =>
-              l.to === '/operations' ? (
-                <NavigationMenuItem key={l.to}>
-                  <NavigationMenuTrigger
-                    className={cn(
-                      'h-11 bg-transparent px-1 text-sm font-medium text-foreground/85 hover:bg-transparent hover:text-foreground focus:bg-transparent data-[state=open]:bg-transparent',
-                      pathname.startsWith('/operations') && 'text-foreground',
-                    )}
-                  >
-                    {t('nav.operations')}
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <ul className="grid w-[520px] grid-cols-2 gap-2 p-3">
-                      <li className="col-span-2">
-                        <NavigationMenuLink asChild>
-                          <Link
-                            to="/operations"
-                            className="block rounded-xl p-3 text-foreground hover:bg-accent"
-                          >
-                            <span className="text-sm font-semibold">All operations</span>
-                            <span className="mt-1 block text-xs text-muted-foreground">
-                              From exploration to delivery
-                            </span>
-                          </Link>
-                        </NavigationMenuLink>
-                      </li>
-                      {services.map((s) => (
-                        <li key={s.slug}>
-                          <NavigationMenuLink asChild>
-                            <Link
-                              to={`/operations#${s.slug}`}
-                              className="block rounded-xl p-3 text-foreground hover:bg-accent"
-                            >
-                              <span className="text-sm font-semibold">{s.title}</span>
-                              <span className="mt-1 line-clamp-2 block text-xs text-muted-foreground">
-                                {s.summary}
-                              </span>
-                            </Link>
-                          </NavigationMenuLink>
-                        </li>
-                      ))}
-                    </ul>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-              ) : (
-                <NavigationMenuItem key={l.to}>
-                  <NavLink to={l.to} end={l.to === '/'} className={linkClass}>
-                    {t(`nav.${l.key}`)}
-                  </NavLink>
-                </NavigationMenuItem>
-              ),
-            )}
+            {navLinks.map((l) => (
+              <NavigationMenuItem key={l.to}>
+                <NavLink to={l.to} end={l.to === '/'} className={linkClass}>
+                  {t(`nav.${l.key}`)}
+                </NavLink>
+              </NavigationMenuItem>
+            ))}
           </NavigationMenuList>
         </NavigationMenu>
 

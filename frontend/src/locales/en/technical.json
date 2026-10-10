@@ -1,0 +1,61 @@
+{
+  "seo": {
+    "title": "Iron Ore Assay and Grade Data",
+    "description": "Katujpani iron ore assay data: weighted average grade by section (Table 14), Fe₂O₃ by section chart, sampling method and data source."
+  },
+  "hero": {
+    "eyebrow": "Technical Data",
+    "title": "Assay and grade data.",
+    "intro": "Every number below comes from field sampling reported in the mine scheme."
+  },
+  "key": {
+    "eyebrow": "Key figures",
+    "title": "Deposit at a glance.",
+    "fe2o3": "Weighted average Fe₂O₃",
+    "fe": "Weighted average Fe",
+    "sio2Al2o3": "Weighted average SiO₂ / Al₂O₃",
+    "top": "Highest grab sample ({{sample}})",
+    "grab": "Grab samples, Areas B & C — {{n}} samples, average Fe₂O₃",
+    "thickness": "Total sample thickness, 5 sections"
+  },
+  "table": {
+    "eyebrow": "Table 14",
+    "title": "Weighted average grade by section.",
+    "caption": "Length-weighted average grade by section, Katujpani deposit",
+    "section": "Section",
+    "thickness": "Thickness (m)",
+    "overall": "Weighted average"
+  },
+  "chart": {
+    "title": "Fe₂O₃ by section",
+    "desc": "Bar chart of the length-weighted Fe₂O₃ grade for each section; the table above lists the same values.",
+    "axis": "Fe₂O₃ (%)"
+  },
+  "samples": {
+    "eyebrow": "Sample data",
+    "title": "Sample-level assays.",
+    "filter": "Dataset",
+    "all": "All datasets",
+    "sortFe": "Sort by Fe",
+    "sample": "Sample",
+    "dataset": "Dataset",
+    "length": "Length (m)",
+    "caption": "Sample-level assay results",
+    "count": "{{count}} samples",
+    "privateTitle": "Full sample data on request.",
+    "privateBody": "Grab, chip and channel sample sheets are shared with buyers and investors on request.",
+    "datasets": {
+      "grab_B_C": "Grab, Areas B & C",
+      "grab_A": "Grab, Area A quarry",
+      "channel_B": "Channel, Section B",
+      "channel_C": "Channel, Section C",
+      "channel_KXY": "Channel, Sections K/X/Y"
+    }
+  },
+  "method": {
+    "eyebrow": "Sampling method",
+    "title": "How the samples were taken.",
+    "body": "Geologists cut channel samples along painted lines across the ore face, took chip and grab samples from outcrops and boulders, and bagged and labelled each sample for laboratory analysis. Sample lengths are recorded so that section grades can be length-weighted."
+  },
+  "request": "Request full assay report"
+}

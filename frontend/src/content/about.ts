@@ -28,7 +28,12 @@ export const values = [
 ];
 
 export const milestones = [
-  { year: tbc('Year'), title: 'Company founded', body: tbc('Founding story') },
+  // Established 2026, Lalitpur-13 (blueprint §1).
+  {
+    year: '2026',
+    title: 'Company established',
+    body: 'Niraum Metals established in Lalitpur, Nepal.',
+  },
   { year: tbc('Year'), title: 'First exploration licence', body: tbc('Licence details') },
   { year: tbc('Year'), title: 'First supply contract', body: tbc('Contract details') },
   { year: '2026', title: 'Website launched', body: 'Niraum Metals goes online.' },

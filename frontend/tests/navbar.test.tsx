@@ -14,13 +14,15 @@ describe('Navbar', () => {
     // Phase 4.5: public pages live under /en and /ne.
     renderWithProviders(<Navbar />, { route: '/en/about' });
     const nav = screen.getByRole('navigation', { name: 'Main' });
+    // Phase 4.5 navigation order (blueprint §5).
     for (const label of [
       'Home',
       'About',
-      'Projects',
+      'Our Project',
+      'Products',
+      'Technical Data',
       'Sustainability',
-      'News',
-      'Careers',
+      'Investors',
       'Contact',
     ]) {
       expect(within(nav).getByRole('link', { name: label })).toBeInTheDocument();
@@ -30,7 +32,10 @@ describe('Navbar', () => {
       'page',
     );
     expect(within(nav).getByRole('link', { name: 'Home' })).not.toHaveAttribute('aria-current');
-    expect(within(nav).getByRole('button', { name: /Operations/ })).toBeInTheDocument();
+    expect(within(nav).getByRole('link', { name: 'Technical Data' })).toHaveAttribute(
+      'href',
+      '/en/technical-data',
+    );
   });
 
   it('links "Request a Quote" to the contact form with the subject prefilled', () => {

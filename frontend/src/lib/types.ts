@@ -49,6 +49,9 @@ export interface SiteSettings {
   seo: { defaultTitle: string; defaultDescription: string; ogImage: string; keywords: string[] };
   footer: { about: string };
   theme: { defaultMode: 'light' | 'dark' | 'system' };
+  /** Phase 4.5: sample-level assay rows are public only when on. */
+  publicAssayDetail?: boolean;
+  defaultLanguage?: 'en' | 'ne';
 }
 
 export type Mineral = 'iron-ore' | 'metal-minerals' | 'stone-aggregates';
@@ -110,12 +113,24 @@ export interface TeamMember {
   order: number;
   linkedin: string | null;
   isSample?: boolean;
+  /** Phase 4.5 founder card. */
+  isFounder?: boolean;
+  otherVentures?: Venture[];
+}
+
+export interface Venture {
+  company: string;
+  role: string;
+  sector: string;
+  since: number | null;
 }
 
 export interface Stat {
   label: string;
   value: number | null;
   suffix?: string;
+  /** Decimal places (assay percentages use 2). */
+  decimals?: number;
   /** Shown instead of a number while the real figure is unknown. */
   placeholder?: string;
 }
@@ -131,4 +146,97 @@ export interface Service {
   stats: Stat[];
   gallery: ImageSource[];
   order: number;
+}
+
+// ── Phase 4.5 ───────────────────────────────────────────────────────────────
+
+export interface ChemistryRow {
+  oxide: string;
+  value: number;
+  unit: string;
+  basis: string;
+}
+
+export interface Product {
+  name: string;
+  slug: string;
+  chemicalFormula: string;
+  summary: string;
+  applications: { title: string; body: string }[];
+  typicalChemistry: ChemistryRow[];
+  /** Empty until confirmed ([CONFIRM]). */
+  sizes: string[];
+  minOrder: string;
+  packing: string;
+  image: ImageSource | null;
+}
+
+export interface Deposit {
+  name: string;
+  slug: string;
+  summary: string;
+  location: {
+    district: string;
+    municipality: string;
+    ward: string;
+    province: string;
+    topoSheet: string;
+    easting: number | null;
+    northing: number | null;
+    spotHeightM: number | null;
+    /** WGS-84 only — null until confirmed. */
+    lat: number | null;
+    lng: number | null;
+  };
+  areas: { code: string; label: string }[];
+  land: {
+    surveyHa: number | null;
+    quarryHa: number | null;
+    topsoilYardHa: number | null;
+    wasteYardHa: number | null;
+    officeHa: number | null;
+    approachRoadHa: number | null;
+    totalLandUseHa: number | null;
+    landType: string;
+    confirmed: boolean;
+  };
+  geologySummary: string;
+  consultant: { name: string; address: string };
+  status: 'studies' | 'development' | 'operating';
+  statusText: string;
+}
+
+export interface AssaySection {
+  section: string;
+  thicknessM: number;
+  SiO2: number;
+  Fe: number;
+  Fe2O3: number;
+  Al2O3: number;
+}
+
+export type AssayDataset = 'grab_B_C' | 'grab_A' | 'channel_B' | 'channel_C' | 'channel_KXY';
+
+export interface AssaySummaryData {
+  sections: AssaySection[];
+  overall: AssaySection | null;
+  highlights: {
+    highestSample: { sample: string; dataset: AssayDataset; Fe: number; Fe2O3: number } | null;
+    grabBC: { n: number; Fe2O3: number } | null;
+  };
+  sampleCount: number;
+}
+
+export interface AssaySampleRow {
+  sample: string;
+  dataset: AssayDataset;
+  SiO2: number;
+  LOI: number | null;
+  Fe: number;
+  Fe2O3: number;
+  Al2O3: number;
+  CaO: number | null;
+  MgO: number | null;
+  lengthM: number | null;
+  note: string;
 }

@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { siteImages } from '@/content/siteImages';
 import { HERO_VIDEO_URL } from '@/content/placeholders';
 import { useSettings } from '@/features/settings/useSettings';
+import { useLang, useT } from '@/hooks/useLang';
 import { cn } from '@/lib/utils';
 
 /**
@@ -21,7 +22,11 @@ import { cn } from '@/lib/utils';
  */
 export function Hero() {
   const { motto } = useSettings();
+  const lang = useLang();
+  const { t } = useT(['home', 'common']);
   const poster = siteImages.heroSlope;
+  // The admin's motto is English-first; Nepali uses the reviewed tagline from the locale file.
+  const title = lang === 'ne' ? t('hero.tagline') : motto;
 
   return (
     <section
@@ -60,32 +65,31 @@ export function Hero() {
 
       <div className="container-site">
         <Reveal as="p" className="eyebrow mb-6 !text-copper-light" delay={0.1}>
-          Lalitpur, Nepal · Mining &amp; Metals
+          {t('hero.eyebrow')}
         </Reveal>
         <SplitText
           as="h1"
           id="hero-title"
-          text={motto}
-          highlight={[2, 3]}
+          text={title}
+          highlight={lang === 'ne' ? [1] : [2, 3]}
           immediate
           delay={0.2}
           className="max-w-5xl !text-[clamp(2.5rem,7vw,5.5rem)]"
         />
         <Reveal as="p" delay={0.55} className="mt-6 max-w-xl text-lg text-silver sm:text-xl">
-          A mining company in Nepal supplying iron ore, metal minerals and stone aggregates to the
-          people who build South Asia.
+          {t('hero.sub')}
         </Reveal>
         <Reveal delay={0.7} className="mt-10 flex flex-wrap gap-3">
           <MagneticButton>
             <Button asChild size="lg">
-              <Link to="/operations">
-                Explore Operations <ArrowRight aria-hidden="true" />
+              <Link to="/contact?topic=supply#inquiry">
+                {t('common:cta.bulkSupply')} <ArrowRight aria-hidden="true" />
               </Link>
             </Button>
           </MagneticButton>
           <MagneticButton>
             <Button asChild size="lg" variant="glass">
-              <Link to="/contact">Contact Us</Link>
+              <Link to="/technical-data">{t('common:cta.viewTechnical')}</Link>
             </Button>
           </MagneticButton>
         </Reveal>
@@ -94,7 +98,7 @@ export function Hero() {
       <a
         href="#stats"
         className="absolute bottom-28 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-silver transition-colors hover:text-offwhite sm:flex"
-        aria-label="Scroll to company figures"
+        aria-label={t('hero.scroll')}
       >
         <span className="label !text-[0.65rem]">Scroll</span>
         <span className="flex h-10 w-6 justify-center rounded-full border border-silver/50 pt-2">

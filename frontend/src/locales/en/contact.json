@@ -1,0 +1,76 @@
+{
+  "seo": {
+    "title": "Request Bulk Iron Ore Supply",
+    "description": "Request bulk hematite iron ore supply from Niraum Metals, Lalitpur — or send us a message. Tell us your tonnage, specification and delivery point."
+  },
+  "hero": {
+    "eyebrow": "Contact",
+    "title": "Request bulk iron ore supply.",
+    "intro": "Tell us your tonnage, specification and delivery point — or send a general message. We reply to every inquiry."
+  },
+  "tabs": {
+    "label": "Choose a form",
+    "inquiry": "Bulk supply inquiry",
+    "message": "General message"
+  },
+  "formTitle": "How can we help?",
+  "details": {
+    "office": "Head office",
+    "phone": "Phone",
+    "email": "Email",
+    "whatsapp": "WhatsApp",
+    "hours": "Office hours",
+    "follow": "Follow us",
+    "social": "Social links",
+    "mapTitle": "Head office location map"
+  },
+  "form": {
+    "aria": "Bulk supply inquiry form",
+    "company": "Company name",
+    "contact": "Contact person",
+    "email": "Email",
+    "phone": "Phone",
+    "buyerType": "Buyer type",
+    "choose": "Choose…",
+    "buyer": {
+      "cement": "Cement plant",
+      "steel_foundry": "Steel or foundry",
+      "trader": "Mineral trader",
+      "investor": "Investor",
+      "other": "Other"
+    },
+    "quantity": "Required quantity",
+    "unit": "Unit",
+    "units": {
+      "tpm": "tonnes per month",
+      "one_off_t": "tonnes (one-off)"
+    },
+    "delivery": "Delivery location",
+    "spec": "Required Fe₂O₃ / size spec",
+    "message": "Message",
+    "messagePlaceholder": "Anything else we should know — timing, sampling, logistics.",
+    "required": "* Required. We use your details only to reply.",
+    "submit": "Send inquiry",
+    "sending": "Sending…",
+    "sent": "Thank you — your inquiry has been sent.",
+    "sentBody": "We will reply by email. A confirmation is on its way to you.",
+    "failed": "Your inquiry could not be sent.",
+    "failedBody": "Please try again in a moment.",
+    "topic": {
+      "supply": "Bulk supply",
+      "technical_report": "Full assay report",
+      "investor_deck": "Investor deck"
+    },
+    "topicLabel": "Request",
+    "errors": {
+      "company": "Please enter your company name.",
+      "name": "Please enter your name.",
+      "email": "Please enter a valid email address.",
+      "phone": "Please enter a phone number.",
+      "phoneChars": "Use digits, spaces and + ( ) - only.",
+      "buyerType": "Please choose a buyer type.",
+      "quantity": "Use numbers only.",
+      "unit": "Choose tonnes per month or one-off."
+    }
+  }
+}

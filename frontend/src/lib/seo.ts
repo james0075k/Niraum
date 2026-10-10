@@ -1,4 +1,4 @@
-import type { Job, Post, SiteSettings } from './types';
+import type { Job, Post, Product, SiteSettings } from './types';
 
 /** SEO helpers. Defaults are overridden at runtime by SiteSettings.seo from the API. */
 export const SITE_URL = (import.meta.env.VITE_SITE_URL ?? 'http://localhost:5173').replace(
@@ -115,5 +115,27 @@ export function jobPostingLd(j: Job, s: SiteSettings): Ld {
     },
     ...(j.createdAt && { datePosted: j.createdAt.slice(0, 10) }),
     ...(j.deadline && { validThrough: j.deadline }),
+  };
+}
+
+/** Product JSON-LD (Phase 4.5) — chemistry as additionalProperty; no price or claims. */
+export function productLd(p: Product, url: string, image?: string): Ld {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: p.name,
+    description: p.summary,
+    category: 'Iron ore',
+    url: absoluteUrl(url),
+    ...(image && { image: absoluteUrl(image) }),
+    brand: { '@id': `${SITE_URL}/#organization` },
+    manufacturer: { '@id': `${SITE_URL}/#organization` },
+    additionalProperty: p.typicalChemistry.map((c) => ({
+      '@type': 'PropertyValue',
+      name: c.oxide,
+      value: c.value,
+      unitText: c.unit,
+      description: c.basis,
+    })),
   };
 }

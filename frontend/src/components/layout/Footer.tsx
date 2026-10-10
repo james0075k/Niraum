@@ -19,9 +19,13 @@ import { useT } from '@/hooks/useLang';
 /** `key` → `common:nav.<key>`. */
 const quickLinks = [
   { to: '/about', key: 'about' },
+  { to: '/our-project', key: 'project' },
+  { to: '/products', key: 'products' },
+  { to: '/technical-data', key: 'technical' },
+  { to: '/investors', key: 'investors' },
+  { to: '/sustainability', key: 'sustainability' },
   { to: '/operations', key: 'operations' },
   { to: '/projects', key: 'projects' },
-  { to: '/sustainability', key: 'sustainability' },
   { to: '/news', key: 'news' },
   { to: '/careers', key: 'careers' },
   { to: '/contact', key: 'contact' },

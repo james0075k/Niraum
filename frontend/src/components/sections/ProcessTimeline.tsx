@@ -3,14 +3,25 @@ import { useRef } from 'react';
 import { SectionHeading } from '@/components/common/SectionHeading';
 import { RevealGroup, RevealItem } from '@/components/motion/Reveal';
 import { usePrefersReducedMotion } from '@/hooks/useMediaQuery';
+import { cn } from '@/lib/utils';
 
 interface Step {
   title: string;
   body: string;
 }
 
-/** Exploration → Extraction → Processing → Delivery. A copper line fills as you scroll. */
-export function ProcessTimeline({ steps }: { steps: Step[] }) {
+interface Heading {
+  eyebrow?: string;
+  title?: string;
+  highlight?: number[];
+  intro?: string;
+}
+
+/**
+ * Process steps with a copper line that fills as you scroll. Defaults: the Phase 3 four-step
+ * process; Phase 4.5 Home passes the six field-to-supply steps and its own heading.
+ */
+export function ProcessTimeline({ steps, heading = {} }: { steps: Step[]; heading?: Heading }) {
   const ref = useRef<HTMLDivElement>(null);
   const reduce = usePrefersReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start 80%', 'end 60%'] });
@@ -21,11 +32,14 @@ export function ProcessTimeline({ steps }: { steps: Step[] }) {
       <div className="container-site">
         <SectionHeading
           id="process-title"
-          eyebrow="Our process"
-          title="From hillside to delivery."
-          highlight={[3]}
+          eyebrow={heading.eyebrow ?? 'Our process'}
+          title={heading.title ?? 'From hillside to delivery.'}
+          highlight={heading.highlight ?? [3]}
           align="center"
-          intro="A closed loop of measurement and control. Every stage hands clean data to the next."
+          intro={
+            heading.intro ??
+            'A closed loop of measurement and control. Every stage hands clean data to the next.'
+          }
         />
         <div ref={ref} className="relative">
           {/* Track: horizontal on desktop, vertical on mobile. */}
@@ -40,7 +54,14 @@ export function ProcessTimeline({ steps }: { steps: Step[] }) {
             className="absolute left-0 top-[1.375rem] hidden h-px w-full origin-left bg-copper-gradient lg:block"
             style={reduce ? undefined : { scaleX: progress }}
           />
-          <RevealGroup as="ol" className="relative grid gap-10 lg:grid-cols-4 lg:gap-8" gap={0.12}>
+          <RevealGroup
+            as="ol"
+            className={cn(
+              'relative grid gap-10 lg:gap-8',
+              steps.length > 4 ? 'lg:grid-cols-6' : 'lg:grid-cols-4',
+            )}
+            gap={0.12}
+          >
             {steps.map((s, i) => (
               <RevealItem as="li" key={s.title} className="relative pl-16 lg:pl-0 lg:pt-16">
                 <span className="absolute left-0 top-0 flex h-11 w-11 items-center justify-center rounded-full border border-primary/40 bg-background text-sm font-bold text-copper-ink shadow-copper-glow">

@@ -10,7 +10,7 @@ export function StatCard({ stat, className }: { stat: Stat; className?: string }
       <p className="text-4xl font-extrabold leading-none sm:text-5xl">
         {stat.value !== null ? (
           <span className="text-copper">
-            <CountUp value={stat.value} suffix={stat.suffix} />
+            <CountUp value={stat.value} suffix={stat.suffix} decimals={stat.decimals} />
           </span>
         ) : (
           <span className="text-copper" aria-hidden="true">

@@ -1,0 +1,41 @@
+{
+  "seo": {
+    "title": "About Niraum Metals",
+    "description": "Niraum Metals, established in 2026 in Lalitpur, is developing the Katujpani iron deposit in Makawanpur. Meet our founder and our technical partner."
+  },
+  "hero": {
+    "eyebrow": "About Niraum Metals",
+    "title": "Developing Nepal's iron ore, responsibly.",
+    "intro": "Established in 2026 in Lalitpur-13, Nepal. We are taking the Katujpani iron deposit from study to supply."
+  },
+  "story": {
+    "eyebrow": "Our story",
+    "title": "Engineering first. Promises second.",
+    "p1": "Niraum Metals was established in 2026 to develop the Katujpani iron deposit in Makawanpur District and supply hematite ore to Nepal’s cement and metals industry.",
+    "p2": "We work with engineers, geologists and technical specialists, publish our assay data with its source, and never describe our ore beyond what the numbers show."
+  },
+  "values": {
+    "eyebrow": "Mission & values",
+    "title": "What guides every decision.",
+    "mission": "Mission",
+    "missionBody": "Develop Nepal's iron ore resources responsibly and supply industry with ore it can trust.",
+    "safety": "Safety",
+    "safetyBody": "PPE, training and the right to stop unsafe work.",
+    "integrity": "Integrity",
+    "integrityBody": "Real numbers, with their source, under every claim.",
+    "community": "Community",
+    "communityBody": "Local hiring and early, honest consultation.",
+    "longTerm": "Long-term thinking",
+    "longTermBody": "Topsoil kept, land restored, partnerships built to last."
+  },
+  "founder": {
+    "eyebrow": "Leadership",
+    "title": "Our founder.",
+    "profile": "Founder profile"
+  },
+  "partner": {
+    "eyebrow": "Technical partner",
+    "title": "Studies by Shubharambha Mining and Engineering Services.",
+    "body": "The mine scheme, field sampling and assay reporting for Katujpani were prepared by Shubharambha Mining and Engineering Services Pvt. Ltd., Tarkeshwor-07, Kathmandu, under Department of Mines and Geology (DMG) guidelines."
+  }
+}

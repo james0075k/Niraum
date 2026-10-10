@@ -26,6 +26,11 @@ const redirect = page(() => import('@/pages/public/LangRedirect'));
 const publicRoutes = (): RouteRecord[] => [
   { index: true, lazy: page(() => import('@/pages/public/Home')) },
   { path: 'about', lazy: page(() => import('@/pages/public/About')) },
+  // Phase 4.5 pages
+  { path: 'our-project', lazy: page(() => import('@/pages/public/OurProject')) },
+  { path: 'products', lazy: page(() => import('@/pages/public/Products')) },
+  { path: 'technical-data', lazy: page(() => import('@/pages/public/TechnicalData')) },
+  { path: 'investors', lazy: page(() => import('@/pages/public/Investors')) },
   { path: 'operations', lazy: page(() => import('@/pages/public/Operations')) },
   { path: 'projects', lazy: page(() => import('@/pages/public/Projects')) },
   {
@@ -54,9 +59,19 @@ const publicRoutes = (): RouteRecord[] => [
 
 /** Pre-4.5 URLs without a language prefix → redirect pages. */
 const legacyRoutes: RouteRecord[] = [
-  ...['about', 'operations', 'projects', 'sustainability', 'news', 'careers', 'contact'].map(
-    (path) => ({ path, lazy: redirect }),
-  ),
+  ...[
+    'about',
+    'our-project',
+    'products',
+    'technical-data',
+    'investors',
+    'operations',
+    'projects',
+    'sustainability',
+    'news',
+    'careers',
+    'contact',
+  ].map((path) => ({ path, lazy: redirect })),
   {
     path: 'projects/:slug',
     lazy: redirect,

@@ -1,0 +1,60 @@
+{
+  "seo": {
+    "title": "Katujpani Iron Deposit, Makawanpur",
+    "description": "The Katujpani iron deposit at Bakaiya-09, Makawanpur: location, lease and geology maps, deposit areas A, B and C, and project status."
+  },
+  "hero": {
+    "eyebrow": "Our Project",
+    "title": "Katujpani Iron Deposit.",
+    "intro": "Bakaiya Gaupalika-09, Makawanpur District, Bagmati Province."
+  },
+  "location": {
+    "eyebrow": "Location",
+    "title": "Where the deposit is.",
+    "district": "District",
+    "municipality": "Municipality",
+    "province": "Province",
+    "topoSheet": "Topographic sheet",
+    "mainPoint": "Main point (local grid)",
+    "spotHeight": "Spot height",
+    "gridNote": "Easting/Northing are the report’s local grid on the Nepal topo sheet, not latitude/longitude. The map pin will be added once WGS-84 coordinates are confirmed."
+  },
+  "maps": {
+    "eyebrow": "Maps",
+    "title": "Location, lease and geology.",
+    "satellite": "Satellite",
+    "topo": "Topo sheet",
+    "lease": "Lease areas A, B, C",
+    "geology": "Regional geology",
+    "enlarge": "Enlarge map",
+    "close": "Close",
+    "source": "Maps from the mine scheme by Shubharambha Mining and Engineering Services."
+  },
+  "geology": {
+    "eyebrow": "Geology & land",
+    "title": "Deposit zones and land use.",
+    "zones": "Mapped deposit zones",
+    "land": "Land (Map No. 1)",
+    "survey": "Survey area",
+    "quarry": "Quarry area (about)",
+    "topsoil": "Top-soil yard",
+    "waste": "Waste yard",
+    "office": "Office",
+    "road": "Approach road (about)",
+    "total": "Total land use",
+    "landType": "Land type",
+    "unconfirmed": "Read from a scan — to be confirmed."
+  },
+  "status": {
+    "eyebrow": "Project status",
+    "title": "Where we are now."
+  },
+  "gallery": {
+    "eyebrow": "On site",
+    "title": "Hematite at Katujpani."
+  },
+  "cta": {
+    "title": "Interested in Katujpani ore?",
+    "body": "Ask for samples, the full assay report or a supply quote."
+  }
+}
