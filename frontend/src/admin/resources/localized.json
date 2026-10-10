@@ -1,0 +1,9 @@
+{
+  "products": ["name", "summary", "applications", "typicalChemistry"],
+  "deposits": ["name", "summary", "location", "areas", "geologySummary", "statusText"],
+  "team": ["role", "bio", "otherVentures"],
+  "services": ["title", "summary", "body"],
+  "projects": ["title", "summary", "body"],
+  "posts": ["title", "excerpt", "body"],
+  "jobs": ["title", "description"]
+}

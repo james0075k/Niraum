@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { localizedPayload } from '../resources/localize';
 
 /**
  * Settings form schemas (one per tab) and the mapping between the admin API shape and form
@@ -101,18 +102,6 @@ const localizedForm = (max: number) => z.object({ en: required(max), ne: text(ma
 /** Form value for a localized field: `translations` wins, else the English string. */
 function localizedValue(english: string, full: LocalizedValue | undefined) {
   return { en: full?.en ?? english ?? '', ne: full?.ne ?? '' };
-}
-
-/**
- * Payload for a localized field: `{ en }` keeps the stored Nepali; `{ en, ne }` only when the
- * Nepali input was touched (so saving English never wipes Nepali).
- */
-export function localizedPayload(
-  value: { en: string; ne: string },
-  dirty: { en?: boolean; ne?: boolean } | boolean | undefined,
-): LocalizedValue {
-  const neDirty = typeof dirty === 'object' ? !!dirty.ne : false;
-  return neDirty ? { en: value.en, ne: value.ne } : { en: value.en };
 }
 
 const orNull = (v: string) => (v.trim() === '' ? null : v.trim());

@@ -5,6 +5,7 @@ import { RequireRole } from './auth/RequireRole';
 import { PageSpinner } from './components/PageSpinner';
 import { AdminLayout } from './layout/AdminLayout';
 import { NAV } from './nav';
+import type { ResourceKey } from './resources/config';
 
 /** Wraps a dynamic import in Suspense so each admin page is its own chunk. */
 export const lazyPage = (load: () => Promise<{ default: React.ComponentType }>) => {
@@ -17,11 +18,40 @@ export const lazyPage = (load: () => Promise<{ default: React.ComponentType }>) 
 };
 
 /**
+ * Admin paths (relative to /admin) of the resources served by the generic ResourceList /
+ * ResourceEdit pages. Must match `adminPathOf(RESOURCES[key])`; kept here so the shell chunk
+ * doesn't load the resource configs (they load with the pages). Tasks 8–9 add entries.
+ */
+export const RESOURCE_PATHS: Partial<Record<ResourceKey, string>> = { products: 'products' };
+
+/** List, new and edit routes of one resource, role-gated like the rest of the content area. */
+export function resourceRoutes(key: ResourceKey, path: string): RouteObject[] {
+  const gate = (el: React.ReactNode) => <RequireRole area="content">{el}</RequireRole>;
+  const list = lazyPage(() =>
+    import('./pages/ResourceList').then((m) => ({ default: () => <m.default resource={key} /> })),
+  );
+  const edit = lazyPage(() =>
+    import('./pages/ResourceEdit').then((m) => ({ default: () => <m.default resource={key} /> })),
+  );
+  return [
+    { path, element: gate(list) },
+    { path: `${path}/new`, element: gate(edit) },
+    { path: `${path}/:id`, element: gate(edit) },
+  ];
+}
+
+const resourceEntries = Object.entries(RESOURCE_PATHS) as [ResourceKey, string][];
+const resources = resourceEntries.flatMap(([key, path]) => resourceRoutes(key, path));
+const resourcePaths = new Set(resourceEntries.map(([, path]) => `/admin/${path}`));
+
+/**
  * Sections without a real page yet: a role-gated "coming soon" placeholder at each NAV path,
  * so links never 404. Later tasks replace entries here with their pages.
  */
 const BUILT = new Set(['/admin', '/admin/settings']);
-const placeholders: RouteObject[] = NAV.filter((n) => !BUILT.has(n.to)).map((n) => ({
+const placeholders: RouteObject[] = NAV.filter(
+  (n) => !BUILT.has(n.to) && !resourcePaths.has(n.to),
+).map((n) => ({
   path: n.to.slice('/admin/'.length),
   element: <RequireRole area={n.area}>{lazyPage(() => import('./pages/ComingSoon'))}</RequireRole>,
 }));
@@ -52,6 +82,7 @@ export const adminRoutes: RouteObject[] = [
               </RequireRole>
             ),
           },
+          ...resources,
           ...placeholders,
         ],
       },

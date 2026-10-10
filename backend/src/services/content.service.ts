@@ -152,6 +152,8 @@ export function createContentService<T extends ContentBase>(cfg: ContentConfig<T
 
   return {
     entity,
+    /** LocalizedString fields (mirrored by frontend/src/admin/resources/localized.json). */
+    localized: localizedFields,
 
     listPublic(input: ListInput): Promise<{ data: Plain[]; meta: ListMeta }> {
       return list(
