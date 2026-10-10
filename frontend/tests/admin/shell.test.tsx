@@ -49,6 +49,7 @@ function shellRoutes(children: RouteObject[]): RouteObject[] {
       ),
       children: [{ element: <AdminLayout />, children }],
     },
+    { path: '/admin/login', element: <h1>Sign in</h1> },
   ];
 }
 
@@ -225,6 +226,56 @@ describe('admin shell', () => {
       within(await screen.findByRole('alertdialog')).getByRole('button', { name: 'Discard' }),
     );
     await waitFor(() => expect(router.state.location.pathname).toBe('/admin/products'));
+  });
+
+  it('sign-out from a dirty page asks before logging out', async () => {
+    mockMe(editor);
+    apiPost.mockResolvedValue({ data: {} });
+    function Dirty() {
+      useUnsavedGuard(true);
+      return <h1>Editing</h1>;
+    }
+    const { router } = renderAdmin(
+      '/admin/draft',
+      shellRoutes([{ path: 'draft', element: <Dirty /> }]),
+    );
+    const signOut = async () => {
+      await user.click(await screen.findByRole('button', { name: 'Account menu' }));
+      await user.click(await screen.findByRole('menuitem', { name: 'Sign out' }));
+      return screen.findByRole('alertdialog');
+    };
+
+    const first = await signOut();
+    expect(within(first).getByText('Discard unsaved changes?')).toBeInTheDocument();
+    expect(apiPost).not.toHaveBeenCalledWith('/auth/logout');
+    await user.click(within(first).getByRole('button', { name: 'Cancel' }));
+    await waitFor(() => expect(screen.queryByRole('alertdialog')).toBeNull());
+    expect(apiPost).not.toHaveBeenCalledWith('/auth/logout');
+    expect(router.state.location.pathname).toBe('/admin/draft');
+    expect(screen.getByRole('heading', { name: 'Editing' })).toBeInTheDocument();
+
+    const second = await signOut();
+    await user.click(within(second).getByRole('button', { name: 'Discard' }));
+    await waitFor(() => expect(router.state.location.pathname).toBe('/admin/login'));
+    expect(apiPost).toHaveBeenCalledWith('/auth/logout');
+    // Only the one question — the guard never asks again on the way out.
+    expect(screen.queryByRole('alertdialog')).toBeNull();
+  });
+
+  it('unsaved guard does not block the redirect to sign-in when the session is gone', async () => {
+    mockMe(editor);
+    function Dirty() {
+      useUnsavedGuard(true);
+      return <h1>Editing</h1>;
+    }
+    const { router } = renderAdmin(
+      '/admin/draft',
+      shellRoutes([{ path: 'draft', element: <Dirty /> }]),
+    );
+    await screen.findByRole('heading', { name: 'Editing' });
+    await act(() => router.navigate('/admin/login?next=%2Fadmin%2Fdraft'));
+    expect(router.state.location.pathname).toBe('/admin/login');
+    expect(screen.queryByRole('alertdialog')).toBeNull();
   });
 
   it('unsaved guard does nothing on a clean page and warns on unload when dirty', async () => {

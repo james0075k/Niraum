@@ -1,16 +1,16 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { useCallback, useEffect, useState } from 'react';
-import { Outlet, useLocation, type Blocker } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Outlet, useLocation, useNavigate, type Blocker } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from '@/components/ui/sheet';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
-import { errorCode, useMe, type AdminUser } from '../auth/useMe';
+import { errorCode, useLogout, useMe, type AdminUser } from '../auth/useMe';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { CommandPalette } from './CommandPalette';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
-import { BreadcrumbContext, UnsavedContext } from './shellContext';
+import { BreadcrumbContext, SIGN_IN_PATH, UnsavedContext, type UnsavedApi } from './shellContext';
 
 const SIDEBAR_KEY = 'niraum-admin-sidebar';
 const FORBIDDEN_TOAST = 'admin-forbidden';
@@ -82,12 +82,40 @@ export function AdminLayout() {
     };
   }, [qc]);
 
-  const reportBlocker = useCallback((b: Blocker | null) => setBlocker(b), []);
+  // Pages with unsaved changes (useUnsavedGuard) — sign-out asks before logging out.
+  const dirtyPages = useRef(0);
+  const unsavedApi = useMemo<UnsavedApi>(
+    () => ({
+      report: (b) => setBlocker(b),
+      markDirty: () => {
+        dirtyPages.current += 1;
+        return () => {
+          dirtyPages.current -= 1;
+        };
+      },
+    }),
+    [],
+  );
+
+  const navigate = useNavigate();
+  const logout = useLogout();
+  const [confirmSignOut, setConfirmSignOut] = useState(false);
+  const signOut = () => {
+    setConfirmSignOut(false);
+    // Signed out locally even if the request fails; the shell may unmount before it settles,
+    // so navigate from the promise. The sign-in page is never held by the unsaved guard.
+    void logout
+      .mutateAsync()
+      .catch(() => undefined)
+      .finally(() => navigate(SIGN_IN_PATH, { replace: true }));
+  };
+  const requestSignOut = () => (dirtyPages.current > 0 ? setConfirmSignOut(true) : signOut());
+
   const setPageCrumb = useCallback((label: string | null) => setCrumb(label), []);
 
   return (
     <BreadcrumbContext.Provider value={setPageCrumb}>
-      <UnsavedContext.Provider value={reportBlocker}>
+      <UnsavedContext.Provider value={unsavedApi}>
         <TooltipProvider delayDuration={200}>
           <div className="flex min-h-screen bg-background text-foreground">
             <aside
@@ -115,6 +143,8 @@ export function AdminLayout() {
                 crumb={crumb}
                 onOpenMenu={() => setMenuOpen(true)}
                 onOpenSearch={() => setSearchOpen(true)}
+                onSignOut={requestSignOut}
+                signingOut={logout.isPending}
               />
               <main id="admin-main" className="flex-1 p-4 sm:p-6">
                 <Outlet />
@@ -131,6 +161,16 @@ export function AdminLayout() {
             destructive
             onConfirm={() => blocker?.proceed?.()}
             onCancel={() => blocker?.reset?.()}
+          />
+          <ConfirmDialog
+            open={confirmSignOut}
+            title="Discard unsaved changes?"
+            description="You have changes on this page that haven't been saved. If you sign out now they will be lost."
+            confirmLabel="Discard"
+            cancelLabel="Cancel"
+            destructive
+            onConfirm={signOut}
+            onCancel={() => setConfirmSignOut(false)}
           />
         </TooltipProvider>
       </UnsavedContext.Provider>

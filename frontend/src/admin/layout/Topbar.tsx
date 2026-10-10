@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useMounted } from '@/hooks/useMounted';
-import { useLogout, type AdminUser } from '../auth/useMe';
+import type { AdminUser } from '../auth/useMe';
 import { Breadcrumbs } from './Breadcrumbs';
 
 const initials = (name: string) =>
@@ -30,25 +30,20 @@ export function Topbar({
   crumb,
   onOpenMenu,
   onOpenSearch,
+  onSignOut,
+  signingOut,
 }: {
   user: AdminUser | null;
   crumb: string | null;
   onOpenMenu: () => void;
   onOpenSearch: () => void;
+  /** The layout asks about unsaved changes first, then signs out. */
+  onSignOut: () => void;
+  signingOut: boolean;
 }) {
   const navigate = useNavigate();
-  const logout = useLogout();
   const mounted = useMounted();
   const shortcut = mounted && isMac() ? '⌘K' : 'Ctrl K';
-
-  // Signed out locally even if the request fails; the shell may unmount before it settles,
-  // so navigate from the promise rather than a mutate() callback.
-  const signOut = () => {
-    void logout
-      .mutateAsync()
-      .catch(() => undefined)
-      .finally(() => navigate('/admin/login', { replace: true }));
-  };
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center gap-2 border-b bg-background/95 px-3 backdrop-blur supports-[backdrop-filter]:bg-background/80 sm:px-4">
@@ -103,7 +98,7 @@ export function Topbar({
             <KeyRound className="h-4 w-4" aria-hidden="true" />
             Change password
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={signOut} disabled={logout.isPending}>
+          <DropdownMenuItem onSelect={onSignOut} disabled={signingOut}>
             <LogOut className="h-4 w-4" aria-hidden="true" />
             Sign out
           </DropdownMenuItem>

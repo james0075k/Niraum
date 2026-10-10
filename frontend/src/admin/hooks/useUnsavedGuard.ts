@@ -1,21 +1,29 @@
 import { useContext, useEffect } from 'react';
 import { useBlocker } from 'react-router-dom';
-import { UnsavedContext } from '../layout/shellContext';
+import { SIGN_IN_PATH, UnsavedContext } from '../layout/shellContext';
 
 /**
  * While `dirty`, leaving the page asks first: closing/reloading the tab triggers the browser's
  * own prompt (`beforeunload`); in-app navigation is held by `useBlocker` and AdminLayout shows
- * "Discard unsaved changes?". Needs the data router (createBrowserRouter via vite-react-ssg;
+ * "Discard unsaved changes?" (also before Sign out). Navigation to the sign-in page is never
+ * held. Needs the data router (createBrowserRouter via vite-react-ssg;
  * createMemoryRouter in tests). Use it once per page.
  */
 export function useUnsavedGuard(dirty: boolean): void {
-  const report = useContext(UnsavedContext);
+  const ctx = useContext(UnsavedContext);
+  const report = ctx?.report;
+  const markDirty = ctx?.markDirty;
   const blocker = useBlocker(
     ({ currentLocation, nextLocation }) =>
       dirty &&
+      // Sign-out confirms before logging out, and a dead session must reach the sign-in page.
+      nextLocation.pathname !== SIGN_IN_PATH &&
       (currentLocation.pathname !== nextLocation.pathname ||
         currentLocation.search !== nextLocation.search),
   );
+
+  // Lets the layout ask before signing out.
+  useEffect(() => (dirty && markDirty ? markDirty() : undefined), [dirty, markDirty]);
 
   useEffect(() => {
     if (!dirty) return;
