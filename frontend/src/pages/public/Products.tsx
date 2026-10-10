@@ -5,6 +5,7 @@ import { SectionHeading } from '@/components/common/SectionHeading';
 import { Reveal, RevealGroup, RevealItem } from '@/components/motion/Reveal';
 import { CtaBand } from '@/components/sections/CtaBand';
 import { DataOriginNote } from '@/components/sections/DataOriginNote';
+import { StatCard } from '@/components/sections/StatCard';
 import { Seo } from '@/components/seo/Seo';
 import {
   Table,
@@ -16,19 +17,37 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { photos } from '@/content/siteImages';
+import { useAssaySummary } from '@/features/assay/useAssay';
 import { useProduct } from '@/features/products/useProducts';
 import { useLang, useT } from '@/hooks/useLang';
 import { localePath } from '@/app/i18n';
 import { formatPct } from '@/lib/format';
 import { productLd } from '@/lib/seo';
+import type { Stat } from '@/lib/types';
 
 const ICONS = [Factory, Flame];
 
 /** Primary keyword: "hematite ore for cement" (blueprint §7). Never "high-grade". */
 export default function Products() {
-  const { t } = useT(['products', 'common']);
+  const { t } = useT(['products', 'common', 'home']);
   const lang = useLang();
   const p = useProduct();
+  const assay = useAssaySummary();
+  const top = assay.highlights.highestSample;
+  const headline: Stat[] = [
+    {
+      label: t('home:stats.fe2o3Avg'),
+      value: assay.overall?.Fe2O3 ?? null,
+      suffix: '%',
+      decimals: 2,
+    },
+    {
+      label: t('home:stats.topSample', { sample: top?.sample ?? '' }),
+      value: top?.Fe2O3 ?? null,
+      suffix: '%',
+      decimals: 2,
+    },
+  ];
   const crumbs = [
     { name: t('common:nav.home'), path: '/' },
     { name: t('common:nav.products'), path: '/products' },
@@ -67,6 +86,14 @@ export default function Products() {
               {p.name}
             </h2>
             <p className="mt-5 text-lg text-muted-foreground">{p.summary}</p>
+            {/* Headline figures from the assay API (same strip as Home) — never typed in. */}
+            <ul className="mt-8 grid gap-3 sm:grid-cols-2">
+              {headline.map((stat) => (
+                <li key={stat.label}>
+                  <StatCard stat={stat} className="h-full" />
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>

@@ -12,11 +12,14 @@ export function CtaBand({
   body = 'Tell us what you need — iron ore, metal minerals or construction aggregates — and we will reply with availability, specification and a delivery plan.',
   primaryTo = '/contact?subject=Quote%20request',
   primaryLabel,
+  highlight,
 }: {
   title?: string;
   body?: string;
   primaryTo?: string;
   primaryLabel?: string;
+  /** Copper words (0-based); defaults to the title's last word, in any language. */
+  highlight?: number[];
 }) {
   const { t } = useT();
   return (
@@ -33,7 +36,7 @@ export function CtaBand({
             as="h2"
             id="contact-cta-title"
             text={title}
-            highlight={[4, 5]}
+            highlight={highlight ?? [title.trim().split(/\s+/).length - 1]}
             className="max-w-3xl"
           />
           <Reveal as="p" delay={0.1} className="mt-6 max-w-2xl text-lg text-silver">
