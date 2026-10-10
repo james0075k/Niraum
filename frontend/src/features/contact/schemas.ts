@@ -3,18 +3,18 @@ import { api } from '@/lib/api';
 
 /** Contact form — mirrors backend validator (Phase 4). `website` is the honeypot. */
 export const contactSchema = z.object({
-  name: z.string().trim().min(2, 'Please enter your name.').max(100),
-  email: z.string().trim().email('Please enter a valid email address.'),
+  name: z.string().trim().min(2, 'message.errors.name').max(100),
+  email: z.string().trim().email('message.errors.email'),
   phone: z
     .string()
     .trim()
     .max(30)
-    .regex(/^[+\d\s()-]*$/, 'Use digits, spaces and + ( ) - only.')
+    .regex(/^[+\d\s()-]*$/, 'message.errors.phoneChars')
     .optional()
     .or(z.literal('')),
   company: z.string().trim().max(120).optional().or(z.literal('')),
-  subject: z.string().trim().min(3, 'Please add a subject.').max(150),
-  message: z.string().trim().min(10, 'Please write at least 10 characters.').max(5000),
+  subject: z.string().trim().min(3, 'message.errors.subject').max(150),
+  message: z.string().trim().min(10, 'message.errors.message').max(5000),
   website: z.string().max(0).optional(),
 });
 export type ContactInput = z.infer<typeof contactSchema>;

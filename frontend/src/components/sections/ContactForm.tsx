@@ -11,12 +11,25 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
+  useFormField,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { contactSchema, sendContact, type ContactInput } from '@/features/contact/schemas';
+import { useT } from '@/hooks/useLang';
 import { cn } from '@/lib/utils';
+
+/** FormMessage that translates the Zod message key (`message.errors.*`). */
+function TMessage() {
+  const { t } = useT('contact');
+  const { error, formMessageId } = useFormField();
+  if (!error?.message) return null;
+  return (
+    <p id={formMessageId} className="text-[0.8rem] font-medium text-destructive">
+      {t(error.message)}
+    </p>
+  );
+}
 
 /**
  * Glass contact form (RHF + Zod). `website` is a honeypot hidden from people and
@@ -30,6 +43,7 @@ export function ContactForm({
   defaultSubject?: string;
   className?: string;
 }) {
+  const { t } = useT('contact');
   const form = useForm<ContactInput>({
     resolver: zodResolver(contactSchema),
     defaultValues: {
@@ -48,14 +62,10 @@ export function ContactForm({
   async function onSubmit(values: ContactInput) {
     try {
       await sendContact(values, captchaToken);
-      toast.success('Thank you — your message has been sent.', {
-        description: 'We reply to most enquiries within two working days.',
-      });
+      toast.success(t('message.sent'), { description: t('message.sentBody') });
       form.reset({ ...form.formState.defaultValues, subject: '' });
     } catch {
-      toast.error('Your message could not be sent.', {
-        description: 'Please try again in a moment.',
-      });
+      toast.error(t('message.failed'), { description: t('message.failedBody') });
     } finally {
       captcha.current?.reset();
     }
@@ -69,7 +79,7 @@ export function ContactForm({
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         noValidate
-        aria-label="Contact form"
+        aria-label={t('message.aria')}
         className={cn('glass-strong grid gap-5 p-6 sm:grid-cols-2 sm:p-8', className)}
       >
         <FormField
@@ -77,11 +87,11 @@ export function ContactForm({
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Full name *</FormLabel>
+              <FormLabel>{t('message.name')} *</FormLabel>
               <FormControl>
                 <Input autoComplete="name" {...field} />
               </FormControl>
-              <FormMessage />
+              <TMessage />
             </FormItem>
           )}
         />
@@ -90,11 +100,11 @@ export function ContactForm({
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email *</FormLabel>
+              <FormLabel>{t('message.email')} *</FormLabel>
               <FormControl>
                 <Input type="email" inputMode="email" autoComplete="email" {...field} />
               </FormControl>
-              <FormMessage />
+              <TMessage />
             </FormItem>
           )}
         />
@@ -103,11 +113,11 @@ export function ContactForm({
           name="phone"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Phone</FormLabel>
+              <FormLabel>{t('message.phone')}</FormLabel>
               <FormControl>
                 <Input type="tel" inputMode="tel" autoComplete="tel" {...field} />
               </FormControl>
-              <FormMessage />
+              <TMessage />
             </FormItem>
           )}
         />
@@ -116,11 +126,11 @@ export function ContactForm({
           name="company"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Company</FormLabel>
+              <FormLabel>{t('message.company')}</FormLabel>
               <FormControl>
                 <Input autoComplete="organization" {...field} />
               </FormControl>
-              <FormMessage />
+              <TMessage />
             </FormItem>
           )}
         />
@@ -129,11 +139,11 @@ export function ContactForm({
           name="subject"
           render={({ field }) => (
             <FormItem className="sm:col-span-2">
-              <FormLabel>Subject *</FormLabel>
+              <FormLabel>{t('message.subject')} *</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
-              <FormMessage />
+              <TMessage />
             </FormItem>
           )}
         />
@@ -142,15 +152,11 @@ export function ContactForm({
           name="message"
           render={({ field }) => (
             <FormItem className="sm:col-span-2">
-              <FormLabel>Message *</FormLabel>
+              <FormLabel>{t('message.message')} *</FormLabel>
               <FormControl>
-                <Textarea
-                  rows={6}
-                  placeholder="Material, quantity, delivery location and timing help us reply faster."
-                  {...field}
-                />
+                <Textarea rows={6} placeholder={t('message.placeholder')} {...field} />
               </FormControl>
-              <FormMessage />
+              <TMessage />
             </FormItem>
           )}
         />
@@ -167,16 +173,14 @@ export function ContactForm({
         </div>
         <Captcha ref={captcha} onToken={setCaptchaToken} className="sm:col-span-2" />
         <div className="flex flex-col gap-3 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs text-muted-foreground">
-            * Required. We use your details only to reply — see our Privacy Policy.
-          </p>
+          <p className="text-xs text-muted-foreground">{t('message.required')}</p>
           <Button type="submit" size="lg" disabled={submitting || awaitingCaptcha}>
             {submitting ? (
               <Loader2 className="animate-spin" aria-hidden="true" />
             ) : (
               <Send aria-hidden="true" />
             )}
-            {submitting ? 'Sending…' : 'Send message'}
+            {submitting ? t('message.sending') : t('message.submit')}
           </Button>
         </div>
       </form>

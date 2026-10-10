@@ -11,7 +11,8 @@ export const defaultSettings: SiteSettings = {
   motto: 'Strength Forged For Generations',
   // Logo files not yet supplied (see public/logo/README.md) — the wordmark renders instead.
   logo: { light: null, dark: null },
-  contact: { phone: [], email: [], whatsapp: null },
+  // Business email from the blueprint; phone/WhatsApp still [CONFIRM].
+  contact: { phone: [], email: ['niraummetals@gmail.com'], whatsapp: null },
   address: {
     line1: 'Lalitpur-13',
     city: 'Lalitpur',

@@ -30,9 +30,9 @@ vi.mock('@/lib/api', () => ({
 describe('placeholder contact values', () => {
   it('are never rendered as tel:/mailto: links — the chip shows instead', async () => {
     const { container } = renderWithProviders(<Footer />, { route: '/en' });
-    await waitFor(() =>
-      expect(screen.getAllByText(/\[PLACEHOLDER: Phone\]/).length).toBeGreaterThan(0),
-    );
+    // Wait for the API settings (placeholder email) to replace the local fallback.
+    await waitFor(() => expect(screen.getByText(/\[PLACEHOLDER: Email\]/)).toBeInTheDocument());
+    expect(screen.getByText(/\[PLACEHOLDER: Phone\]/)).toBeInTheDocument();
     expect(container.querySelector('a[href^="tel:"]')).toBeNull();
     expect(container.querySelector('a[href^="mailto:"]')).toBeNull();
   });

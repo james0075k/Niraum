@@ -7,10 +7,12 @@ import { ProfileLinks } from '@/components/common/ProfileLinks';
 import { Tbc, TbcText } from '@/components/common/Tbc';
 import { Reveal } from '@/components/motion/Reveal';
 import { ContactForm } from '@/components/sections/ContactForm';
+import { CtaBand } from '@/components/sections/CtaBand';
 import { InquiryForm } from '@/components/sections/InquiryForm';
 import { MapCard } from '@/components/sections/MapCard';
 import { Seo } from '@/components/seo/Seo';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { isPlaceholder } from '@/content/placeholders';
 import { photos } from '@/content/siteImages';
 import { INQUIRY_TOPICS, type InquiryTopic } from '@/features/inquiries/schemas';
 import { useActiveSocials, useDisplayAddress, useSettings } from '@/features/settings/useSettings';
@@ -169,7 +171,11 @@ export default function Contact() {
                 icon={<Clock className="h-5 w-5" aria-hidden="true" />}
                 label={t('details.hours')}
               >
-                <TbcText text={settings.officeHours} />
+                {isPlaceholder(settings.officeHours) ? (
+                  <Tbc>{t('details.hours')}</Tbc>
+                ) : (
+                  <TbcText text={settings.officeHours} />
+                )}
               </Detail>
               <div>
                 <h3 className="label mb-3 text-muted-foreground">{t('details.follow')}</h3>
@@ -195,6 +201,13 @@ export default function Contact() {
           />
         </div>
       </section>
+
+      <CtaBand
+        title={t('cta.title')}
+        body={t('cta.body')}
+        primaryTo="/contact?topic=supply#inquiry"
+        primaryLabel={t('common:cta.bulkSupply')}
+      />
     </>
   );
 }

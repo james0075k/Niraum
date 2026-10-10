@@ -9,3 +9,7 @@ export const tbc = (label: string) => `[PLACEHOLDER: ${label}]`;
 
 /** No hero video supplied yet — hero falls back to the poster photograph. */
 export const HERO_VIDEO_URL: string | null = null;
+
+/** True for a "[PLACEHOLDER: …]" value (non-global regex, safe to reuse). */
+export const isPlaceholder = (v: string | null | undefined): boolean =>
+  !!v && /\[PLACEHOLDER: [^\]]+\]/.test(v);

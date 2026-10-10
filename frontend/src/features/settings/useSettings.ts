@@ -1,10 +1,9 @@
 import { useContentItem } from '@/lib/query';
+import { isPlaceholder } from '@/content/placeholders';
 import { defaultSettings } from '@/content/site';
 import { useLang, useT } from '@/hooks/useLang';
 import { withLang } from '@/lib/withLang';
 import type { SiteSettings } from '@/lib/types';
-
-const isPlaceholder = (v: string | null | undefined) => !!v && /\[PLACEHOLDER: [^\]]+\]/.test(v);
 
 /**
  * Seeded settings may still hold "[PLACEHOLDER: phone]"-style values. They are dropped here so

@@ -72,5 +72,33 @@
       "quantity": "Use numbers only.",
       "unit": "Choose tonnes per month or one-off."
     }
+  },
+  "message": {
+    "aria": "Contact form",
+    "name": "Full name",
+    "email": "Email",
+    "phone": "Phone",
+    "company": "Company",
+    "subject": "Subject",
+    "message": "Message",
+    "placeholder": "Material, quantity, delivery location and timing help us reply faster.",
+    "required": "* Required. We use your details only to reply — see our Privacy Policy.",
+    "submit": "Send message",
+    "sending": "Sending…",
+    "sent": "Thank you — your message has been sent.",
+    "sentBody": "We reply to most enquiries within two working days.",
+    "failed": "Your message could not be sent.",
+    "failedBody": "Please try again in a moment.",
+    "errors": {
+      "name": "Please enter your name.",
+      "email": "Please enter a valid email address.",
+      "phoneChars": "Use digits, spaces and + ( ) - only.",
+      "subject": "Please add a subject.",
+      "message": "Please write at least 10 characters."
+    }
+  },
+  "cta": {
+    "title": "Ready to talk tonnage?",
+    "body": "Send a bulk supply inquiry and we will reply with availability, samples and a quote."
   }
 }
