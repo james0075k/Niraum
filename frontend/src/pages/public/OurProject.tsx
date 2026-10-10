@@ -1,4 +1,4 @@
-import { AlertTriangle, MapPin } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Img } from '@/components/common/Img';
 import { PageHero } from '@/components/common/PageHero';
@@ -9,7 +9,9 @@ import { MapGallery } from '@/components/sections/MapGallery';
 import { Seo } from '@/components/seo/Seo';
 import { siteImages } from '@/content/siteImages';
 import { useDeposit } from '@/features/deposits/useDeposit';
-import { useT } from '@/hooks/useLang';
+import { localePath } from '@/app/i18n';
+import { useLang, useT } from '@/hooks/useLang';
+import { depositLd } from '@/lib/seo';
 
 function Fact({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -20,14 +22,18 @@ function Fact({ label, children }: { label: string; children: ReactNode }) {
   );
 }
 
-const ha = (n: number | null) => (n == null ? '—' : `${n} ha`);
 const grid = (n: number | null) =>
   n == null ? '—' : n.toLocaleString('en-US', { minimumFractionDigits: 2 });
 
-/** Primary keyword: "Makawanpur iron ore mine" (blueprint §7). */
+/**
+ * Primary keyword: "Makawanpur iron ore mine" (blueprint §7). Sections follow blueprint §5
+ * Our Project: location (with zones A–C), maps incl. geology + legend, status, gallery, CTA.
+ * Map No. 1 land figures are [CONFIRM] and stay off the page until confirmed.
+ */
 export default function OurProject() {
   const { t } = useT(['project', 'common']);
   const d = useDeposit();
+  const lang = useLang();
   const crumbs = [
     { name: t('common:nav.home'), path: '/' },
     { name: t('common:nav.project'), path: '/our-project' },
@@ -46,6 +52,7 @@ export default function OurProject() {
         description={t('seo.description')}
         crumbs={crumbs}
         image={siteImages.mapLease.src}
+        jsonLd={[depositLd(d, localePath(lang, '/our-project'))]}
       />
       <PageHero
         eyebrow={t('hero.eyebrow')}
@@ -64,6 +71,18 @@ export default function OurProject() {
               title={t('location.title')}
             />
             <p className="text-muted-foreground">{d.summary}</p>
+            <h3 className="label mb-3 mt-8 text-foreground">{t('geology.zones')}</h3>
+            <ul className="flex flex-wrap gap-3">
+              {d.areas.map((a) => (
+                <li
+                  key={a.code}
+                  className="glass flex h-16 min-w-16 items-center justify-center px-5 text-2xl font-extrabold text-copper"
+                  aria-label={a.label}
+                >
+                  {a.code}
+                </li>
+              ))}
+            </ul>
           </div>
           <Reveal className="glass p-6 sm:p-8 lg:col-span-7">
             <dl className="grid gap-x-8 sm:grid-cols-2">
@@ -90,52 +109,13 @@ export default function OurProject() {
 
       <section id="maps" aria-labelledby="maps-title" className="section bg-muted/40">
         <div className="container-site">
-          <SectionHeading id="maps-title" eyebrow={t('maps.eyebrow')} title={t('maps.title')} />
+          <SectionHeading
+            id="maps-title"
+            eyebrow={t('maps.eyebrow')}
+            title={t('maps.title')}
+            intro={d.geologySummary}
+          />
           <MapGallery />
-        </div>
-      </section>
-
-      <section id="geology" aria-labelledby="geology-title" className="section grain">
-        <div className="container-site grid gap-12 lg:grid-cols-2">
-          <div>
-            <SectionHeading
-              id="geology-title"
-              eyebrow={t('geology.eyebrow')}
-              title={t('geology.title')}
-              intro={d.geologySummary}
-            />
-            <h3 className="label mb-3 text-foreground">{t('geology.zones')}</h3>
-            <ul className="flex flex-wrap gap-3">
-              {d.areas.map((a) => (
-                <li
-                  key={a.code}
-                  className="glass flex h-16 min-w-16 items-center justify-center px-5 text-2xl font-extrabold text-copper"
-                  aria-label={a.label}
-                >
-                  {a.code}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <Reveal className="glass p-6 sm:p-8">
-            <h3 className="label mb-2 text-foreground">{t('geology.land')}</h3>
-            <dl className="grid gap-x-8 sm:grid-cols-2">
-              <Fact label={t('geology.survey')}>{ha(d.land.surveyHa)}</Fact>
-              <Fact label={t('geology.total')}>{ha(d.land.totalLandUseHa)}</Fact>
-              <Fact label={t('geology.quarry')}>{ha(d.land.quarryHa)}</Fact>
-              <Fact label={t('geology.topsoil')}>{ha(d.land.topsoilYardHa)}</Fact>
-              <Fact label={t('geology.waste')}>{ha(d.land.wasteYardHa)}</Fact>
-              <Fact label={t('geology.office')}>{ha(d.land.officeHa)}</Fact>
-              <Fact label={t('geology.road')}>{ha(d.land.approachRoadHa)}</Fact>
-              <Fact label={t('geology.landType')}>{d.land.landType || '—'}</Fact>
-            </dl>
-            {!d.land.confirmed && (
-              <p className="tbc mt-5 inline-flex items-center gap-2 text-xs">
-                <AlertTriangle className="h-3.5 w-3.5" aria-hidden="true" />
-                {t('geology.unconfirmed')}
-              </p>
-            )}
-          </Reveal>
         </div>
       </section>
 
@@ -152,9 +132,7 @@ export default function OurProject() {
             align="center"
             intro={d.statusText}
           />
-          <p className="text-sm text-silver">
-            {d.consultant.name}, {d.consultant.address}
-          </p>
+          <p className="text-sm text-silver">{t('status.consultant')}</p>
         </div>
       </section>
 

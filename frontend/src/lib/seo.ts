@@ -1,4 +1,4 @@
-import type { Job, Post, Product, SiteSettings, TeamMember } from './types';
+import type { Deposit, Job, Post, Product, SiteSettings, TeamMember } from './types';
 
 /** SEO helpers. Defaults are overridden at runtime by SiteSettings.seo from the API. */
 export const SITE_URL = (import.meta.env.VITE_SITE_URL ?? 'http://localhost:5173').replace(
@@ -149,5 +149,26 @@ export function personLd(m: TeamMember): Ld {
     jobTitle: m.role,
     description: m.bio,
     worksFor: { '@id': `${SITE_URL}/#organization` },
+  };
+}
+
+/** Place JSON-LD for the deposit — address only; no geo until WGS-84 is confirmed. */
+export function depositLd(d: Deposit, url: string): Ld {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Place',
+    name: d.name,
+    description: d.summary,
+    url: absoluteUrl(url),
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: `${d.location.municipality}-${d.location.ward}`,
+      addressRegion: d.location.province,
+      addressCountry: 'NP',
+    },
+    ...(d.location.lat != null &&
+      d.location.lng != null && {
+        geo: { '@type': 'GeoCoordinates', latitude: d.location.lat, longitude: d.location.lng },
+      }),
   };
 }

@@ -122,11 +122,12 @@ describe('Products and Our Project', () => {
     expect(container.textContent).not.toMatch(/high[- ]grade/i);
   });
 
-  it('shows the local-grid location, flags land figures and offers four maps', () => {
-    renderWithProviders(<OurProject />, { route: '/en/our-project' });
+  it('shows the local-grid location, never unconfirmed land figures, and four maps', () => {
+    const { container } = renderWithProviders(<OurProject />, { route: '/en/our-project' });
     expect(screen.getByText(/E 627,755\.00 · N 3,033,300\.00/)).toBeInTheDocument();
     expect(screen.getByText(/not latitude\/longitude/)).toBeInTheDocument();
-    expect(screen.getByText(/Read from a scan — to be confirmed/)).toBeInTheDocument();
+    // Map No. 1 land figures are [CONFIRM] in the blueprint: not published as fact.
+    expect(container.textContent).not.toMatch(/20\.68|3\.41 ha|Survey area/);
     const tabs = screen.getAllByRole('tab');
     expect(tabs.map((t) => t.textContent)).toEqual([
       'Satellite',
