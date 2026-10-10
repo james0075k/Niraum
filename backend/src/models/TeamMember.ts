@@ -11,8 +11,8 @@ import {
 /** Other companies a founder or director is involved in (About → founder profile). */
 export interface Venture {
   company: string;
-  role: string;
-  sector: string;
+  role: LocalizedString;
+  sector: LocalizedString;
   since: number | null;
 }
 
@@ -46,8 +46,8 @@ const teamSchema = new Schema<ITeamMember>(
         new Schema<Venture>(
           {
             company: { type: String, required: true, trim: true, maxlength: 150 },
-            role: { type: String, default: '', trim: true, maxlength: 100 },
-            sector: { type: String, default: '', trim: true, maxlength: 100 },
+            role: localizedPath({ maxlength: 100 }),
+            sector: localizedPath({ maxlength: 100 }),
             since: { type: Number, default: null, min: 1900, max: 2100 },
           },
           { _id: false },

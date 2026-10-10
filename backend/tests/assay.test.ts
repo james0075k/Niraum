@@ -11,7 +11,10 @@ import {
   seedFounder,
   seedKatujpani,
   seedProduct,
+  seedSiteText,
 } from '../src/seed/katujpani.seed.js';
+import { Deposit } from '../src/models/Deposit.js';
+import { SETTINGS_ID, SiteSettings } from '../src/models/SiteSettings.js';
 import { loginAs } from './helpers.js';
 
 const data = loadAssayData();
@@ -117,7 +120,10 @@ describe('Katujpani deposit, product and founder seeds', () => {
 
     const deposit = await request(app).get(`/api/v1/deposits/${KATUJPANI_SLUG}?lang=ne`);
     expect(deposit.status).toBe(200);
-    expect(deposit.body.data.name).toBe('Katujpani Iron Deposit'); // ne falls back to en
+    expect(deposit.body.data.name).toBe('कटुजपानी फलाम निक्षेप');
+    expect(deposit.body.data.location.district).toBe('मकवानपुर');
+    const depositEn = await request(app).get(`/api/v1/deposits/${KATUJPANI_SLUG}`);
+    expect(depositEn.body.data.name).toBe('Katujpani Iron Deposit');
     expect(deposit.body.data.location).toMatchObject({
       topoSheet: '2785 10A',
       easting: 627755,
@@ -138,5 +144,43 @@ describe('Katujpani deposit, product and founder seeds', () => {
     const founder = team.body.data.find((m: { isFounder: boolean }) => m.isFounder);
     expect(founder).toMatchObject({ name: 'Shivahari Pudasaini', role: 'Founder' });
     expect(founder.otherVentures).toHaveLength(5);
+  });
+});
+
+describe('Nepali fill-in for content seeded before translations existed', () => {
+  it('adds missing Nepali without overwriting edited English, then reports "exists"', async () => {
+    // A pre-translation deposit: English only, with an admin-edited summary.
+    await Deposit.create({
+      name: 'Katujpani Iron Deposit',
+      slug: KATUJPANI_SLUG,
+      summary: 'Edited by an admin.',
+      location: {
+        district: 'Makawanpur',
+        municipality: 'Bakaiya Gaupalika',
+        province: 'Bagmati Province',
+      },
+      areas: [{ code: 'A', label: 'Area A' }],
+      published: true,
+    });
+    expect(await seedKatujpani()).toBe('translated');
+    const doc = await Deposit.findOne({ slug: KATUJPANI_SLUG }).lean();
+    expect(doc?.summary).toMatchObject({
+      en: 'Edited by an admin.',
+      ne: expect.stringContaining('बकैया'),
+    });
+    expect(doc?.location.district).toEqual({ en: 'Makawanpur', ne: 'मकवानपुर' });
+    expect(await seedKatujpani()).toBe('exists');
+  });
+
+  it('sets the Nepali motto and the blueprint email on placeholder settings', async () => {
+    await SiteSettings.create({ _id: SETTINGS_ID });
+    expect(await seedSiteText()).toEqual(['motto.ne', 'contact.email']);
+    const s = await SiteSettings.findById(SETTINGS_ID).lean();
+    expect(s?.motto).toEqual({
+      en: 'Strength Forged For Generations',
+      ne: 'पुस्तौँसम्म टिक्ने बल',
+    });
+    expect(s?.contact.email).toEqual(['niraummetals@gmail.com']);
+    expect(await seedSiteText()).toEqual([]);
   });
 });

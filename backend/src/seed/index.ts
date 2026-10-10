@@ -23,7 +23,7 @@ import { geocodeService } from '../services/geocode.service.js';
 import { settingsService } from '../services/settings.service.js';
 import { seedAssay } from './assay.seed.js';
 import { samplePosts, sampleProjects, sampleServices } from './content.js';
-import { seedFounder, seedKatujpani, seedProduct } from './katujpani.seed.js';
+import { seedFounder, seedKatujpani, seedProduct, seedSiteText } from './katujpani.seed.js';
 
 export async function seedAdmin(): Promise<'created' | 'exists' | 'skipped'> {
   const { SEED_ADMIN_EMAIL: email, SEED_ADMIN_PASSWORD: password, SEED_ADMIN_NAME: name } = env;
@@ -99,7 +99,12 @@ async function main() {
   logger.info(await seedContent(), 'Sample content');
   logger.info(await seedAssay(), 'Assay data');
   logger.info(
-    { deposit: await seedKatujpani(), product: await seedProduct(), founder: await seedFounder() },
+    {
+      deposit: await seedKatujpani(),
+      product: await seedProduct(),
+      founder: await seedFounder(),
+      settings: await seedSiteText(),
+    },
     'Katujpani content',
   );
   await disconnectDb();

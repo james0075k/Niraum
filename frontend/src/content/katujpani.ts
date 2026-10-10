@@ -1,11 +1,12 @@
 /**
- * Phase 4.5 local fallback content — the same facts the backend seeds
- * (backend/src/seed/katujpani.seed.ts), all from docs/content/NIRAUM_MASTER_BLUEPRINT.md.
- * Assay numbers are read straight from docs/content/data/assay_data.json, so the prerendered
- * site and the API can never disagree. Keep the deposit/product/founder text in step with the
- * backend seed (or let the admin panel own it).
+ * Phase 4.5 local fallback content — read from the same files the backend seeds from, so the
+ * prerendered site and the API can never disagree:
+ *  - docs/content/data/assay_data.json (assay numbers)
+ *  - docs/content/data/site_content.json (deposit, product, founder as { en, ne })
  */
 import assayData from '../../../docs/content/data/assay_data.json';
+import siteContent from '../../../docs/content/data/site_content.json';
+import type { Lang } from '@/app/i18n';
 import type {
   AssayDataset,
   AssaySampleRow,
@@ -84,105 +85,95 @@ export const assaySummary: AssaySummaryData = {
   sampleCount: assaySamples.length,
 };
 
-export const KATUJPANI_SLUG = 'katujpani-iron-deposit';
-export const HEMATITE_SLUG = 'industrial-hematite-iron-ore';
+export const KATUJPANI_SLUG = siteContent.deposit.slug;
+export const HEMATITE_SLUG = siteContent.product.slug;
 
-export const katujpani: Deposit = {
-  name: 'Katujpani Iron Deposit',
-  slug: KATUJPANI_SLUG,
-  summary:
-    'Hematite iron deposit at Bakaiya Gaupalika-09, Makawanpur District, Bagmati Province, mapped in three zones (Areas A, B and C) and sampled across 62.55 m in five sections.',
-  location: {
-    district: 'Makawanpur',
-    municipality: 'Bakaiya Gaupalika',
-    ward: '09',
-    province: 'Bagmati Province',
-    topoSheet: '2785 10A',
-    easting: 627755.0,
-    northing: 3033300.0,
-    spotHeightM: 914,
-    lat: null,
-    lng: null,
-  },
-  areas: [
-    { code: 'A', label: 'Area A' },
-    { code: 'B', label: 'Area B' },
-    { code: 'C', label: 'Area C' },
-  ],
-  land: {
-    surveyHa: 20.68,
-    quarryHa: 2.88,
-    topsoilYardHa: 0.116,
-    wasteYardHa: 0.135,
-    officeHa: 0.032,
-    approachRoadHa: 0.147,
-    totalLandUseHa: 3.41,
-    landType: 'Forest land',
-    confirmed: false,
-  },
-  geologySummary: 'Middle Siwalik sandstone belt north of Shikharpur (regional map after DMG).',
-  consultant: {
-    name: 'Shubharambha Mining and Engineering Services Pvt. Ltd.',
-    address: 'Tarkeshwor-07, Kathmandu',
-  },
-  status: 'development',
-  statusText:
-    'Government procedures and geological studies completed; development toward commercial mining in progress.',
-};
+type L = { en: string; ne?: string };
+/** `{ en, ne }` → text for `lang` (English when the Nepali is missing). */
+const pick = (v: L, lang: Lang) => (lang === 'ne' && v.ne?.trim() ? v.ne : v.en);
 
-const TABLE_14 = 'Deposit weighted average over 62.55 m (Table 14)';
+export function katujpaniFor(lang: Lang): Deposit {
+  const d = siteContent.deposit;
+  return {
+    name: pick(d.name, lang),
+    slug: d.slug,
+    summary: pick(d.summary, lang),
+    location: {
+      district: pick(d.location.district, lang),
+      municipality: pick(d.location.municipality, lang),
+      ward: d.location.ward,
+      province: pick(d.location.province, lang),
+      topoSheet: d.location.topoSheet,
+      easting: d.location.easting,
+      northing: d.location.northing,
+      spotHeightM: d.location.spotHeightM,
+      lat: null, // WGS-84 not confirmed yet
+      lng: null,
+    },
+    areas: d.areas.map((a) => ({ code: a.code, label: pick(a.label, lang) })),
+    land: {
+      surveyHa: d.land.surveyHa,
+      quarryHa: d.land.quarryHa,
+      topsoilYardHa: d.land.topsoilYardHa,
+      wasteYardHa: d.land.wasteYardHa,
+      officeHa: d.land.officeHa,
+      approachRoadHa: d.land.approachRoadHa,
+      totalLandUseHa: d.land.totalLandUseHa,
+      landType: d.land.landType,
+      confirmed: false,
+    },
+    geologySummary: pick(d.geologySummary, lang),
+    consultant: d.consultant,
+    status: 'development',
+    statusText: pick(d.statusText, lang),
+  };
+}
 
-export const hematite: Product = {
-  name: 'Industrial Hematite Iron Ore',
-  slug: HEMATITE_SLUG,
-  chemicalFormula: 'Fe₂O₃',
-  summary:
-    "Hematite iron ore from the Katujpani deposit, Makawanpur — supplied to Nepal's cement and metals industry.",
-  applications: [
-    {
-      title: 'Cement industry — iron corrective',
-      body: 'Hematite ore adds Fe₂O₃ to the cement raw mix. Plants use it to adjust the iron and silica moduli and to act as a flux, which lowers the clinkering temperature and helps form the C₄AF phase.',
-    },
-    {
-      title: 'Foundry and metallurgical buyers — on request',
-      body: "Supplied for evaluation and blending. Suitability for direct furnace feed depends on the buyer's grade requirements and may need beneficiation. Samples and full assay sheets are available on request.",
-    },
-  ],
-  typicalChemistry: [
-    { oxide: 'Fe₂O₃', value: overall.Fe2O3, unit: '%', basis: TABLE_14 },
-    { oxide: 'Fe', value: overall.Fe, unit: '%', basis: TABLE_14 },
-    { oxide: 'SiO₂', value: overall.SiO2, unit: '%', basis: TABLE_14 },
-    { oxide: 'Al₂O₃', value: overall.Al2O3, unit: '%', basis: TABLE_14 },
-  ],
-  sizes: [],
-  minOrder: '',
-  packing: '',
-  image: null,
-};
+export function hematiteFor(lang: Lang): Product {
+  const p = siteContent.product;
+  const basis = pick(p.chemistryBasis, lang);
+  return {
+    name: pick(p.name, lang),
+    slug: p.slug,
+    chemicalFormula: p.chemicalFormula,
+    summary: pick(p.summary, lang),
+    applications: p.applications.map((a) => ({
+      title: pick(a.title, lang),
+      body: pick(a.body, lang),
+    })),
+    typicalChemistry: [
+      { oxide: 'Fe₂O₃', value: overall.Fe2O3, unit: '%', basis },
+      { oxide: 'Fe', value: overall.Fe, unit: '%', basis },
+      { oxide: 'SiO₂', value: overall.SiO2, unit: '%', basis },
+      { oxide: 'Al₂O₃', value: overall.Al2O3, unit: '%', basis },
+    ],
+    sizes: [],
+    minOrder: '',
+    packing: '',
+    image: null,
+  };
+}
 
-export const founder: TeamMember = {
-  name: 'Shivahari Pudasaini',
-  role: 'Founder',
-  bio: "Shivahari Pudasaini founded Niraum Metals to develop Nepal's iron ore resources responsibly. He has led Nepal Souvenir Craft and Trade, an exporter of Nepali handicrafts to international and European markets, since 2010, and invests across mining, hydropower and securities. He works with engineers, geologists and technical specialists to take the Katujpani project from study to commercial operation.",
-  photo: null,
-  order: 0,
-  linkedin: null,
-  isFounder: true,
-  otherVentures: [
-    {
-      company: 'Nepal Souvenir Craft and Trade',
-      role: 'President',
-      sector: 'Handicrafts & export',
-      since: 2010,
-    },
-    { company: 'Roadshow Securities Limited', role: 'Investor', sector: 'Securities', since: 2023 },
-    { company: 'Malta Bagmati Hydropower', role: 'Investor', sector: 'Hydropower', since: 2024 },
-    {
-      company: 'Deshim Mines and Minerals Pvt. Ltd.',
-      role: 'Investor',
-      sector: 'Mining & minerals',
-      since: 2026,
-    },
-    { company: 'Deshim Mineralium Energy', role: 'Investor', sector: 'Hydropower', since: 2026 },
-  ],
-};
+export function founderFor(lang: Lang): TeamMember {
+  const f = siteContent.founder;
+  return {
+    name: f.name,
+    role: pick(f.role, lang),
+    bio: pick(f.bio, lang),
+    photo: null,
+    order: 0,
+    linkedin: null,
+    isFounder: true,
+    otherVentures: f.otherVentures.map((v) => ({
+      company: v.company,
+      role: pick(v.role, lang),
+      sector: pick(v.sector, lang),
+      since: v.since,
+    })),
+  };
+}
+
+/** English versions (existing imports and tests). */
+export const katujpani = katujpaniFor('en');
+export const hematite = hematiteFor('en');
+export const founder = founderFor('en');

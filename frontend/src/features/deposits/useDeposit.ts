@@ -1,4 +1,4 @@
-import { katujpani, KATUJPANI_SLUG } from '@/content/katujpani';
+import { katujpaniFor, KATUJPANI_SLUG } from '@/content/katujpani';
 import { useLang } from '@/hooks/useLang';
 import { useContentItem } from '@/lib/query';
 import type { Deposit } from '@/lib/types';
@@ -9,7 +9,7 @@ export const useDeposit = (slug: string = KATUJPANI_SLUG) => {
   const { data } = useContentItem<Deposit>(
     ['deposits', slug, lang],
     withLang(`/deposits/${encodeURIComponent(slug)}`, lang),
-    slug === KATUJPANI_SLUG ? katujpani : null,
+    slug === KATUJPANI_SLUG ? katujpaniFor(lang) : null,
   );
-  return data ?? katujpani;
+  return data ?? katujpaniFor(lang);
 };

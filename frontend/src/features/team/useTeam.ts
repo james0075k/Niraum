@@ -1,6 +1,6 @@
 import { useContentList } from '@/lib/query';
 import { team } from '@/content/about';
-import { founder } from '@/content/katujpani';
+import { founderFor } from '@/content/katujpani';
 import { useLang } from '@/hooks/useLang';
 import { withLang } from '@/lib/withLang';
 import type { TeamMember } from '@/lib/types';
@@ -12,6 +12,7 @@ export const useTeam = () => {
 
 /** The founder card (About, Investors): admin-managed TeamMember, else the blueprint copy. */
 export const useFounder = (): TeamMember => {
+  const lang = useLang();
   const { data } = useTeam();
-  return data.find((m) => m.isFounder) ?? founder;
+  return data.find((m) => m.isFounder) ?? founderFor(lang);
 };

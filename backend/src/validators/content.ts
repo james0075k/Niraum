@@ -113,8 +113,8 @@ export const teamCreate = z.object({
     .array(
       z.object({
         company: text(150).min(1),
-        role: text(100).default(''),
-        sector: text(100).default(''),
+        role: short(100).default(''),
+        sector: short(100).default(''),
         since: z.number().int().min(1900).max(2100).nullable().default(null),
       }),
     )
@@ -194,10 +194,10 @@ export const depositCreate = z.object({
   summary: short(1000).default(''),
   location: z
     .object({
-      district: text(100).default(''),
-      municipality: text(100).default(''),
+      district: short(100).default(''),
+      municipality: short(100).default(''),
       ward: text(20).default(''),
-      province: text(100).default(''),
+      province: short(100).default(''),
       topoSheet: text(40).default(''),
       easting: optNum.default(null),
       northing: optNum.default(null),

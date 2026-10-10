@@ -1,0 +1,128 @@
+{
+  "_about": "Katujpani deposit, hematite product and founder — text from NIRAUM_MASTER_BLUEPRINT.md (sections 2, 4, 5) as { en, ne } pairs. Single source for backend/src/seed/katujpani.seed.ts and frontend/src/content/katujpani.ts. Nepali is a draft (TODO-review by a native speaker). Assay numbers live in assay_data.json.",
+  "deposit": {
+    "slug": "katujpani-iron-deposit",
+    "name": { "en": "Katujpani Iron Deposit", "ne": "कटुजपानी फलाम निक्षेप" },
+    "summary": {
+      "en": "Hematite iron deposit at Bakaiya Gaupalika-09, Makawanpur District, Bagmati Province, mapped in three zones (Areas A, B and C) and sampled across 62.55 m in five sections.",
+      "ne": "बकैया गाउँपालिका-०९, मकवानपुर जिल्ला, बागमती प्रदेशस्थित हेमाटाइट फलाम निक्षेप, तीन क्षेत्र (A, B र C) मा नक्साङ्कन गरिएको र पाँच खण्डमा ६२.५५ मिटरसम्म नमुना लिइएको।"
+    },
+    "location": {
+      "district": { "en": "Makawanpur", "ne": "मकवानपुर" },
+      "municipality": { "en": "Bakaiya Gaupalika", "ne": "बकैया गाउँपालिका" },
+      "ward": "09",
+      "province": { "en": "Bagmati Province", "ne": "बागमती प्रदेश" },
+      "topoSheet": "2785 10A",
+      "easting": 627755.0,
+      "northing": 3033300.0,
+      "spotHeightM": 914
+    },
+    "areas": [
+      { "code": "A", "label": { "en": "Area A", "ne": "क्षेत्र A" } },
+      { "code": "B", "label": { "en": "Area B", "ne": "क्षेत्र B" } },
+      { "code": "C", "label": { "en": "Area C", "ne": "क्षेत्र C" } }
+    ],
+    "land": {
+      "_confirm": "Map No. 1 figures — [CONFIRM]; not shown on the site until confirmed.",
+      "surveyHa": 20.68,
+      "quarryHa": 2.88,
+      "topsoilYardHa": 0.116,
+      "wasteYardHa": 0.135,
+      "officeHa": 0.032,
+      "approachRoadHa": 0.147,
+      "totalLandUseHa": 3.41,
+      "landType": "Forest land"
+    },
+    "geologySummary": {
+      "en": "Middle Siwalik sandstone belt north of Shikharpur (regional map after DMG).",
+      "ne": "शिखरपुरको उत्तरमा मध्य शिवालिक बलौटे ढुङ्गा पट्टी (खानी तथा भूगर्भ विभागको क्षेत्रीय नक्साअनुसार)।"
+    },
+    "consultant": {
+      "name": "Shubharambha Mining and Engineering Services Pvt. Ltd.",
+      "address": "Tarkeshwor-07, Kathmandu"
+    },
+    "statusText": {
+      "en": "Government procedures and geological studies completed; development toward commercial mining in progress.",
+      "ne": "सरकारी प्रक्रिया र भौगर्भिक अध्ययन सम्पन्न; व्यावसायिक उत्खननतर्फ विकास जारी।"
+    }
+  },
+  "product": {
+    "slug": "industrial-hematite-iron-ore",
+    "name": { "en": "Industrial Hematite Iron Ore", "ne": "औद्योगिक हेमाटाइट फलाम खनिज" },
+    "chemicalFormula": "Fe₂O₃",
+    "summary": {
+      "en": "Hematite iron ore from the Katujpani deposit, Makawanpur — supplied to Nepal's cement and metals industry.",
+      "ne": "मकवानपुरको कटुजपानी निक्षेपबाट नेपालका सिमेन्ट तथा धातु उद्योगलाई आपूर्ति हुने हेमाटाइट फलाम खनिज।"
+    },
+    "applications": [
+      {
+        "title": {
+          "en": "Cement industry — iron corrective",
+          "ne": "सिमेन्ट उद्योग — फलाम सुधारक"
+        },
+        "body": {
+          "en": "Hematite ore adds Fe₂O₃ to the cement raw mix. Plants use it to adjust the iron and silica moduli and to act as a flux, which lowers the clinkering temperature and helps form the C₄AF phase.",
+          "ne": "हेमाटाइट खनिजले सिमेन्टको कच्चा मिश्रणमा Fe₂O₃ थप्छ। कारखानाहरूले यसलाई फलाम र सिलिका मोड्युली मिलाउन र फ्लक्सको रूपमा प्रयोग गर्छन्, जसले क्लिंकर बनाउने तापक्रम घटाउँछ र C₄AF चरण बन्न सहयोग गर्छ।"
+        }
+      },
+      {
+        "title": {
+          "en": "Foundry and metallurgical buyers — on request",
+          "ne": "फाउन्ड्री र धातु खरिदकर्ता — अनुरोधमा"
+        },
+        "body": {
+          "en": "Supplied for evaluation and blending. Suitability for direct furnace feed depends on the buyer's grade requirements and may need beneficiation. Samples and full assay sheets are available on request.",
+          "ne": "परीक्षण र मिश्रणका लागि आपूर्ति। भट्टीमा सिधै प्रयोग गर्न मिल्ने वा नमिल्ने खरिदकर्ताको ग्रेड आवश्यकतामा निर्भर हुन्छ र खनिज शुद्धीकरण आवश्यक पर्न सक्छ। नमुना र पूर्ण परीक्षण विवरण अनुरोधमा उपलब्ध छन्।"
+        }
+      }
+    ],
+    "chemistryBasis": {
+      "en": "Deposit weighted average over 62.55 m (Table 14)",
+      "ne": "६२.५५ मिटरको निक्षेप भारित औसत (तालिका १४)"
+    }
+  },
+  "founder": {
+    "name": "Shivahari Pudasaini",
+    "role": { "en": "Founder", "ne": "संस्थापक" },
+    "bio": {
+      "en": "Shivahari Pudasaini founded Niraum Metals to develop Nepal's iron ore resources responsibly. He has led Nepal Souvenir Craft and Trade, an exporter of Nepali handicrafts to international and European markets, since 2010, and invests across mining, hydropower and securities. He works with engineers, geologists and technical specialists to take the Katujpani project from study to commercial operation.",
+      "ne": "शिवहरि पुडासैनीले नेपालको फलाम खनिज स्रोतको जिम्मेवार विकास गर्न निराउम मेटल्स स्थापना गर्नुभएको हो। उहाँ सन् २०१० देखि अन्तर्राष्ट्रिय तथा युरोपेली बजारमा नेपाली हस्तकला निर्यात गर्ने नेपाल सुभेनियर क्राफ्ट एण्ड ट्रेडको नेतृत्व गर्दै आउनुभएको छ, र खानी, जलविद्युत् तथा धितोपत्रमा लगानी गर्नुहुन्छ। कटुजपानी परियोजनालाई अध्ययनबाट व्यावसायिक सञ्चालनसम्म पुर्‍याउन उहाँ इन्जिनियर, भूगर्भविद् र प्राविधिक विशेषज्ञहरूसँग काम गर्नुहुन्छ।"
+    },
+    "otherVentures": [
+      {
+        "company": "Nepal Souvenir Craft and Trade",
+        "role": { "en": "President", "ne": "अध्यक्ष" },
+        "sector": { "en": "Handicrafts & export", "ne": "हस्तकला र निर्यात" },
+        "since": 2010
+      },
+      {
+        "company": "Roadshow Securities Limited",
+        "role": { "en": "Investor", "ne": "लगानीकर्ता" },
+        "sector": { "en": "Securities", "ne": "धितोपत्र" },
+        "since": 2023
+      },
+      {
+        "company": "Malta Bagmati Hydropower",
+        "role": { "en": "Investor", "ne": "लगानीकर्ता" },
+        "sector": { "en": "Hydropower", "ne": "जलविद्युत्" },
+        "since": 2024
+      },
+      {
+        "company": "Deshim Mines and Minerals Pvt. Ltd.",
+        "role": { "en": "Investor", "ne": "लगानीकर्ता" },
+        "sector": { "en": "Mining & minerals", "ne": "खानी तथा खनिज" },
+        "since": 2026
+      },
+      {
+        "company": "Deshim Mineralium Energy",
+        "role": { "en": "Investor", "ne": "लगानीकर्ता" },
+        "sector": { "en": "Hydropower", "ne": "जलविद्युत्" },
+        "since": 2026
+      }
+    ]
+  },
+  "settings": {
+    "motto": { "en": "Strength Forged For Generations", "ne": "पुस्तौँसम्म टिक्ने बल" },
+    "email": "niraummetals@gmail.com"
+  }
+}

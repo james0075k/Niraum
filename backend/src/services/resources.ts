@@ -76,7 +76,7 @@ export const teamService = createContentService({
   sortable: ['order', 'name', 'createdAt'],
   publicSort: { order: 1, name: 1 },
   adminSort: { order: 1, name: 1 },
-  localized: ['role', 'bio'],
+  localized: ['role', 'bio', 'otherVentures'],
 });
 
 export const serviceService = createContentService({
@@ -111,5 +111,5 @@ export const depositService = createContentService({
   sortable: ['createdAt', 'updatedAt'],
   publicSort: { createdAt: 1 },
   adminSort: { updatedAt: -1 },
-  localized: ['name', 'summary', 'areas', 'geologySummary', 'statusText'],
+  localized: ['name', 'summary', 'location', 'areas', 'geologySummary', 'statusText'],
 });

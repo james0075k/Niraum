@@ -18,10 +18,10 @@ export const DEPOSIT_STATUSES = ['studies', 'development', 'operating'] as const
  * confirmed (never converted by guesswork).
  */
 export interface DepositLocation {
-  district: string;
-  municipality: string;
+  district: LocalizedString;
+  municipality: LocalizedString;
   ward: string;
-  province: string;
+  province: LocalizedString;
   topoSheet: string;
   easting: number | null;
   northing: number | null;
@@ -72,10 +72,10 @@ const depositSchema = new Schema<IDeposit>(
     slug: { type: String, required: true, unique: true, lowercase: true, trim: true },
     summary: localizedPath({ maxlength: 1000 }),
     location: {
-      district: { type: String, default: '' },
-      municipality: { type: String, default: '' },
+      district: localizedPath({ maxlength: 100 }),
+      municipality: localizedPath({ maxlength: 100 }),
       ward: { type: String, default: '' },
-      province: { type: String, default: '' },
+      province: localizedPath({ maxlength: 100 }),
       topoSheet: { type: String, default: '' },
       easting: num,
       northing: num,
