@@ -20,7 +20,8 @@ export const lazyPage = (load: () => Promise<{ default: React.ComponentType }>) 
  * Sections without a real page yet: a role-gated "coming soon" placeholder at each NAV path,
  * so links never 404. Later tasks replace entries here with their pages.
  */
-const placeholders: RouteObject[] = NAV.filter((n) => n.to !== '/admin').map((n) => ({
+const BUILT = new Set(['/admin', '/admin/settings']);
+const placeholders: RouteObject[] = NAV.filter((n) => !BUILT.has(n.to)).map((n) => ({
   path: n.to.slice('/admin/'.length),
   element: <RequireRole area={n.area}>{lazyPage(() => import('./pages/ComingSoon'))}</RequireRole>,
 }));
@@ -43,6 +44,14 @@ export const adminRoutes: RouteObject[] = [
           { index: true, element: lazyPage(() => import('./pages/Dashboard')) },
           // Allowed (and forced) while mustChangePassword.
           { path: 'change-password', element: lazyPage(() => import('./pages/ChangePassword')) },
+          {
+            path: 'settings',
+            element: (
+              <RequireRole area="settings">
+                {lazyPage(() => import('./pages/Settings'))}
+              </RequireRole>
+            ),
+          },
           ...placeholders,
         ],
       },
