@@ -1,4 +1,5 @@
 import { Navigation } from 'lucide-react';
+import { useT } from '@/hooks/useLang';
 import { lazy, Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useMounted } from '@/hooks/useMounted';
@@ -30,11 +31,12 @@ export function MapCard({
   className,
 }: MapCardProps) {
   const mounted = useMounted();
+  const { t } = useT();
   const directions = directionsUrl(lat, lng);
 
   return (
     <figure className={cn('glass overflow-hidden', className)}>
-      <div className="relative h-72 sm:h-96" aria-label={`Map showing ${title}`} role="region">
+      <div className="relative h-72 sm:h-96" aria-label={t('map.region', { title })} role="region">
         {mounted ? (
           <Suspense fallback={<Skeleton className="h-full w-full rounded-none" />}>
             <LeafletMap
@@ -54,11 +56,7 @@ export function MapCard({
         <div>
           <p className="font-semibold text-foreground">{title}</p>
           <p className="text-sm text-muted-foreground">{address}</p>
-          {approximate && (
-            <p className="mt-1 text-xs text-copper-ink">
-              Approximate pin — exact office location to be confirmed.
-            </p>
-          )}
+          {approximate && <p className="mt-1 text-xs text-copper-ink">{t('map.approx')}</p>}
         </div>
         <a
           href={directions}
@@ -66,7 +64,7 @@ export function MapCard({
           rel="noopener noreferrer"
           className="inline-flex min-h-11 items-center gap-2 rounded-full border border-foreground/20 px-4 text-sm font-semibold text-foreground transition-colors hover:border-primary"
         >
-          <Navigation className="h-4 w-4" aria-hidden="true" /> Get directions
+          <Navigation className="h-4 w-4" aria-hidden="true" /> {t('map.directions')}
         </a>
       </figcaption>
     </figure>

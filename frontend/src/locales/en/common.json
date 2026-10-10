@@ -48,8 +48,63 @@
     "subscribeFailed": "Could not subscribe right now. Please try again later.",
     "rights": "All rights reserved.",
     "phone": "Phone",
-    "email": "Email"
+    "email": "Email",
+    "about": "Hematite iron ore from the Katujpani deposit, Makawanpur — supplied to Nepal's cement and metals industry."
   },
   "dataOrigin": "Field grab, chip and channel sampling analysed and reported by Shubharambha Mining and Engineering Services Pvt. Ltd., Tarkeshwor-07, Kathmandu, in the mine scheme submitted under Department of Mines and Geology (DMG) guidelines. Figures are indicative of the sampled zones and are not a JORC/NI 43-101 reserve statement.",
-  "confirm": "To be confirmed"
+  "confirm": "To be confirmed",
+  "preloader": {
+    "loading": "Loading Niraum Metals",
+    "skip": "Skip intro"
+  },
+  "notice": {
+    "aria": "Cookie consent",
+    "title": "Cookies on this site",
+    "body": "We use essential cookies to run the site. With your permission we also use analytics cookies to see which pages help visitors.",
+    "policy": "Cookie Policy",
+    "accept": "Accept all",
+    "essential": "Essential only"
+  },
+  "map": {
+    "region": "Map showing {{title}}",
+    "approx": "Approximate pin — exact office location to be confirmed.",
+    "directions": "Get directions"
+  },
+  "theme": {
+    "toLight": "Switch to light theme",
+    "toDark": "Switch to dark theme",
+    "toggle": "Toggle theme"
+  },
+  "mobileBar": {
+    "aria": "Quick actions",
+    "call": "Call",
+    "contact": "Contact",
+    "whatsapp": "WhatsApp"
+  },
+  "tbc": {
+    "title": "Placeholder — to be confirmed by Niraum Metals",
+    "prefix": "PLACEHOLDER"
+  },
+  "newsletter": {
+    "label": "Project updates and news, a few times a year.",
+    "placeholder": "you@company.com",
+    "invalid": "Please enter a valid email address."
+  },
+  "legal": {
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Use",
+    "cookies": "Cookie Policy",
+    "sitemap": "Sitemap"
+  },
+  "notFound": {
+    "seoTitle": "Page Not Found",
+    "seoDescription": "This page could not be found.",
+    "title": "This path leads off the map.",
+    "body": "The page you were looking for has moved or never existed.",
+    "back": "Back home"
+  },
+  "redirect": {
+    "moved": "This page has moved.",
+    "continue": "Continue"
+  }
 }

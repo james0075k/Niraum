@@ -37,10 +37,8 @@ export const defaultSettings: SiteSettings = {
       'construction aggregates Nepal',
     ],
   },
-  footer: {
-    about:
-      'Iron ore, metal minerals and stone aggregates from Nepal — explored, extracted and delivered with engineering discipline.',
-  },
+  // Empty → the footer shows the blueprint sentence from the locale file (common:footer.about).
+  footer: { about: '' },
   theme: { defaultMode: 'system' },
 };
 

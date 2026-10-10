@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useState } from 'react';
+import { useT } from '@/hooks/useLang';
 import { ease } from '@/lib/motion';
 
 const SEEN_KEY = 'niraum-preloaded';
@@ -13,6 +14,7 @@ const DURATION_MS = 1600; // spec: max 1.8 s
  */
 export function Preloader() {
   const [visible, setVisible] = useState(true);
+  const { t } = useT();
 
   const finish = useCallback(() => {
     setVisible(false);
@@ -43,7 +45,7 @@ export function Preloader() {
           className="preloader fixed inset-0 z-[100] flex flex-col items-center justify-center bg-graphite text-offwhite"
           exit={{ opacity: 0, transition: { duration: 0.45, ease } }}
           role="status"
-          aria-label="Loading Niraum Metals"
+          aria-label={t('preloader.loading')}
         >
           <svg viewBox="0 0 100 100" className="h-24 w-24" aria-hidden="true">
             <defs>
@@ -101,7 +103,7 @@ export function Preloader() {
             onClick={finish}
             className="label mt-10 min-h-11 rounded-full px-4 text-silver/80 transition-colors hover:text-offwhite"
           >
-            Skip intro
+            {t('preloader.skip')}
           </button>
         </motion.div>
       )}

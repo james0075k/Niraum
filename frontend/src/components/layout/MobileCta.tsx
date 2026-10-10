@@ -1,6 +1,7 @@
 import { MessageCircle, Phone, Send } from 'lucide-react';
 import { Link } from '@/components/common/LangLink';
 import { useSettings } from '@/features/settings/useSettings';
+import { useT } from '@/hooks/useLang';
 
 const item =
   'flex min-h-12 flex-1 items-center justify-center gap-2 rounded-2xl text-sm font-semibold';
@@ -11,21 +12,22 @@ const item =
  */
 export function MobileCta() {
   const { contact } = useSettings();
+  const { t } = useT();
   const phone = contact.phone[0]?.replace(/\s/g, '');
   const whatsapp = contact.whatsapp?.replace(/\D/g, '');
 
   return (
     <nav
-      aria-label="Quick actions"
+      aria-label={t('mobileBar.aria')}
       className="glass-strong fixed inset-x-3 bottom-3 z-40 flex gap-2 p-2 md:hidden"
     >
       {phone ? (
         <a href={`tel:${phone}`} className={`${item} text-foreground`}>
-          <Phone className="h-4 w-4" aria-hidden="true" /> Call
+          <Phone className="h-4 w-4" aria-hidden="true" /> {t('mobileBar.call')}
         </a>
       ) : (
         <Link to="/contact" className={`${item} text-foreground`}>
-          <Send className="h-4 w-4" aria-hidden="true" /> Contact
+          <Send className="h-4 w-4" aria-hidden="true" /> {t('mobileBar.contact')}
         </Link>
       )}
       {whatsapp ? (
@@ -35,14 +37,14 @@ export function MobileCta() {
           rel="noopener noreferrer"
           className={`${item} bg-copper-gradient text-graphite`}
         >
-          <MessageCircle className="h-4 w-4" aria-hidden="true" /> WhatsApp
+          <MessageCircle className="h-4 w-4" aria-hidden="true" /> {t('mobileBar.whatsapp')}
         </a>
       ) : (
         <Link
-          to="/contact?subject=Quote%20request"
+          to="/contact?topic=supply#inquiry"
           className={`${item} bg-copper-gradient text-graphite`}
         >
-          Get a Quote
+          {t('cta.quote')}
         </Link>
       )}
     </nav>

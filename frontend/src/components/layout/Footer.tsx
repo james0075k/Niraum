@@ -10,11 +10,9 @@ import { Tbc } from '@/components/common/Tbc';
 import { useLenis } from '@/components/motion/lenis';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { legalLinks } from '@/content/site';
 import { newsletterSchema, subscribeNewsletter } from '@/features/contact/schemas';
-import { useServices } from '@/features/services/useServices';
 import { useSettings } from '@/features/settings/useSettings';
-import { useT } from '@/hooks/useLang';
+import { useLang, useT } from '@/hooks/useLang';
 
 /** `key` → `common:nav.<key>`. */
 const quickLinks = [
@@ -24,11 +22,14 @@ const quickLinks = [
   { to: '/technical-data', key: 'technical' },
   { to: '/investors', key: 'investors' },
   { to: '/sustainability', key: 'sustainability' },
-  { to: '/operations', key: 'operations' },
-  { to: '/projects', key: 'projects' },
-  { to: '/news', key: 'news' },
-  { to: '/careers', key: 'careers' },
   { to: '/contact', key: 'contact' },
+];
+
+/** `key` → `common:legal.<key>`. */
+const legal = [
+  { to: '/legal/privacy', key: 'privacy' },
+  { to: '/legal/terms', key: 'terms' },
+  { to: '/legal/cookies', key: 'cookies' },
 ];
 
 const linkCls =
@@ -62,7 +63,7 @@ function Newsletter() {
   return (
     <form onSubmit={onSubmit} noValidate className="mt-4">
       <label htmlFor="newsletter-email" className="text-sm text-muted-foreground">
-        Project updates and news, a few times a year.
+        {t('newsletter.label')}
       </label>
       <div className="mt-3 flex gap-2">
         <Input
@@ -70,18 +71,18 @@ function Newsletter() {
           type="email"
           autoComplete="email"
           inputMode="email"
-          placeholder="you@company.com"
+          placeholder={t('newsletter.placeholder')}
           aria-invalid={!!error}
           aria-describedby={error ? 'newsletter-error' : undefined}
           {...form.register('email')}
         />
         <Button type="submit" disabled={form.formState.isSubmitting} className="shrink-0">
-          Subscribe
+          {t('footer.subscribe')}
         </Button>
       </div>
       {error && (
         <p id="newsletter-error" className="mt-2 text-xs text-destructive">
-          {error}
+          {t('newsletter.invalid')}
         </p>
       )}
     </form>
@@ -90,9 +91,13 @@ function Newsletter() {
 
 export function Footer() {
   const settings = useSettings();
-  const { data: services } = useServices();
   const lenis = useLenis();
-  const { t } = useT();
+  const lang = useLang();
+  const { t } = useT(['common', 'home']);
+  // Same rule as the hero: the admin's motto is English-first; /ne uses the locale tagline.
+  const motto = lang === 'ne' ? t('home:hero.tagline') : settings.motto;
+  // Admin-set footer text wins; otherwise the blueprint sentence from the locale file.
+  const about = settings.footer.about?.trim() || t('footer.about');
   const { address, contact } = settings;
 
   const toTop = () => (lenis ? lenis.scrollTo(0) : window.scrollTo({ top: 0, behavior: 'smooth' }));
@@ -105,8 +110,8 @@ export function Footer() {
             <Link to="/" aria-label={t('nav.homeLink')} className="inline-flex">
               <Logo />
             </Link>
-            <p className="mt-5 text-lg font-semibold text-copper-ink">{settings.motto}</p>
-            <p className="mt-3 max-w-sm text-sm text-muted-foreground">{settings.footer.about}</p>
+            <p className="mt-5 text-lg font-semibold text-copper-ink">{motto}</p>
+            <p className="mt-3 max-w-sm text-sm text-muted-foreground">{about}</p>
             <ProfileLinks className="mt-6" />
             <Newsletter />
           </div>
@@ -124,31 +129,19 @@ export function Footer() {
             </ul>
           </nav>
 
-          <nav aria-labelledby="footer-ops" className="lg:col-span-2">
-            <FooterHeading id="footer-ops">{t('footer.operations')}</FooterHeading>
+          <nav aria-labelledby="footer-legal" className="lg:col-span-2">
+            <FooterHeading id="footer-legal">{t('footer.legal')}</FooterHeading>
             <ul>
-              {services.map((s) => (
-                <li key={s.slug}>
-                  <Link to={`/operations#${s.slug}`} className={linkCls}>
-                    {s.title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-            <div className="mt-8">
-              <FooterHeading id="footer-legal">{t('footer.legal')}</FooterHeading>
-            </div>
-            <ul aria-labelledby="footer-legal">
-              {legalLinks.map((l) => (
+              {legal.map((l) => (
                 <li key={l.to}>
                   <Link to={l.to} className={linkCls}>
-                    {l.label}
+                    {t(`legal.${l.key}`)}
                   </Link>
                 </li>
               ))}
               <li>
                 <a href="/sitemap.xml" className={linkCls}>
-                  Sitemap
+                  {t('legal.sitemap')}
                 </a>
               </li>
             </ul>

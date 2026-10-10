@@ -1,4 +1,5 @@
 import { ArrowLeft } from 'lucide-react';
+import { useT } from '@/hooks/useLang';
 import { Link } from '@/components/common/LangLink';
 import { Reveal } from '@/components/motion/Reveal';
 import { Seo } from '@/components/seo/Seo';
@@ -43,9 +44,10 @@ function Ridges() {
 }
 
 export default function NotFound() {
+  const { t } = useT();
   return (
     <>
-      <Seo title="Page Not Found" description="This page could not be found." noindex />
+      <Seo title={t('notFound.seoTitle')} description={t('notFound.seoDescription')} noindex />
       <section
         aria-labelledby="nf-title"
         className="grain relative isolate flex min-h-[100svh] items-center overflow-hidden pb-40 pt-36"
@@ -59,14 +61,12 @@ export default function NotFound() {
             404
           </Reveal>
           <h1 id="nf-title" className="mt-2 !text-[clamp(2rem,5vw,3.5rem)]">
-            This path leads off the map.
+            {t('notFound.title')}
           </h1>
-          <p className="mx-auto mt-4 max-w-md text-muted-foreground">
-            The page you were looking for has moved or never existed.
-          </p>
+          <p className="mx-auto mt-4 max-w-md text-muted-foreground">{t('notFound.body')}</p>
           <Button asChild size="lg" className="mt-8">
             <Link to="/">
-              <ArrowLeft aria-hidden="true" /> Back home
+              <ArrowLeft aria-hidden="true" /> {t('notFound.back')}
             </Link>
           </Button>
         </div>
