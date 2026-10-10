@@ -1,0 +1,46 @@
+{
+  "seo": {
+    "title": "Sustainability and Safety",
+    "description": "How Niraum Metals plans to work at Katujpani: forest land, topsoil kept for rehabilitation, progressive restoration, local jobs and safe sampling."
+  },
+  "hero": {
+    "eyebrow": "Sustainability & safety",
+    "title": "Responsible mining at Katujpani.",
+    "intro": "Our commitments for the forest land around the deposit, the people who work on it and the communities nearby."
+  },
+  "commitments": {
+    "eyebrow": "Our commitments",
+    "title": "Four commitments for the land and its people.",
+    "confirm": "These commitments will be confirmed against the project’s environmental study (EIA/IEE).",
+    "forest": {
+      "title": "Forest land",
+      "body": "The lease area is forest land. We work only inside the approved area and protect the forest around it."
+    },
+    "topsoil": {
+      "title": "Topsoil kept",
+      "body": "Topsoil is stripped and stored in a yard set aside for it, ready to go back during rehabilitation."
+    },
+    "rehab": {
+      "title": "Progressive rehabilitation",
+      "body": "Worked-out ground is restored step by step while mining continues, not left until closure."
+    },
+    "community": {
+      "title": "Local employment",
+      "body": "We hire from nearby communities wherever the work allows."
+    }
+  },
+  "land": {
+    "eyebrow": "Land & topsoil",
+    "title": "Plan the restoration before the first cut.",
+    "body": "Keeping topsoil and restoring worked ground as we go means the slope can return to forest. The restoration plan follows the mine scheme and the environmental study."
+  },
+  "safety": {
+    "eyebrow": "Safety",
+    "title": "Protective equipment and safe sampling.",
+    "body": "Field crews cut channel samples with gloves and protective equipment, and anyone can stop work that is not safe."
+  },
+  "cta": {
+    "title": "Questions about how we work?",
+    "body": "Ask us about the project, our commitments or a bulk supply quote."
+  }
+}
