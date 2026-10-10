@@ -2,7 +2,11 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { HelmetProvider } from 'react-helmet-async';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
+import { vi } from 'vitest';
 import { adminRoute } from '@/app/router';
+
+// The sign-in card's logo asks for site settings; keep tests off the network.
+vi.mock('@/lib/api', () => ({ api: { get: vi.fn(() => new Promise(() => {})), post: vi.fn() } }));
 
 it('serves /admin/login client-side with noindex', async () => {
   const router = createMemoryRouter([adminRoute], { initialEntries: ['/admin/login'] });

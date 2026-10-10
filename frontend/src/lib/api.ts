@@ -47,6 +47,11 @@ api.interceptors.response.use(
     );
     try {
       await refreshing;
+    } catch (refreshError) {
+      // The session is gone. The admin shows a sign-in dialog over the open page (drafts
+      // survive); the public site has no listener.
+      if (typeof window !== 'undefined') window.dispatchEvent(new Event('niraum:auth-expired'));
+      throw refreshError;
     } finally {
       refreshing = null;
     }
