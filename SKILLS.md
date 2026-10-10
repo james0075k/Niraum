@@ -231,22 +231,36 @@ design-assets/                not shipped: images/{photos,maps} high-quality JPG
                               tables/ (report table scans — reference only, rebuild as HTML)
 ```
 
-Planned in Phase 4.5 (not created yet — move into the tree above as they land):
+Added in Phase 4.5 (built):
 
 ```text
-frontend/src/app/i18n.ts                 react-i18next setup, /:lang routing helpers
+frontend/src/app/i18n.ts                 LANGS, localePath/stripLang/switchLangPath, i18next init
+frontend/src/hooks/useLang.ts            useLang (URL prefix), useLocalePath, useT (getFixedT)
 frontend/src/locales/en|ne/              common, home, about, project, products, technical,
-                                         sustainability, investors, contact, admin .json
-frontend/src/pages/public/               OurProject, Products, TechnicalData, Investors
+                                         investors, contact .json (ne falls back to en)
+frontend/src/pages/public/               OurProject, Products, TechnicalData, Investors,
+                                         LangRedirect (`/` + legacy URLs)
+frontend/src/components/common/          LangLink (language-aware Link / NavLink)
 frontend/src/components/layout/          LanguageToggle
 frontend/src/components/sections/        InquiryForm, AssaySummaryTable, AssaySampleTable,
-                                         FeBySectionChart, MapGallery, FounderCard, DataOriginNote
-frontend/src/features/                   products, deposits, assay, inquiries (use*.ts hooks)
-frontend/src/assets/CREDITS.md           media credits (real vs stock)
+                                         FeBySectionChart, MapGallery, FounderCard, DataOriginNote,
+                                         SupplyCards, ProjectTeaser
+frontend/src/features/                   assay/useAssay, products/useProducts,
+                                         deposits/useDeposit, inquiries/schemas, team/useFounder
+frontend/src/content/                    siteImages.ts (report imagery), katujpani.ts (fallback
+                                         deposit/product/founder + assay from the JSON)
+frontend/src/lib/                        withLang.ts, detectLang.ts
+frontend/src/assets/CREDITS.md           media credits
 backend/src/models/                      Product, Deposit, AssaySample, AssaySummary, Inquiry,
                                          schemas/LocalizedString.ts
-backend/src/migrations/                  2026-10-localize-fields.ts (+ `migrate` script)
-backend/src/seed/                        assay.seed.ts, katujpani.seed.ts, product.seed.ts
+backend/src/services/                    assay.service, inquiry.service (+ product/deposit in
+                                         resources.ts)
+backend/src/controllers/                 assay.controller, inquiry.controller
+backend/src/validators/                  assay.ts (+ product/deposit in content.ts, inquiry in
+                                         public.ts)
+backend/src/migrations/                  2026-10-localize-fields.ts, run.ts (`migrate` script)
+backend/src/seed/                        assay.seed.ts, katujpani.seed.ts (deposit, product,
+                                         founder)
 ```
 
 ---
@@ -271,7 +285,7 @@ backend/src/seed/                        assay.seed.ts, katujpani.seed.ts, produ
   - [x] Step 3 — Product, Deposit, AssaySample, AssaySummary, Inquiry models + API + seeds
   - [x] Step 4 — Pages: Our Project, Products, Technical Data, Investors; Home/About/Contact updated
   - [~] Step 5 — Tests (averages, i18n, inquiry, migration) ✓ + Lighthouse ≥ 90 on `/en` and `/ne` — desktop ✓, mobile performance ~70 (see §8)
-  - [ ] Step 6 — Docs (SKILLS, README, ARCHITECTURE, API, CHANGELOG)
+  - [x] Step 6 — Docs (SKILLS, README, ARCHITECTURE, API, CHANGELOG)
 - [ ] **Phase 5 — Admin panel:** login, shell, dashboard, settings (address/map, social toggles), managers, media, inbox, users, audit
       (+ Phase 4.5 adds: Inquiries inbox with status pipeline + CSV, Products editor, Deposit
       editor incl. lat/lng pin, Assay manager with CSV import + `publicAssayDetail` switch, EN/नेपाली
@@ -335,6 +349,7 @@ Status values: Not started · In progress · Review · Done · Blocked
 
 | Date       | What changed                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | Files touched                                                                                                                                                                                 | Open issues                                                                                                    |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| 2026-10-10 | Phase 4.5 step 6 — docs: API.md (languages, products/deposits, assay, inquiries, migration, rate limit), CHANGELOG, README (status, seed/migrate, pages), ARCHITECTURE §13 (built; how it differs from the plan), SKILLS file map.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | `docs/API.md`, `CHANGELOG.md`, `README.md`, `docs/ARCHITECTURE.md`, `SKILLS.md`                                                                                                               | —                                                                                                              |
 | 2026-10-10 | Phase 4.5 step 5 — QA: e2e updated + new journeys (redirect, language toggle + remembered choice, hreflang, inquiry EN/NE, Technical Data, dark mode) — 10 passed (chromium, system Chrome). Perf fixes: strip vite-react-ssg's blanket image preloads (28.8 MB → 0.9 MB per page), keep only Manrope Latin (+ Mukta 400 on /ne) font preloads, CSS entrance for above-the-fold text, preloader skipped on phones and CSS-dismissed at 1.6 s. Lighthouse home — desktop: /en 94/100/100/100, /ne 92/100/100/100; mobile (simulated slow 4G): /en 70, /ne 66 performance, 100 a11y/BP/SEO; CLS 0. Vitest testTimeout 15 s.                                                                                                                                                                                                                        | `frontend/vite.config.ts`, `e2e/site.spec.ts`, `SplitText.tsx`, `Hero.tsx`, `PageHero.tsx`, `lib/motion.ts`, `globals.css`, `index.html`                                                      | Mobile performance < 90: needs a decision on the motion stack (see §8)                                         |
 | 2026-10-10 | Phase 4.5 step 4 — pages: Home rebuilt to blueprint §5 (hero copy + Request Bulk Supply / View Technical Data, stats from AssaySummary with 2-decimal CountUp, What we supply, project teaser with lease map, 6-step field-to-supply timeline, inquiry CTA); new Our Project (location, local-grid note, tabbed maps + lightbox, zones, land figures flagged, status, gallery), Products (applications verbatim, Table 14 chemistry, [CONFIRM] supply terms, Product JSON-LD), Technical Data (key figures, Table 14 HTML table, Recharts Fe₂O₃ chart, gated sample table, sampling method, report request), Investors (overview, milestones, founder, deck form); About (story, values, FounderCard, consultant credit); Contact (Bulk Supply Inquiry tab, default). Nav reordered; footer links; 7 page namespaces EN + NE. 30 frontend tests. | `frontend/src/{pages,components,features,content,locales,lib}/**`, `frontend/tests/*`, `frontend/Dockerfile`                                                                                  | Nepali copy needs native review; ContactForm (general tab), Operations/News/Careers/Legal still English on /ne |
 | 2026-10-10 | Phase 4.5 step 3 — models + API: Product and Deposit (content resources: public list/detail with `?lang=`, admin CRUD), AssaySample + AssaySummary (`/assay/summary` always public; `/assay/samples` 403 unless `publicAssayDetail`; admin always), Inquiry (`POST /inquiries` 5/h/IP, honeypot, captcha, inbox email + `INQUIRY_CC`, auto-reply EN/NE; admin list/filter/status/CSV with formula-injection guard). Seeds from `assay_data.json` (upsert) + Katujpani deposit, hematite product, founder (create-if-missing). OpenAPI updated. 130 backend tests.                                                                                                                                                                                                                                                                                | `backend/src/{models,services,controllers,validators,routes,seed,docs}/**`, `backend/tests/{assay,inquiry}.test.ts`, `.env.example`                                                           | Land figures + WGS-84 pin + product sizes stay [CONFIRM]                                                       |
@@ -382,6 +397,15 @@ Status values: Not started · In progress · Review · Done · Blocked
   (React, framer-motion, GSAP/Lenis, app) requested before first paint. Reaching 90 needs a
   decision: defer/lazy-load framer-motion + GSAP/Lenis after first paint, or drop some motion on
   mobile. The weathered-hematite texture (154 KB) could also be recompressed.
+- Nepali copy (locales `ne/*.json`, auto-reply in `inquiry.service.ts`) is a draft — native
+  review needed. The data-origin statement and product application wording stay English on `/ne`.
+  Still English on `/ne`: general ContactForm, Operations, Projects, News, Careers, Legal,
+  Sustainability page body, Footer newsletter labels.
+- Projects/ProjectDetail/Operations/News sample content (generic iron ore / aggregates / metal
+  minerals) predates the Katujpani focus — kept working and reachable from the footer; decide in
+  Phase 5 whether to retire or rewrite it.
+- The frontend fallback `content/katujpani.ts` repeats the deposit/product/founder text from
+  `backend/src/seed/katujpani.seed.ts` — change both (assay numbers are shared via the JSON).
 - vite-react-ssg preloads every image and font in the module graph; `onPageRendered` in
   `vite.config.ts` strips them (keep it when upgrading vite-react-ssg).
 
@@ -426,8 +450,8 @@ Status values: Not started · In progress · Review · Done · Blocked
 
 ## 9. Next steps (top 5, in order)
 
-1. Phase 4.5 — run `docs/content/PHASE_4.5_CONTENT_INTEGRATION_PROMPT.md` steps 1–6 on
-   `feature/phase-4-5-content` (assets → i18n + migration → models/seeds → pages → tests → docs).
+1. Decide on mobile performance (SKILLS §8): defer framer-motion / GSAP / Lenis after first
+   paint or trim mobile motion, then re-run Lighthouse on `/en` and `/ne` (target ≥ 90).
 2. Get the founder to answer the confirm list (§11) — legal name, lease holder, phone, WGS-84 pin.
 3. Native-speaker review of the Nepali strings.
 4. Phase 5 — admin panel on the documented `/admin` endpoints, plus the 4.5 managers (resolve
@@ -516,17 +540,18 @@ code.
 
 ## 12. Commands
 
-| Task               | Command                                                          |
-| ------------------ | ---------------------------------------------------------------- |
-| Install            | `pnpm install`                                                   |
-| DB + mail (Docker) | `pnpm db:up` (Mongo :27017, Mailpit UI :8025)                    |
-| Dev (both)         | `pnpm dev` (web :5173, API :4000)                                |
-| Lint / format      | `pnpm lint` · `pnpm format`                                      |
-| Typecheck          | `pnpm typecheck`                                                 |
-| Unit tests         | `pnpm test`                                                      |
-| E2E                | `pnpm test:e2e` (set `PW_CHROMIUM_PATH` to use installed Chrome) |
-| Build (prerender)  | `pnpm build` → `pnpm --filter frontend preview` (:4173)          |
-| Full stack Docker  | `docker compose --profile app up --build` (site :8080)           |
+| Task               | Command                                                           |
+| ------------------ | ----------------------------------------------------------------- |
+| Install            | `pnpm install`                                                    |
+| DB + mail (Docker) | `pnpm db:up` (Mongo :27017, Mailpit UI :8025)                     |
+| Dev (both)         | `pnpm dev` (web :5173, API :4000)                                 |
+| Lint / format      | `pnpm lint` · `pnpm format`                                       |
+| Typecheck          | `pnpm typecheck`                                                  |
+| Unit tests         | `pnpm test`                                                       |
+| Migrate (4.5)      | `pnpm --filter backend migrate` (idempotent; also in `pnpm seed`) |
+| E2E                | `pnpm test:e2e` (set `PW_CHROMIUM_PATH` to use installed Chrome)  |
+| Build (prerender)  | `pnpm build` → `pnpm --filter frontend preview` (:4173)           |
+| Full stack Docker  | `docker compose --profile app up --build` (site :8080)            |
 
 ---
 

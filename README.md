@@ -14,17 +14,17 @@ traders, and verified technical data for investors. Content source of truth:
 
 ## Progress
 
-| Phase                                | Status                                                              |
-| ------------------------------------ | ------------------------------------------------------------------- |
-| 1 — Design (Google Stitch)           | 🟡 Partial — Home page only (dark, desktop); see note below         |
-| 2 — Architecture                     | ✅ Done                                                             |
-| 3 — Frontend (public site)           | ✅ Done                                                             |
-| 4 — Backend API                      | ✅ Done                                                             |
-| 4.5 — Real content, EN/NE, inquiries | 🟡 In progress — content, data and assets in repo; code not started |
-| 5 — Admin panel                      | ⬜ Next                                                             |
-| 6 — Security hardening               | ⬜ To do                                                            |
-| 7 — CI/CD + deploy                   | ⬜ To do                                                            |
-| 8 — Docs + final QA                  | ⬜ To do                                                            |
+| Phase                                | Status                                                             |
+| ------------------------------------ | ------------------------------------------------------------------ |
+| 1 — Design (Google Stitch)           | 🟡 Partial — Home page only (dark, desktop); see note below        |
+| 2 — Architecture                     | ✅ Done                                                            |
+| 3 — Frontend (public site)           | ✅ Done                                                            |
+| 4 — Backend API                      | ✅ Done                                                            |
+| 4.5 — Real content, EN/NE, inquiries | 🟡 Built — mobile Lighthouse performance and Nepali review pending |
+| 5 — Admin panel                      | ⬜ Next                                                            |
+| 6 — Security hardening               | ⬜ To do                                                           |
+| 7 — CI/CD + deploy                   | ⬜ To do                                                           |
+| 8 — Docs + final QA                  | ⬜ To do                                                           |
 
 Phase 1 note: the Stitch export (`code.html`, `screen.png`, `DESIGN.md`) covers the Home page
 only. The build follows the Brand Brief where Stitch differed (Manrope instead of Domine, exact
@@ -79,11 +79,13 @@ brand hex values, no invented facts).
 Prompt: [`docs/content/PHASE_4.5_CONTENT_INTEGRATION_PROMPT.md`](docs/content/PHASE_4.5_CONTENT_INTEGRATION_PROMPT.md).
 
 - [x] Master blueprint, assay data (JSON + CSV), report images and logos added to the repo
-- [ ] Real imagery + logo on the site, favicons regenerated
-- [ ] English / नेपाली (`/en`, `/ne`, hreflang, Mukta) + LocalizedString migration
-- [ ] Product, Deposit, AssaySample, AssaySummary, Inquiry models, API and seeds
-- [ ] Our Project, Products, Technical Data, Investors pages; Bulk Supply Inquiry form
-- [ ] Tests (assay averages, i18n, inquiry, migration) + Lighthouse ≥ 90 on `/en` and `/ne`
+- [x] Real imagery + logo on the site, favicons regenerated
+- [x] English / नेपाली (`/en`, `/ne`, hreflang, Mukta) + LocalizedString migration
+- [x] Product, Deposit, AssaySample, AssaySummary, Inquiry models, API and seeds
+- [x] Our Project, Products, Technical Data, Investors pages; Bulk Supply Inquiry form
+- [x] Tests: 130 backend + 30 frontend unit, 10 e2e (assay averages, i18n, inquiry, migration)
+- [~] Lighthouse: desktop 92–94 performance and 100 a11y / best practices / SEO on `/en` and
+  `/ne`; mobile performance ≈ 70 — see SKILLS.md §8
 
 ### Waiting on Niraum Metals
 
@@ -117,7 +119,8 @@ pnpm install
 cp backend/.env.example backend/.env
 cp frontend/.env.example frontend/.env.local
 pnpm db:up          # MongoDB on :27017, Mailpit (dev inbox) on http://localhost:8025
-pnpm dev            # web http://localhost:5173 · API http://localhost:4000/api/v1/health
+pnpm seed           # migrations + admin, settings, samples, Katujpani deposit/product/founder, assay data
+pnpm dev            # web http://localhost:5173/en (or /ne) · API http://localhost:4000/api/v1/health
 ```
 
 The website runs without the API: each page falls back to local content in
@@ -131,6 +134,7 @@ pnpm --filter frontend preview   # http://localhost:4173
 ```
 
 Other commands: `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm test:e2e`,
+`pnpm --filter backend migrate` (idempotent LocalizedString migration),
 `docker compose --profile app up --build` (whole stack at http://localhost:8080).
 
 ### Which command to run
@@ -168,7 +172,9 @@ Other commands: `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm test:e2e`,
 
 ## Pages
 
-Home · About · Operations · Projects (filters) · Project detail (facts, gallery, map) ·
+All under `/en/…` and `/ne/…` (`/` redirects to the saved or browser language). Phase 4.5:
+Our Project (Katujpani) · Products · Technical Data · Investors · Contact with the Bulk Supply
+Inquiry. Also: Home · About · Operations · Projects (filters) · Project detail (facts, gallery, map) ·
 Sustainability & Safety · News · Article · Careers · Job (apply with PDF CV) · Contact (form + map)
 · Privacy / Terms / Cookies · 404. Light and dark themes, preloader, page transitions,
 scroll-reveal, pinned project gallery, reduced-motion support, sitemap and JSON-LD.

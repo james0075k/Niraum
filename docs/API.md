@@ -139,6 +139,66 @@ edits never move it. `POST /admin/settings/geocode { address }` previews coordin
 saving: `{ ok, lat, lng, displayName, approximate, cached, query }` or `{ ok: false, reason }`.
 Public settings are cached in memory for 60 s and the cache is cleared on every update.
 
+## Phase 4.5 — languages, assay data, inquiries
+
+### Languages (`?lang=`)
+
+Every public GET accepts `?lang=en|ne` (unknown values → `en`). Text fields are stored as
+`LocalizedString { en, ne? }`; public responses return plain strings in the requested language,
+falling back to English per field, so response shapes are unchanged.
+
+Admin responses keep the English strings in the same fields **and** add `translations` with the
+full objects, e.g. `{ "title": "Iron Hills", "translations": { "title": { "en": "Iron Hills",
+"ne": "फलाम पहाड" } } }`. Admin writes accept either a string (English) or `{ en, ne? }`; writing
+`en` alone keeps the stored Nepali (send `ne: ""` to clear it).
+
+`GET /settings/public?lang=` is cached and ETagged per language and now includes
+`publicAssayDetail` and `defaultLanguage`.
+
+### Products and deposits (content resources)
+
+| Method | Path                                 | Notes                                             |
+| ------ | ------------------------------------ | ------------------------------------------------- |
+| GET    | `/products`, `/products/:slug`       | Hematite product, applications, typical chemistry |
+| GET    | `/deposits`, `/deposits/:slug`       | Katujpani: location (local grid), areas, land     |
+| CRUD   | `/admin/products`, `/admin/deposits` | Same pattern as projects (soft delete + restore)  |
+
+Deposit `location.easting/northing` are the report's local grid; `lat/lng` stay `null` until
+WGS-84 coordinates are confirmed. `land.confirmed: false` marks figures read from a scan.
+
+### Assay data
+
+| Method | Path                            | Access                                                 |
+| ------ | ------------------------------- | ------------------------------------------------------ |
+| GET    | `/assay/summary`                | Public: Table 14 sections, deposit average, highlights |
+| GET    | `/assay/samples?dataset=&sort=` | Public **only** if `publicAssayDetail`; else `403`     |
+| GET    | `/admin/assay/samples`          | editor+ (always)                                       |
+
+`dataset` ∈ `grab_B_C | grab_A | channel_B | channel_C | channel_KXY`; `sort` ∈ `order | Fe |
+-Fe | Fe2O3 | -Fe2O3 | SiO2 | -SiO2`. Responses include `source` (consultant, DMG basis,
+"not a JORC/NI 43-101 reserve statement").
+
+### Bulk supply inquiries
+
+`POST /inquiries` — `companyName`, `contactName`, `email`, `phone`, `buyerType`
+(`cement | steel_foundry | trader | investor | other`), `topic` (`supply | technical_report |
+investor_deck`), optional `quantity` + `quantityUnit` (`tpm | one_off_t`, required with a
+quantity), `deliveryLocation`, `specRequirement`, `message`, `lang`, `sourcePage`, honeypot
+`website`, `captchaToken`. → `201 { data: { id } }`. Emails `CONTACT_INBOX` (+ `INQUIRY_CC`) and
+auto-replies in `lang`. Honeypot hits are stored as `spam` without email.
+
+| Method | Path                          | Access | Notes                                             |
+| ------ | ----------------------------- | ------ | ------------------------------------------------- |
+| GET    | `/admin/inquiries`            | admin+ | `?status=&buyerType=&page=&limit=`                |
+| GET    | `/admin/inquiries/export.csv` | admin+ | UTF-8 with BOM; formula cells neutralised         |
+| GET    | `/admin/inquiries/:id`        | admin+ |                                                   |
+| PATCH  | `/admin/inquiries/:id`        | admin+ | `{ status: new→contacted→quoted→won/lost, spam }` |
+
+### Migration
+
+`pnpm --filter backend migrate` (also run by `pnpm seed`) converts pre-4.5 plain-string fields to
+`{ en }` and drops the old text indexes. It is idempotent.
+
 ## Rate limits
 
 | Scope                        | Limit             |
@@ -149,6 +209,7 @@ Public settings are cached in memory for 60 s and the cache is cleared on every 
 | `POST /contact`              | 5 / hour / IP     |
 | `POST /applications`         | 5 / hour / IP     |
 | `POST /newsletter`           | 5 / 10 min / IP   |
+| `POST /inquiries`            | 5 / hour / IP     |
 
 Standard `RateLimit` / `RateLimit-Policy` headers are sent. Counters are in memory per API
 instance — use a shared store before running more than one replica.

@@ -5,6 +5,39 @@ All notable changes to this project are documented here. Format:
 
 ## [Unreleased]
 
+### Added — Phase 4.5: real content, bilingual site, bulk inquiries (2026-10-10)
+
+- Content source of truth in `docs/content/` (master blueprint, Phase 4.5 prompt, image
+  manifest, assay data JSON + CSV); report imagery and logos in `frontend/src/assets/site/`,
+  originals in `design-assets/`.
+- Real Katujpani imagery and brand emblem on the site; favicons, app icons and og-image
+  regenerated from the supplied logo.
+- English / नेपाली: every public page under `/en` and `/ne` (react-i18next, URL-driven), language
+  toggle that remembers the choice, `/` and old URLs redirect, hreflang + og:locale + sitemap
+  alternates, Mukta for Devanagari.
+- Backend LocalizedString `{ en, ne? }` with `?lang=` on public reads, `translations` on admin
+  reads, and an idempotent migration (`pnpm --filter backend migrate`).
+- Models + API: Product, Deposit, AssaySample, AssaySummary, Inquiry; settings
+  `publicAssayDetail` + `defaultLanguage`; founder fields on TeamMember; seeds from
+  `assay_data.json` and the blueprint.
+- Pages: Our Project, Products, Technical Data, Investors; Home, About and Contact rebuilt to the
+  blueprint (stats from the API, Bulk Supply Inquiry tab, founder card, consultant credit).
+- Tests: Table 14 averages (±0.02), migration idempotency, language resolution, assay gate,
+  inquiries (EN/NE, spam, rate limit, CSV), page and e2e journeys.
+
+### Changed
+
+- Navigation follows the blueprint (Home, About, Our Project, Products, Technical Data,
+  Sustainability, Investors, Contact); "Get a Quote" is now "Request a Quote".
+- Preloader shows on desktop only and dismisses itself by CSS at 1.6 s.
+
+### Fixed
+
+- Every prerendered page preloaded all images and fonts in the bundle (~28 MB); only the needed
+  fonts are preloaded now.
+- Pre-commit hook hung on Windows when lint-staged passed many files through `.cmd` shims; tools
+  now run via `node` directly.
+
 ### Added — Phase 4 completion (2026-10-10)
 
 - `pnpm seed` also loads SAMPLE services, projects and posts into empty collections (never

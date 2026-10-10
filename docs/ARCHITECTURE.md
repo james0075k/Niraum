@@ -588,11 +588,11 @@ by a pre-release check (`grep PLACEHOLDER dist/`) before go-live.
 
 ---
 
-## 13. Phase 4.5 additions (planned — real content, bilingual, inquiries)
+## 13. Phase 4.5 additions (built 2026-10-10 — real content, bilingual, inquiries)
 
 > Source: `docs/content/PHASE_4.5_CONTENT_INTEGRATION_PROMPT.md` and the incoming architecture
-> v2.0 (10 Oct 2026). Nothing here is built yet. Everything above stays valid; these are
-> additive changes. Where the incoming v2.0 described the existing system differently, the code
+> v2.0 (10 Oct 2026). Built on `feature/phase-4-5-content`. Everything above stays valid; these
+> are additive changes. Where the incoming v2.0 described the existing system differently, the code
 > (and the sections above) win — see SKILLS.md §8.
 
 ### 13.1 Context change
@@ -675,7 +675,23 @@ length-weighted averages (Fe 23.48 / Fe₂O₃ 33.59 / SiO₂ 53.05, ±0.02). Se
 Katujpani Deposit, the hematite Product and the Founder. Mine lat/lng stays empty until WGS-84
 coordinates are confirmed (the report uses a local grid).
 
-### 13.7 Decisions to record as ADRs
+### 13.7 How it was built (differences from the plan)
+
+- **Routing:** `/en` and `/ne` are static route prefixes (not a `:lang` param) so vite-react-ssg
+  prerenders both trees; `useLang()` reads the prefix and `useT(ns)` binds `t` with
+  `getFixedT`, so both languages render in one prerender process. `/` and pre-4.5 URLs are
+  prerendered redirect pages (inline script: saved choice → browser language → default; no-JS
+  meta refresh). Public `Link`/`NavLink` come from `components/common/LangLink.tsx`.
+- **Admin API shape:** admin reads keep English strings in the existing fields and add
+  `translations` (full `{ en, ne }`) instead of replacing strings with objects — existing
+  clients and tests keep working.
+- **Data flow:** `features/assay/useAssay.ts` → `GET /assay/summary` with a local fallback built
+  from the same `assay_data.json` (imported by `content/katujpani.ts`), so the prerendered stats
+  and tables equal the API values. Sample rows are fetched only when `publicAssayDetail` is on.
+- **Prerender:** `onPageRendered` strips vite-react-ssg's blanket image/font preloads and keeps
+  Manrope Latin (+ Mukta 400 on `/ne`).
+
+### 13.8 Decisions to record as ADRs
 
 | Proposed ADR | Decision                               | Reason                                                                        |
 | ------------ | -------------------------------------- | ----------------------------------------------------------------------------- |
