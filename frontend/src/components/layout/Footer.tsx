@@ -11,7 +11,7 @@ import { useLenis } from '@/components/motion/lenis';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { newsletterSchema, subscribeNewsletter } from '@/features/contact/schemas';
-import { useSettings } from '@/features/settings/useSettings';
+import { useDisplayAddress, useSettings } from '@/features/settings/useSettings';
 import { useLang, useT } from '@/hooks/useLang';
 
 /** `key` → `common:nav.<key>`. */
@@ -98,7 +98,8 @@ export function Footer() {
   const motto = lang === 'ne' ? t('home:hero.tagline') : settings.motto;
   // Admin-set footer text wins; otherwise the blueprint sentence from the locale file.
   const about = settings.footer.about?.trim() || t('footer.about');
-  const { address, contact } = settings;
+  const { contact } = settings;
+  const place = useDisplayAddress();
 
   const toTop = () => (lenis ? lenis.scrollTo(0) : window.scrollTo({ top: 0, behavior: 'smooth' }));
 
@@ -155,9 +156,9 @@ export function Footer() {
                 <span>
                   {settings.legalName}
                   <br />
-                  {address.line1}, {address.city}
+                  {place.line1}, {place.city}
                   <br />
-                  {address.province}, {address.country}
+                  {place.province}, {place.country}
                 </span>
               </p>
               <p className="flex items-center gap-3">

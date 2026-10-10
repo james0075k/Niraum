@@ -1,8 +1,26 @@
 import { useContentItem } from '@/lib/query';
 import { defaultSettings } from '@/content/site';
-import { useLang } from '@/hooks/useLang';
+import { useLang, useT } from '@/hooks/useLang';
 import { withLang } from '@/lib/withLang';
 import type { SiteSettings } from '@/lib/types';
+
+const isPlaceholder = (v: string | null | undefined) => !!v && /\[PLACEHOLDER: [^\]]+\]/.test(v);
+
+/**
+ * Seeded settings may still hold "[PLACEHOLDER: phone]"-style values. They are dropped here so
+ * no component links to them (tel:, mailto:, wa.me) or puts them in JSON-LD; the UI shows its
+ * own translated "to be confirmed" chip for an empty list instead.
+ */
+function withoutPlaceholders(s: SiteSettings): SiteSettings {
+  return {
+    ...s,
+    contact: {
+      phone: s.contact.phone.filter((v) => !isPlaceholder(v)),
+      email: s.contact.email.filter((v) => !isPlaceholder(v)),
+      whatsapp: isPlaceholder(s.contact.whatsapp) ? null : s.contact.whatsapp,
+    },
+  };
+}
 
 /** Public site settings (logo, contact, address/map pin, socials, SEO defaults). */
 export function useSettings(): SiteSettings {
@@ -12,7 +30,23 @@ export function useSettings(): SiteSettings {
     withLang('/settings/public', lang),
     defaultSettings,
   );
-  return data ?? defaultSettings;
+  return withoutPlaceholders(data ?? defaultSettings);
+}
+
+/**
+ * Address lines for display: place names in the page language (common:places — Nepali drafts),
+ * any name not in that list as entered by the admin.
+ */
+export function useDisplayAddress() {
+  const { address } = useSettings();
+  const { t } = useT();
+  const place = (name: string) => (name ? t(`places.${name}`, { defaultValue: name }) : name);
+  return {
+    line1: place(address.line1),
+    city: place(address.city),
+    province: place(address.province),
+    country: place(address.country),
+  };
 }
 
 /** Social links the admin switched on, in admin-defined order. */

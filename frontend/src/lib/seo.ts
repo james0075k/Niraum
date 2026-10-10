@@ -1,4 +1,4 @@
-import type { Job, Post, Product, SiteSettings } from './types';
+import type { Job, Post, Product, SiteSettings, TeamMember } from './types';
 
 /** SEO helpers. Defaults are overridden at runtime by SiteSettings.seo from the API. */
 export const SITE_URL = (import.meta.env.VITE_SITE_URL ?? 'http://localhost:5173').replace(
@@ -137,5 +137,17 @@ export function productLd(p: Product, url: string, image?: string): Ld {
       unitText: c.unit,
       description: c.basis,
     })),
+  };
+}
+
+/** Person JSON-LD for the founder (About, Investors) — name, role and bio only. */
+export function personLd(m: TeamMember): Ld {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: m.name,
+    jobTitle: m.role,
+    description: m.bio,
+    worksFor: { '@id': `${SITE_URL}/#organization` },
   };
 }

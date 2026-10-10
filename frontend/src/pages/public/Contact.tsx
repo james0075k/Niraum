@@ -13,7 +13,7 @@ import { Seo } from '@/components/seo/Seo';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { photos } from '@/content/siteImages';
 import { INQUIRY_TOPICS, type InquiryTopic } from '@/features/inquiries/schemas';
-import { useActiveSocials, useSettings } from '@/features/settings/useSettings';
+import { useActiveSocials, useDisplayAddress, useSettings } from '@/features/settings/useSettings';
 import { useT } from '@/hooks/useLang';
 import { localBusinessLd } from '@/lib/seo';
 
@@ -48,8 +48,9 @@ export default function Contact() {
   const settings = useSettings();
   const socials = useActiveSocials();
   const [params] = useSearchParams();
-  const { address, contact, location } = settings;
-  const addressLine = `${address.line1}, ${address.city}, ${address.province}, ${address.country}`;
+  const { contact, location } = settings;
+  const place = useDisplayAddress();
+  const addressLine = `${place.line1}, ${place.city}, ${place.province}, ${place.country}`;
   const crumbs = [
     { name: t('common:nav.home'), path: '/' },
     { name: t('common:nav.contact'), path: '/contact' },
