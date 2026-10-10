@@ -32,6 +32,13 @@ declare module '*?site' {
   export default picture;
 }
 
+/** Niraum field photography: `import pic from './x.webp?photo'` → AVIF + WebP, 480–1600 px. */
+declare module '*?photo' {
+  import type { Picture } from '@/lib/types';
+  const picture: Picture;
+  export default picture;
+}
+
 /** Single resized asset URL, e.g. `./logo.png?w=96&format=webp`. */
 declare module '*&format=webp' {
   const src: string;

@@ -51,31 +51,36 @@
     "file": "photos/Product_Hematite_Ore_Closeup.png",
     "section": "Products / Hematite Ore card",
     "size": "1104x844",
-    "source_page": 8
+    "source_page": 8,
+    "site_usage": "Our Project gallery only (Products/Home use real photos)"
   },
   {
     "file": "photos/Hero_Banner_Hematite_Slope_Katujpani.png",
     "section": "Home Hero (desktop+mobile) / About banner",
     "size": "1116x836",
-    "source_page": 8
+    "source_page": 8,
+    "site_usage": "Our Project hero only (Home/About now use iron-ore-outcrop-cliff-field-geologist)"
   },
   {
     "file": "photos/Gallery_Hematite_Boulder_SW_Slope.png",
     "section": "Project Gallery",
     "size": "676x652",
-    "source_page": 7
+    "source_page": 7,
+    "site_usage": "Our Project gallery only"
   },
   {
     "file": "photos/Gallery_Hematite_Specimen_Detail.png",
     "section": "Project Gallery / Products",
     "size": "744x672",
-    "source_page": 7
+    "source_page": 7,
+    "site_usage": "Our Project gallery only"
   },
   {
     "file": "photos/Lab_Assay_Channel_Chip_Samples.png",
     "section": "Technical Data / Quality Assurance",
     "size": "894x894",
-    "source_page": 7
+    "source_page": 7,
+    "site_usage": "Technical Data sampling method (hero replaced by a real photo)"
   },
   {
     "file": "photos/Texture_Weathered_Hematite.png",
@@ -87,7 +92,8 @@
     "file": "photos/Sustainability_Southern_Slope_Vegetation.png",
     "section": "Sustainability & Environment",
     "size": "1232x908",
-    "source_page": 9
+    "source_page": 9,
+    "site_usage": "not used on pages (replaced by bedrock-boulders-hillside-vegetation)"
   },
   {
     "file": "photos/Field_Survey_Bed_Measurement.png",
@@ -99,13 +105,15 @@
     "file": "photos/Field_Survey_Benchmark_Marker.png",
     "section": "Operations / Survey step",
     "size": "744x654",
-    "source_page": 10
+    "source_page": 10,
+    "site_usage": "not used on pages"
   },
   {
     "file": "photos/Sustainability_Topsoil_Vegetation.png",
     "section": "Sustainability & Environment",
     "size": "732x730",
-    "source_page": 11
+    "source_page": 11,
+    "site_usage": "not used on pages (replaced by iron-ore-outcrop-moss-ferns)"
   },
   {
     "file": "photos/Gallery_Hematite_Boulder_Forest.png",
@@ -129,7 +137,8 @@
     "file": "photos/Channel_Sample_Line.png",
     "section": "Technical Data / Sampling method",
     "size": "630x632",
-    "source_page": 12
+    "source_page": 12,
+    "site_usage": "not used on pages (replaced by iron-ore-rock-face-channel-sampling-marks)"
   },
   {
     "file": "photos/Channel_Sample_CH-B-1.png",
@@ -148,5 +157,69 @@
     "section": "Favicon / Preloader / Map marker",
     "size": "906x1372",
     "source_page": 15
+  },
+  {
+    "file": "photos/iron-ore-outcrop-cliff-field-geologist.webp",
+    "section": "Home hero; About hero; og-image",
+    "size": "2400x2400",
+    "source": "Niraum Metals field photograph",
+    "original": "design-assets/originals/iron-ore-outcrop-cliff-field-geologist.jpg",
+    "whatsapp_name": "WhatsApp Image 2026-10-08 at 8.57.16 PM (1).jpeg"
+  },
+  {
+    "file": "photos/iron-ore-outcrop-sample-ch8-notebook.webp",
+    "section": "Home \"What we supply\"; Products hero",
+    "size": "2400x2400",
+    "source": "Niraum Metals field photograph",
+    "original": "design-assets/originals/iron-ore-outcrop-sample-ch8-notebook.jpg",
+    "whatsapp_name": "WhatsApp Image 2026-10-08 at 8.57.16 PM.jpeg"
+  },
+  {
+    "file": "photos/iron-ore-outcrop-sample-chd5-reddish-band.webp",
+    "section": "Products product card; Technical Data sampling method",
+    "size": "1280x1280",
+    "source": "Niraum Metals field photograph",
+    "original": "design-assets/originals/iron-ore-outcrop-sample-chd5-reddish-band.jpg",
+    "whatsapp_name": "WhatsApp Image 2026-10-08 at 8.57.17 PM (1).jpeg"
+  },
+  {
+    "file": "photos/iron-ore-outcrop-sample-chd10-fractured-face.webp",
+    "section": "Investors hero",
+    "size": "2400x2400",
+    "source": "Niraum Metals field photograph",
+    "original": "design-assets/originals/iron-ore-outcrop-sample-chd10-fractured-face.jpg",
+    "whatsapp_name": "WhatsApp Image 2026-10-08 at 8.57.17 PM.jpeg"
+  },
+  {
+    "file": "photos/iron-ore-rock-face-channel-sampling-wide.webp",
+    "section": "Technical Data hero",
+    "size": "1200x1600",
+    "source": "Niraum Metals field photograph",
+    "original": "design-assets/originals/iron-ore-rock-face-channel-sampling-wide.jpg",
+    "whatsapp_name": "WhatsApp Image 2026-10-08 at 8.57.18 PM (1).jpeg"
+  },
+  {
+    "file": "photos/iron-ore-rock-face-channel-sampling-marks.webp",
+    "section": "Technical Data sampling method",
+    "size": "1200x1600",
+    "source": "Niraum Metals field photograph",
+    "original": "design-assets/originals/iron-ore-rock-face-channel-sampling-marks.jpg",
+    "whatsapp_name": "WhatsApp Image 2026-10-08 at 8.57.19 PM (1).jpeg"
+  },
+  {
+    "file": "photos/iron-ore-outcrop-moss-ferns.webp",
+    "section": "Sustainability hero",
+    "size": "1200x1600",
+    "source": "Niraum Metals field photograph",
+    "original": "design-assets/originals/iron-ore-outcrop-moss-ferns.jpg",
+    "whatsapp_name": "WhatsApp Image 2026-10-08 at 8.57.19 PM.jpeg"
+  },
+  {
+    "file": "photos/bedrock-boulders-hillside-vegetation.webp",
+    "section": "Home sustainability band; Sustainability environment; Contact hero",
+    "size": "1200x1600",
+    "source": "Niraum Metals field photograph",
+    "original": "design-assets/originals/bedrock-boulders-hillside-vegetation.jpg",
+    "whatsapp_name": "WhatsApp Image 2026-10-08 at 8.57.20 PM.jpeg"
   }
 ]

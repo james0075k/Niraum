@@ -2,7 +2,7 @@ import { Factory, FlaskConical, Flame } from 'lucide-react';
 import { Img } from '@/components/common/Img';
 import { SectionHeading } from '@/components/common/SectionHeading';
 import { RevealGroup, RevealItem } from '@/components/motion/Reveal';
-import { siteImages } from '@/content/siteImages';
+import { photos } from '@/content/siteImages';
 import { useT } from '@/hooks/useLang';
 
 const ITEMS = [
@@ -39,7 +39,7 @@ export function SupplyCards() {
           </RevealGroup>
         </div>
         <div className="aspect-[4/3] overflow-hidden rounded-[20px] shadow-glass lg:col-span-5">
-          <Img image={siteImages.oreCloseup} sizes="(min-width: 1024px) 40vw, 100vw" />
+          <Img image={photos.sampleCh8} sizes="(min-width: 1024px) 40vw, 100vw" />
         </div>
       </div>
     </section>

@@ -110,6 +110,15 @@ export default defineConfig(({ isSsrBuild, mode }) => {
           if (url.searchParams.has('site')) {
             return new URLSearchParams({ format: 'avif;webp', w: '480;768;1200', as: 'picture' });
           }
+          // `?photo`: Niraum's own field photography (high-res masters in assets/site/photos).
+          if (url.searchParams.has('photo')) {
+            return new URLSearchParams({
+              format: 'avif;webp',
+              w: '480;768;1200;1600',
+              withoutEnlargement: 'true',
+              as: 'picture',
+            });
+          }
           return new URLSearchParams();
         },
       }),

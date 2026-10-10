@@ -11,7 +11,7 @@ import { InquiryForm } from '@/components/sections/InquiryForm';
 import { MapCard } from '@/components/sections/MapCard';
 import { Seo } from '@/components/seo/Seo';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { siteImages } from '@/content/siteImages';
+import { photos } from '@/content/siteImages';
 import { INQUIRY_TOPICS, type InquiryTopic } from '@/features/inquiries/schemas';
 import { useActiveSocials, useSettings } from '@/features/settings/useSettings';
 import { useT } from '@/hooks/useLang';
@@ -72,7 +72,7 @@ export default function Contact() {
         eyebrow={t('hero.eyebrow')}
         title={t('hero.title')}
         intro={t('hero.intro')}
-        image={siteImages.southernSlope}
+        image={photos.hillsideBoulders}
         crumbs={crumbs}
       />
 

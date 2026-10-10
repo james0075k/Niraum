@@ -5,7 +5,7 @@ import { SectionHeading } from '@/components/common/SectionHeading';
 import { Parallax } from '@/components/motion/Parallax';
 import { RevealGroup, RevealItem } from '@/components/motion/Reveal';
 import { Button } from '@/components/ui/button';
-import { siteImages } from '@/content/siteImages';
+import { photos } from '@/content/siteImages';
 
 const points = [
   { icon: HardHat, title: 'Safety', body: 'PPE, training and the right to stop unsafe work.' },
@@ -22,7 +22,7 @@ export function SustainabilityBand() {
       className="dark relative isolate overflow-hidden bg-graphite py-24 text-offwhite sm:py-32"
     >
       <Parallax className="-z-20" offset={14}>
-        <Img image={siteImages.southernSlope} sizes="100vw" />
+        <Img image={photos.hillsideBoulders} sizes="100vw" />
       </Parallax>
       <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black/85 via-black/60 to-black/30" />
 

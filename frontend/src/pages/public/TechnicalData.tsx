@@ -12,7 +12,7 @@ import { InquiryForm } from '@/components/sections/InquiryForm';
 import { StatCard } from '@/components/sections/StatCard';
 import { Seo } from '@/components/seo/Seo';
 import { Button } from '@/components/ui/button';
-import { siteImages } from '@/content/siteImages';
+import { photos, siteImages } from '@/content/siteImages';
 import { useAssaySamples, useAssaySummary } from '@/features/assay/useAssay';
 import { useT } from '@/hooks/useLang';
 import { formatPct } from '@/lib/format';
@@ -57,13 +57,13 @@ export default function TechnicalData() {
         title={t('seo.title')}
         description={t('seo.description')}
         crumbs={crumbs}
-        image={siteImages.labAssay.src}
+        image={photos.channelWide.src}
       />
       <PageHero
         eyebrow={t('hero.eyebrow')}
         title={t('hero.title')}
         intro={t('hero.intro')}
-        image={siteImages.labAssay}
+        image={photos.channelWide}
         crumbs={crumbs}
       >
         <Button asChild size="lg" className="mt-8">
@@ -147,9 +147,9 @@ export default function TechnicalData() {
           </div>
           <RevealGroup as="ul" className="grid grid-cols-2 gap-3 sm:gap-4">
             {[
-              siteImages.channelLine,
+              photos.channelMarks,
               siteImages.channelChB1,
-              siteImages.benchmark,
+              photos.sampleChd5,
               siteImages.labAssay,
             ].map((img) => (
               <RevealItem

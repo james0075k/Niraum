@@ -5,7 +5,7 @@ import { MagneticButton } from '@/components/motion/MagneticButton';
 import { Parallax } from '@/components/motion/Parallax';
 import { SplitText } from '@/components/motion/SplitText';
 import { Button } from '@/components/ui/button';
-import { siteImages } from '@/content/siteImages';
+import { photos } from '@/content/siteImages';
 import { HERO_VIDEO_URL } from '@/content/placeholders';
 import { useSettings } from '@/features/settings/useSettings';
 import { useLang, useT } from '@/hooks/useLang';
@@ -17,14 +17,14 @@ import { cn } from '@/lib/utils';
  * the poster photograph with parallax. Overlay is identical in both themes so the
  * white H1 stays readable (≥ 7:1 on the darkened lower area).
  *
- * The Katujpani hero photo is only ~1100 px wide: on ≥ 1600 px screens a 2 px blur (with a
- * slight scale so the blurred edge stays off-screen) hides the upscaling.
+ * Poster: Niraum's own 3024 px field photo (sharp enough for large screens — no blur/scale
+ * tricks). The dark gradients keep text readable in light and dark mode.
  */
 export function Hero() {
   const { motto } = useSettings();
   const lang = useLang();
   const { t } = useT(['home', 'common']);
-  const poster = siteImages.heroSlope;
+  const poster = photos.cliffGeologist;
   // The admin's motto is English-first; Nepali uses the reviewed tagline from the locale file.
   const title = lang === 'ne' ? t('hero.tagline') : motto;
 
@@ -52,10 +52,7 @@ export function Hero() {
           image={poster}
           priority
           sizes="100vw"
-          className={cn(
-            'min-[1600px]:scale-[1.03] min-[1600px]:blur-[2px]',
-            HERO_VIDEO_URL && 'hidden motion-reduce:block',
-          )}
+          className={HERO_VIDEO_URL ? 'hidden motion-reduce:block' : undefined}
         />
       </Parallax>
       {/* Bottom 70% gradient + side vignette — same in light and dark. */}

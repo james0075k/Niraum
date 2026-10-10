@@ -4,7 +4,7 @@ import { Reveal, RevealGroup, RevealItem } from '@/components/motion/Reveal';
 import { FounderCard } from '@/components/sections/FounderCard';
 import { InquiryForm } from '@/components/sections/InquiryForm';
 import { Seo } from '@/components/seo/Seo';
-import { siteImages } from '@/content/siteImages';
+import { photos } from '@/content/siteImages';
 import { useAssaySummary } from '@/features/assay/useAssay';
 import { useDeposit } from '@/features/deposits/useDeposit';
 import { useProduct } from '@/features/products/useProducts';
@@ -50,7 +50,7 @@ export default function Investors() {
         eyebrow={t('hero.eyebrow')}
         title={t('hero.title')}
         intro={t('hero.intro')}
-        image={siteImages.boulderSwSlope}
+        image={photos.sampleChd10}
         crumbs={crumbs}
       />
 

@@ -25,6 +25,17 @@ import mapTopo from '@/assets/site/maps/Location_Map_Katujpani_Topo_Sheet.webp?s
 import mapLease from '@/assets/site/maps/Lease_Map_Deposit_Areas_A_B_C.webp?site';
 import mapGeology from '@/assets/site/maps/Geology_Map_Regional_Lease_Area.webp?site';
 import mapLegend from '@/assets/site/maps/Geology_Map_Legend.webp?site';
+// Niraum's own field photographs (originals in design-assets/originals) — sharper than the
+// report crops, so they take the large slots. Location not stated in alt text: the sample
+// codes (CH-8, CHD-5, CHD-10) are not Katujpani assay samples.
+import cliffGeologist from '@/assets/site/photos/iron-ore-outcrop-cliff-field-geologist.webp?photo';
+import sampleCh8 from '@/assets/site/photos/iron-ore-outcrop-sample-ch8-notebook.webp?photo';
+import sampleChd5 from '@/assets/site/photos/iron-ore-outcrop-sample-chd5-reddish-band.webp?photo';
+import sampleChd10 from '@/assets/site/photos/iron-ore-outcrop-sample-chd10-fractured-face.webp?photo';
+import channelWide from '@/assets/site/photos/iron-ore-rock-face-channel-sampling-wide.webp?photo';
+import channelMarks from '@/assets/site/photos/iron-ore-rock-face-channel-sampling-marks.webp?photo';
+import mossFerns from '@/assets/site/photos/iron-ore-outcrop-moss-ferns.webp?photo';
+import hillsideBoulders from '@/assets/site/photos/bedrock-boulders-hillside-vegetation.webp?photo';
 
 const img = (picture: Picture, alt: string): ImageSource => ({
   src: picture.img.src,
@@ -73,4 +84,37 @@ export const siteImages = {
   mapLease: img(mapLease, 'Lease map showing deposit areas A, B and C'),
   mapGeology: img(mapGeology, 'Regional geology map around the lease area (after DMG)'),
   mapLegend: img(mapLegend, 'Legend for the regional geology map'),
+} satisfies Record<string, ImageSource>;
+
+/** Real site photography (© Niraum Metals Pvt. Ltd.) — preferred over report crops. */
+export const photos = {
+  cliffGeologist: img(
+    cliffGeologist,
+    'Field geologist sampling a tall, dark ore-bearing rock face during an exploration survey',
+  ),
+  sampleCh8: img(
+    sampleCh8,
+    'Iron-stained outcrop marked CH-8 in yellow paint, with a notebook for scale',
+  ),
+  sampleChd5: img(
+    sampleChd5,
+    'Dark outcrop marked CHD-5 with a reddish ore band and a notebook for scale',
+  ),
+  sampleChd10: img(
+    sampleChd10,
+    'Fractured dark ore face marked CHD-10 in yellow paint, with a tool for scale',
+  ),
+  channelWide: img(
+    channelWide,
+    'Wet rock face with orange channel-sampling lines under green plants',
+  ),
+  channelMarks: img(
+    channelMarks,
+    'Orange channel-sampling lines painted across a weathered rock face',
+  ),
+  mossFerns: img(mossFerns, 'Outcrop covered with moss and ferns'),
+  hillsideBoulders: img(
+    hillsideBoulders,
+    'Boulders of exposed bedrock among green grass and shrubs',
+  ),
 } satisfies Record<string, ImageSource>;

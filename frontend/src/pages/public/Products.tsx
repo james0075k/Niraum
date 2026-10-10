@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { siteImages } from '@/content/siteImages';
+import { photos } from '@/content/siteImages';
 import { useProduct } from '@/features/products/useProducts';
 import { useLang, useT } from '@/hooks/useLang';
 import { localePath } from '@/app/i18n';
@@ -45,21 +45,21 @@ export default function Products() {
         title={t('seo.title')}
         description={t('seo.description')}
         crumbs={crumbs}
-        image={siteImages.oreCloseup.src}
-        jsonLd={[productLd(p, localePath(lang, '/products'), siteImages.oreCloseup.src)]}
+        image={photos.sampleCh8.src}
+        jsonLd={[productLd(p, localePath(lang, '/products'), photos.sampleCh8.src)]}
       />
       <PageHero
         eyebrow={t('hero.eyebrow')}
         title={t('hero.title')}
         intro={t('hero.intro')}
-        image={siteImages.oreCloseup}
+        image={photos.sampleCh8}
         crumbs={crumbs}
       />
 
       <section id="product" aria-labelledby="product-title" className="section grain">
         <div className="container-site grid items-center gap-12 lg:grid-cols-2">
           <Reveal className="aspect-[4/3] overflow-hidden rounded-[20px] shadow-glass">
-            <Img image={siteImages.specimenDetail} sizes="(min-width: 1024px) 50vw, 100vw" />
+            <Img image={photos.sampleChd5} sizes="(min-width: 1024px) 50vw, 100vw" />
           </Reveal>
           <div>
             <p className="eyebrow mb-4">{p.chemicalFormula}</p>

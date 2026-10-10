@@ -10,7 +10,7 @@ import { FounderCard } from '@/components/sections/FounderCard';
 import { Seo } from '@/components/seo/Seo';
 import { certifications, milestones } from '@/content/about';
 import { images } from '@/content/images';
-import { siteImages } from '@/content/siteImages';
+import { photos } from '@/content/siteImages';
 import { useFounder } from '@/features/team/useTeam';
 import { useT } from '@/hooks/useLang';
 
@@ -34,7 +34,7 @@ export default function About() {
         eyebrow={t('hero.eyebrow')}
         title={t('hero.title')}
         intro={t('hero.intro')}
-        image={siteImages.heroSlope}
+        image={photos.cliffGeologist}
         crumbs={crumbs}
       />
 
