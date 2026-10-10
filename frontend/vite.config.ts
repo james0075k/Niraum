@@ -5,6 +5,7 @@ import { fileURLToPath, URL } from 'node:url';
 import { defineConfig, loadEnv, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import { imagetools } from 'vite-imagetools';
+import { movedTarget } from './src/app/redirects';
 import { SSG_GLOBAL, ssgScriptTag } from './src/lib/ssgData';
 
 /**
@@ -62,6 +63,8 @@ async function fetchApiContent(apiUrl: string | undefined) {
   try {
     const data = (await get('/seo/sitemap-data')) as Record<string, SitemapEntry[]>;
     for (const [route, collection] of Object.entries(API_ROUTES)) {
+      // Retired sections (app/redirects.ts) only get redirect stubs, no API snapshots.
+      if (movedTarget(`/${route}`)) continue;
       for (const { slug, updatedAt } of data[collection] ?? []) {
         for (const lang of LANGS) {
           pages.set(`/${lang}/${route}/${slug}`, {
@@ -200,7 +203,9 @@ export default defineConfig(({ isSsrBuild, mode }) => {
         const today = new Date().toISOString().slice(0, 10);
         // Only real pages: `/` and unprefixed legacy URLs are redirect stubs; 404s are excluded.
         const langPage = (p: string) =>
-          LANGS.some((l) => p === `/${l}` || p.startsWith(`/${l}/`)) && !p.endsWith('/404');
+          LANGS.some((l) => p === `/${l}` || p.startsWith(`/${l}/`)) &&
+          !p.endsWith('/404') &&
+          !movedTarget(p.replace(/^\/(en|ne)/, ''));
         const swap = (p: string, lang: string) => p.replace(/^\/(en|ne)(?=\/|$)/, `/${lang}`);
         const urls = prerendered.filter(langPage).map((p) => {
           const lastmod = apiPages.get(p)?.updatedAt.slice(0, 10) ?? today;

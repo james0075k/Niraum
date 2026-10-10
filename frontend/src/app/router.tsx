@@ -21,6 +21,8 @@ const page = (load: () => Promise<{ default: React.ComponentType }>) => () =>
   load().then((m) => ({ Component: m.default }));
 
 const redirect = page(() => import('@/pages/public/LangRedirect'));
+/** Retired pre-4.5 pages → closest new page (app/redirects.ts). */
+const moved = page(() => import('@/pages/public/Moved'));
 
 /** The public site for one language (paths relative to `/<lang>`). */
 const publicRoutes = (): RouteRecord[] => [
@@ -31,23 +33,19 @@ const publicRoutes = (): RouteRecord[] => [
   { path: 'products', lazy: page(() => import('@/pages/public/Products')) },
   { path: 'technical-data', lazy: page(() => import('@/pages/public/TechnicalData')) },
   { path: 'investors', lazy: page(() => import('@/pages/public/Investors')) },
-  { path: 'operations', lazy: page(() => import('@/pages/public/Operations')) },
-  { path: 'projects', lazy: page(() => import('@/pages/public/Projects')) },
+  { path: 'sustainability', lazy: page(() => import('@/pages/public/Sustainability')) },
+  // Retired (no blueprint content) → closest new page. Old slugs keep a redirect stub.
+  { path: 'operations', lazy: moved },
+  { path: 'projects', lazy: moved },
   {
     path: 'projects/:slug',
-    lazy: page(() => import('@/pages/public/ProjectDetail')),
+    lazy: moved,
     getStaticPaths: () => projects.map((p) => `projects/${p.slug}`),
   },
-  { path: 'sustainability', lazy: page(() => import('@/pages/public/Sustainability')) },
-  { path: 'news', lazy: page(() => import('@/pages/public/News')) },
-  {
-    path: 'news/:slug',
-    lazy: page(() => import('@/pages/public/Article')),
-    getStaticPaths: () => posts.map((p) => `news/${p.slug}`),
-  },
-  { path: 'careers', lazy: page(() => import('@/pages/public/Careers')) },
-  // No local vacancies; open jobs are prerendered from the API (vite.config.ts).
-  { path: 'careers/:slug', lazy: page(() => import('@/pages/public/Job')) },
+  { path: 'news', lazy: moved },
+  { path: 'news/:slug', lazy: moved, getStaticPaths: () => posts.map((p) => `news/${p.slug}`) },
+  { path: 'careers', lazy: moved },
+  { path: 'careers/:slug', lazy: moved },
   { path: 'contact', lazy: page(() => import('@/pages/public/Contact')) },
   {
     path: 'legal/:page',
@@ -65,24 +63,18 @@ const legacyRoutes: RouteRecord[] = [
     'products',
     'technical-data',
     'investors',
-    'operations',
-    'projects',
     'sustainability',
-    'news',
-    'careers',
     'contact',
   ].map((path) => ({ path, lazy: redirect })),
+  // Retired pages go straight to their replacement (one hop).
+  ...['operations', 'projects', 'news', 'careers'].map((path) => ({ path, lazy: moved })),
   {
     path: 'projects/:slug',
-    lazy: redirect,
+    lazy: moved,
     getStaticPaths: () => projects.map((p) => `projects/${p.slug}`),
   },
-  {
-    path: 'news/:slug',
-    lazy: redirect,
-    getStaticPaths: () => posts.map((p) => `news/${p.slug}`),
-  },
-  { path: 'careers/:slug', lazy: redirect },
+  { path: 'news/:slug', lazy: moved, getStaticPaths: () => posts.map((p) => `news/${p.slug}`) },
+  { path: 'careers/:slug', lazy: moved },
   {
     path: 'legal/:page',
     lazy: redirect,
