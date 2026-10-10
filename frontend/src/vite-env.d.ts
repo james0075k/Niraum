@@ -8,6 +8,8 @@ interface ImportMetaEnv {
   readonly VITE_ANALYTICS_ID?: string;
   /** Cloudflare Turnstile site key (public). Empty = no captcha widget (development). */
   readonly VITE_TURNSTILE_SITE_KEY?: string;
+  /** Phase 4.5: language for visitors with no saved or browser preference (`en` | `ne`). */
+  readonly VITE_DEFAULT_LANG?: string;
   /** Build-time only (prerender). */
   readonly SSG_API_URL?: string;
 }

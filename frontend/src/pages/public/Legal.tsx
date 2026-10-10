@@ -1,4 +1,5 @@
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { Link } from '@/components/common/LangLink';
 import { Seo } from '@/components/seo/Seo';
 import {
   Breadcrumb,

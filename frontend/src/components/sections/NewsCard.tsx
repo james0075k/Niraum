@@ -1,5 +1,5 @@
 import { ArrowUpRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link } from '@/components/common/LangLink';
 import { Img } from '@/components/common/Img';
 import { TiltCard } from '@/components/motion/TiltCard';
 import { Badge } from '@/components/ui/badge';

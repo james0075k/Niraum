@@ -1,0 +1,55 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "project": "Our Project",
+    "products": "Products",
+    "technical": "Technical Data",
+    "sustainability": "Sustainability",
+    "investors": "Investors",
+    "contact": "Contact",
+    "operations": "Operations",
+    "projects": "Projects",
+    "news": "News",
+    "careers": "Careers",
+    "main": "Main",
+    "mobile": "Site navigation",
+    "openMenu": "Open menu",
+    "menu": "Menu",
+    "homeLink": "Niraum Metals — home",
+    "mobileNav": "Mobile"
+  },
+  "cta": {
+    "quote": "Request a Quote",
+    "bulkSupply": "Request Bulk Supply",
+    "viewTechnical": "View Technical Data",
+    "contactUs": "Contact Us",
+    "learnMore": "Learn more"
+  },
+  "lang": {
+    "label": "Language",
+    "switchTo": "Switch to {{language}}",
+    "redirecting": "Opening the English site…",
+    "continue": "Continue to the English site"
+  },
+  "a11y": {
+    "skip": "Skip to content",
+    "backToTop": "Back to top"
+  },
+  "footer": {
+    "quickLinks": "Quick links",
+    "operations": "Operations",
+    "legal": "Legal",
+    "contact": "Contact",
+    "newsletter": "Newsletter",
+    "newsletterHint": "Occasional updates on our projects and supply.",
+    "subscribe": "Subscribe",
+    "subscribed": "Almost done — check your inbox to confirm.",
+    "subscribeFailed": "Could not subscribe right now. Please try again later.",
+    "rights": "All rights reserved.",
+    "phone": "Phone",
+    "email": "Email"
+  },
+  "dataOrigin": "Field grab, chip and channel sampling analysed and reported by Shubharambha Mining and Engineering Services Pvt. Ltd., Tarkeshwor-07, Kathmandu, in the mine scheme submitted under Department of Mines and Geology (DMG) guidelines. Figures are indicative of the sampled zones and are not a JORC/NI 43-101 reserve statement.",
+  "confirm": "To be confirmed"
+}

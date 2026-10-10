@@ -80,15 +80,16 @@ export const processSteps = [
   },
 ];
 
+/** `key` → `common:nav.<key>` (labels are translated; `label` is the English fallback). */
 export const navLinks = [
-  { to: '/', label: 'Home' },
-  { to: '/about', label: 'About' },
-  { to: '/operations', label: 'Operations' },
-  { to: '/projects', label: 'Projects' },
-  { to: '/sustainability', label: 'Sustainability' },
-  { to: '/news', label: 'News' },
-  { to: '/careers', label: 'Careers' },
-  { to: '/contact', label: 'Contact' },
+  { to: '/', label: 'Home', key: 'home' },
+  { to: '/about', label: 'About', key: 'about' },
+  { to: '/operations', label: 'Operations', key: 'operations' },
+  { to: '/projects', label: 'Projects', key: 'projects' },
+  { to: '/sustainability', label: 'Sustainability', key: 'sustainability' },
+  { to: '/news', label: 'News', key: 'news' },
+  { to: '/careers', label: 'Careers', key: 'careers' },
+  { to: '/contact', label: 'Contact', key: 'contact' },
 ] as const;
 
 export const legalLinks = [

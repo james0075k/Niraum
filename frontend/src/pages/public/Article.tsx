@@ -1,5 +1,6 @@
 import { ArrowLeft } from 'lucide-react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { Link } from '@/components/common/LangLink';
 import { PageHero } from '@/components/common/PageHero';
 import { Reveal } from '@/components/motion/Reveal';
 import { NewsCard } from '@/components/sections/NewsCard';

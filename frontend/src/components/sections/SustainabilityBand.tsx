@@ -1,5 +1,5 @@
 import { ArrowRight, HardHat, Leaf, Users } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link } from '@/components/common/LangLink';
 import { Img } from '@/components/common/Img';
 import { SectionHeading } from '@/components/common/SectionHeading';
 import { Parallax } from '@/components/motion/Parallax';

@@ -1,5 +1,5 @@
 import { Check } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link } from '@/components/common/LangLink';
 import { Img } from '@/components/common/Img';
 import { PageHero } from '@/components/common/PageHero';
 import { Reveal, RevealGroup, RevealItem } from '@/components/motion/Reveal';

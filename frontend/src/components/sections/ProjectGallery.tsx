@@ -1,6 +1,6 @@
 import { ArrowRight } from 'lucide-react';
 import { useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '@/components/common/LangLink';
 import { SectionHeading } from '@/components/common/SectionHeading';
 import { Button } from '@/components/ui/button';
 import type { Project } from '@/lib/types';

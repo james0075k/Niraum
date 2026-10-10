@@ -1,5 +1,5 @@
 import { ArrowUpRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link } from '@/components/common/LangLink';
 import { SectionHeading } from '@/components/common/SectionHeading';
 import { RevealGroup, RevealItem } from '@/components/motion/Reveal';
 import { TiltCard } from '@/components/motion/TiltCard';

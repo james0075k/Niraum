@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '@/components/common/LangLink';
 import { Button } from '@/components/ui/button';
 import { readConsent, saveConsent } from '@/lib/visitorPrefs';
 import { ease } from '@/lib/motion';

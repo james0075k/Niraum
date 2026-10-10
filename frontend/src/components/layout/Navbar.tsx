@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion';
 import { Menu } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { Link, NavLink } from '@/components/common/LangLink';
 import { Logo } from '@/components/common/Logo';
 import { MagneticButton } from '@/components/motion/MagneticButton';
 import { Button } from '@/components/ui/button';
@@ -21,9 +22,12 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { navLinks } from '@/content/site';
+import { stripLang } from '@/app/i18n';
 import { useServices } from '@/features/services/useServices';
+import { useT } from '@/hooks/useLang';
 import { ease } from '@/lib/motion';
 import { cn } from '@/lib/utils';
+import { LanguageToggle } from './LanguageToggle';
 import { ThemeToggle } from './ThemeToggle';
 
 const QUOTE_HREF = '/contact?subject=Quote%20request';
@@ -39,8 +43,9 @@ const linkClass = ({ isActive }: { isActive: boolean }) =>
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const { pathname } = useLocation();
+  const pathname = stripLang(useLocation().pathname);
   const { data: services } = useServices();
+  const { t } = useT();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -57,11 +62,11 @@ export function Navbar() {
           scrolled ? 'glass-strong h-16' : 'glass h-[4.5rem]',
         )}
       >
-        <Link to="/" className="flex min-h-11 items-center" aria-label="Niraum Metals — home">
+        <Link to="/" className="flex min-h-11 items-center" aria-label={t('nav.homeLink')}>
           <Logo />
         </Link>
 
-        <NavigationMenu className="hidden lg:flex" aria-label="Main">
+        <NavigationMenu className="hidden lg:flex" aria-label={t('nav.main')}>
           <NavigationMenuList className="gap-3 xl:gap-5">
             {navLinks.map((l) =>
               l.to === '/operations' ? (
@@ -72,7 +77,7 @@ export function Navbar() {
                       pathname.startsWith('/operations') && 'text-foreground',
                     )}
                   >
-                    Operations
+                    {t('nav.operations')}
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="grid w-[520px] grid-cols-2 gap-2 p-3">
@@ -110,7 +115,7 @@ export function Navbar() {
               ) : (
                 <NavigationMenuItem key={l.to}>
                   <NavLink to={l.to} end={l.to === '/'} className={linkClass}>
-                    {l.label}
+                    {t(`nav.${l.key}`)}
                   </NavLink>
                 </NavigationMenuItem>
               ),
@@ -119,10 +124,11 @@ export function Navbar() {
         </NavigationMenu>
 
         <div className="flex items-center gap-1 sm:gap-2">
+          <LanguageToggle className="hidden sm:flex" />
           <ThemeToggle />
           <MagneticButton className="hidden sm:inline-flex">
             <Button asChild size="sm" className="h-11 px-5">
-              <Link to={QUOTE_HREF}>Get a Quote</Link>
+              <Link to={QUOTE_HREF}>{t('cta.quote')}</Link>
             </Button>
           </MagneticButton>
 
@@ -131,16 +137,17 @@ export function Navbar() {
               <button
                 type="button"
                 className="inline-flex h-11 w-11 items-center justify-center rounded-full text-foreground hover:bg-foreground/10 lg:hidden"
-                aria-label="Open menu"
+                aria-label={t('nav.openMenu')}
               >
                 <Menu className="h-6 w-6" aria-hidden="true" />
               </button>
             </SheetTrigger>
             <SheetContent side="right" className="glass-strong w-[88vw] max-w-sm border-l-0 p-6">
-              <SheetTitle className="sr-only">Menu</SheetTitle>
-              <SheetDescription className="sr-only">Site navigation</SheetDescription>
+              <SheetTitle className="sr-only">{t('nav.menu')}</SheetTitle>
+              <SheetDescription className="sr-only">{t('nav.mobile')}</SheetDescription>
               <Logo />
-              <nav aria-label="Mobile" className="mt-10">
+              <LanguageToggle className="mt-6" />
+              <nav aria-label={t('nav.mobileNav')} className="mt-8">
                 <motion.ul
                   initial="hidden"
                   animate={open ? 'visible' : 'hidden'}
@@ -168,7 +175,7 @@ export function Navbar() {
                           )
                         }
                       >
-                        {l.label}
+                        {t(`nav.${l.key}`)}
                       </NavLink>
                     </motion.li>
                   ))}
@@ -176,7 +183,7 @@ export function Navbar() {
               </nav>
               <Button asChild className="mt-8 w-full">
                 <Link to={QUOTE_HREF} onClick={() => setOpen(false)}>
-                  Get a Quote
+                  {t('cta.quote')}
                 </Link>
               </Button>
             </SheetContent>

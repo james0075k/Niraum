@@ -1,5 +1,5 @@
 import { MessageCircle, Phone, Send } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link } from '@/components/common/LangLink';
 import { useSettings } from '@/features/settings/useSettings';
 
 const item =

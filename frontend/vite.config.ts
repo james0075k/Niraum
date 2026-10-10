@@ -38,6 +38,10 @@ interface SitemapEntry {
 
 /** Route prefix → API collection for the content the API can add after deploy. */
 const API_ROUTES = { projects: 'projects', news: 'posts', careers: 'jobs' } as const;
+/** Site languages (mirrors src/app/i18n.ts LANGS); pages live under `/<lang>/…`. */
+const LANGS = ['en', 'ne'] as const;
+/** API path for a language — same rule as `withLang` in src/lib/api.ts. */
+const apiPath = (path: string, lang: string) => (lang === 'en' ? path : `${path}?lang=${lang}`);
 
 /**
  * Build-time content from the API: published slugs (GET /seo/sitemap-data) plus each detail
@@ -59,10 +63,12 @@ async function fetchApiContent(apiUrl: string | undefined) {
     const data = (await get('/seo/sitemap-data')) as Record<string, SitemapEntry[]>;
     for (const [route, collection] of Object.entries(API_ROUTES)) {
       for (const { slug, updatedAt } of data[collection] ?? []) {
-        pages.set(`/${route}/${slug}`, {
-          api: `/${collection}/${encodeURIComponent(slug)}`,
-          updatedAt,
-        });
+        for (const lang of LANGS) {
+          pages.set(`/${lang}/${route}/${slug}`, {
+            api: apiPath(`/${collection}/${encodeURIComponent(slug)}`, lang),
+            updatedAt,
+          });
+        }
       }
     }
     const list = [...pages.values()];
@@ -169,15 +175,23 @@ export default defineConfig(({ isSsrBuild, mode }) => {
       },
       onFinished: (dir) => {
         const today = new Date().toISOString().slice(0, 10);
-        const urls = prerendered
-          .filter((p) => p !== '/404')
-          .map((p) => {
-            const lastmod = apiPages.get(p)?.updatedAt.slice(0, 10) ?? today;
-            return `  <url><loc>${siteUrl}${p === '/' ? '/' : p}</loc><lastmod>${lastmod}</lastmod></url>`;
-          });
+        // Only real pages: `/` and unprefixed legacy URLs are redirect stubs; 404s are excluded.
+        const langPage = (p: string) =>
+          LANGS.some((l) => p === `/${l}` || p.startsWith(`/${l}/`)) && !p.endsWith('/404');
+        const swap = (p: string, lang: string) => p.replace(/^\/(en|ne)(?=\/|$)/, `/${lang}`);
+        const urls = prerendered.filter(langPage).map((p) => {
+          const lastmod = apiPages.get(p)?.updatedAt.slice(0, 10) ?? today;
+          const alternates = [...LANGS, 'x-default']
+            .map((l) => {
+              const href = `${siteUrl}${swap(p, l === 'x-default' ? 'en' : l)}`;
+              return `<xhtml:link rel="alternate" hreflang="${l}" href="${href}"/>`;
+            })
+            .join('');
+          return `  <url><loc>${siteUrl}${p}</loc><lastmod>${lastmod}</lastmod>${alternates}</url>`;
+        });
         writeFileSync(
           join(dir, 'sitemap.xml'),
-          `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join('\n')}\n</urlset>\n`,
+          `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${urls.join('\n')}\n</urlset>\n`,
         );
         writeFileSync(
           join(dir, 'robots.txt'),

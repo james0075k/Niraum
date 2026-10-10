@@ -1,5 +1,5 @@
 import { ArrowUpRight, Briefcase, Clock, MapPin } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link } from '@/components/common/LangLink';
 import { PageHero } from '@/components/common/PageHero';
 import { SectionHeading } from '@/components/common/SectionHeading';
 import { RevealGroup, RevealItem } from '@/components/motion/Reveal';

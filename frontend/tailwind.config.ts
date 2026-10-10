@@ -56,7 +56,8 @@ export default {
         popover: { DEFAULT: 'hsl(var(--popover))', foreground: 'hsl(var(--popover-foreground))' },
       },
       fontFamily: {
-        sans: ['"Manrope Variable"', 'system-ui', 'sans-serif'],
+        // Mukta renders Devanagari (नेपाली); Latin text keeps Manrope.
+        sans: ['"Manrope Variable"', 'Mukta', 'system-ui', 'sans-serif'],
       },
       maxWidth: { '7xl': '80rem' },
       letterSpacing: { label: '0.12em' },

@@ -11,7 +11,8 @@ vi.mock('@/lib/api', () => ({
 
 describe('Navbar', () => {
   it('lists the main pages and marks the active route', () => {
-    renderWithProviders(<Navbar />, { route: '/about' });
+    // Phase 4.5: public pages live under /en and /ne.
+    renderWithProviders(<Navbar />, { route: '/en/about' });
     const nav = screen.getByRole('navigation', { name: 'Main' });
     for (const label of [
       'Home',
@@ -32,11 +33,11 @@ describe('Navbar', () => {
     expect(within(nav).getByRole('button', { name: /Operations/ })).toBeInTheDocument();
   });
 
-  it('links "Get a Quote" to the contact form with the subject prefilled', () => {
-    renderWithProviders(<Navbar />);
-    expect(screen.getByRole('link', { name: 'Get a Quote' })).toHaveAttribute(
+  it('links "Request a Quote" to the contact form with the subject prefilled', () => {
+    renderWithProviders(<Navbar />, { route: '/en' });
+    expect(screen.getByRole('link', { name: 'Request a Quote' })).toHaveAttribute(
       'href',
-      '/contact?subject=Quote%20request',
+      '/en/contact?subject=Quote%20request',
     );
   });
 

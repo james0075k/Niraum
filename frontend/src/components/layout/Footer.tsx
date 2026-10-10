@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowUp, Mail, MapPin, Phone } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link } from '@/components/common/LangLink';
 import { toast } from 'sonner';
 import type { z } from 'zod';
 import { Logo } from '@/components/common/Logo';
@@ -14,15 +14,17 @@ import { legalLinks } from '@/content/site';
 import { newsletterSchema, subscribeNewsletter } from '@/features/contact/schemas';
 import { useServices } from '@/features/services/useServices';
 import { useSettings } from '@/features/settings/useSettings';
+import { useT } from '@/hooks/useLang';
 
+/** `key` → `common:nav.<key>`. */
 const quickLinks = [
-  { to: '/about', label: 'About' },
-  { to: '/operations', label: 'Operations' },
-  { to: '/projects', label: 'Projects' },
-  { to: '/sustainability', label: 'Sustainability' },
-  { to: '/news', label: 'News' },
-  { to: '/careers', label: 'Careers' },
-  { to: '/contact', label: 'Contact' },
+  { to: '/about', key: 'about' },
+  { to: '/operations', key: 'operations' },
+  { to: '/projects', key: 'projects' },
+  { to: '/sustainability', key: 'sustainability' },
+  { to: '/news', key: 'news' },
+  { to: '/careers', key: 'careers' },
+  { to: '/contact', key: 'contact' },
 ];
 
 const linkCls =
@@ -37,6 +39,7 @@ function FooterHeading({ id, children }: { id: string; children: string }) {
 }
 
 function Newsletter() {
+  const { t } = useT();
   const form = useForm<z.infer<typeof newsletterSchema>>({
     resolver: zodResolver(newsletterSchema),
     defaultValues: { email: '' },
@@ -44,10 +47,10 @@ function Newsletter() {
   const onSubmit = form.handleSubmit(async ({ email }) => {
     try {
       await subscribeNewsletter(email);
-      toast.success('Almost done — check your inbox to confirm.');
+      toast.success(t('footer.subscribed'));
       form.reset();
     } catch {
-      toast.error('Could not subscribe right now. Please try again later.');
+      toast.error(t('footer.subscribeFailed'));
     }
   });
   const error = form.formState.errors.email?.message;
@@ -85,6 +88,7 @@ export function Footer() {
   const settings = useSettings();
   const { data: services } = useServices();
   const lenis = useLenis();
+  const { t } = useT();
   const { address, contact } = settings;
 
   const toTop = () => (lenis ? lenis.scrollTo(0) : window.scrollTo({ top: 0, behavior: 'smooth' }));
@@ -94,7 +98,7 @@ export function Footer() {
       <div className="container-site">
         <div className="grid gap-12 lg:grid-cols-12">
           <div className="lg:col-span-4">
-            <Link to="/" aria-label="Niraum Metals — home" className="inline-flex">
+            <Link to="/" aria-label={t('nav.homeLink')} className="inline-flex">
               <Logo />
             </Link>
             <p className="mt-5 text-lg font-semibold text-copper-ink">{settings.motto}</p>
@@ -104,12 +108,12 @@ export function Footer() {
           </div>
 
           <nav aria-labelledby="footer-quick" className="lg:col-span-2">
-            <FooterHeading id="footer-quick">Quick links</FooterHeading>
+            <FooterHeading id="footer-quick">{t('footer.quickLinks')}</FooterHeading>
             <ul>
               {quickLinks.map((l) => (
                 <li key={l.to}>
                   <Link to={l.to} className={linkCls}>
-                    {l.label}
+                    {t(`nav.${l.key}`)}
                   </Link>
                 </li>
               ))}
@@ -117,7 +121,7 @@ export function Footer() {
           </nav>
 
           <nav aria-labelledby="footer-ops" className="lg:col-span-2">
-            <FooterHeading id="footer-ops">Operations</FooterHeading>
+            <FooterHeading id="footer-ops">{t('footer.operations')}</FooterHeading>
             <ul>
               {services.map((s) => (
                 <li key={s.slug}>
@@ -128,7 +132,7 @@ export function Footer() {
               ))}
             </ul>
             <div className="mt-8">
-              <FooterHeading id="footer-legal">Legal</FooterHeading>
+              <FooterHeading id="footer-legal">{t('footer.legal')}</FooterHeading>
             </div>
             <ul aria-labelledby="footer-legal">
               {legalLinks.map((l) => (
@@ -147,7 +151,7 @@ export function Footer() {
           </nav>
 
           <div className="lg:col-span-4">
-            <FooterHeading id="footer-contact">Contact</FooterHeading>
+            <FooterHeading id="footer-contact">{t('footer.contact')}</FooterHeading>
             <address className="space-y-4 text-sm not-italic text-muted-foreground">
               <p className="flex gap-3">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-copper-ink" aria-hidden="true" />
@@ -166,7 +170,7 @@ export function Footer() {
                     {contact.phone[0]}
                   </a>
                 ) : (
-                  <Tbc>Phone</Tbc>
+                  <Tbc>{t('footer.phone')}</Tbc>
                 )}
               </p>
               <p className="flex items-center gap-3">
@@ -176,7 +180,7 @@ export function Footer() {
                     {contact.email[0]}
                   </a>
                 ) : (
-                  <Tbc>Email</Tbc>
+                  <Tbc>{t('footer.email')}</Tbc>
                 )}
               </p>
             </address>
@@ -186,14 +190,14 @@ export function Footer() {
         <div className="rule-copper mt-16 opacity-60" />
         <div className="mt-6 flex flex-col items-start justify-between gap-4 text-xs text-muted-foreground sm:flex-row sm:items-center">
           <p>
-            © {new Date().getFullYear()} {settings.legalName} All rights reserved.
+            © {new Date().getFullYear()} {settings.legalName} {t('footer.rights')}
           </p>
           <button
             type="button"
             onClick={toTop}
             className="inline-flex min-h-11 items-center gap-2 rounded-full px-3 font-medium text-foreground transition-colors hover:text-copper-ink"
           >
-            Back to top <ArrowUp className="h-4 w-4" aria-hidden="true" />
+            {t('a11y.backToTop')} <ArrowUp className="h-4 w-4" aria-hidden="true" />
           </button>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link } from '@/components/common/LangLink';
 import { Img } from '@/components/common/Img';
 import { MagneticButton } from '@/components/motion/MagneticButton';
 import { Parallax } from '@/components/motion/Parallax';
