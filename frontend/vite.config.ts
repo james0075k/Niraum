@@ -91,11 +91,21 @@ export default defineConfig(({ isSsrBuild, mode }) => {
       react(),
       previewNestedHtml(),
       // `import pic from './x.jpg?picture'` → AVIF + WebP + JPEG at 3 widths (see Img.tsx).
+      // `?site` (report imagery in assets/site, already WebP) → AVIF + WebP at 480/768/1200.
       imagetools({
-        defaultDirectives: (url) =>
-          url.searchParams.has('picture')
-            ? new URLSearchParams({ format: 'avif;webp;jpg', w: '640;1024;1600', as: 'picture' })
-            : new URLSearchParams(),
+        defaultDirectives: (url) => {
+          if (url.searchParams.has('picture')) {
+            return new URLSearchParams({
+              format: 'avif;webp;jpg',
+              w: '640;1024;1600',
+              as: 'picture',
+            });
+          }
+          if (url.searchParams.has('site')) {
+            return new URLSearchParams({ format: 'avif;webp', w: '480;768;1200', as: 'picture' });
+          }
+          return new URLSearchParams();
+        },
       }),
     ],
     resolve: {

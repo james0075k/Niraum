@@ -10,6 +10,7 @@ import { Seo } from '@/components/seo/Seo';
 import { Badge } from '@/components/ui/badge';
 import { certifications, milestones, values } from '@/content/about';
 import { images } from '@/content/images';
+import { siteImages } from '@/content/siteImages';
 import { useTeam } from '@/features/team/useTeam';
 
 const crumbs = [
@@ -33,7 +34,7 @@ export default function About() {
         title="A Nepal mining company built to last."
         highlight={[5, 6]}
         intro="Rooted in Lalitpur, working across Nepal. We find, extract and deliver the minerals that roads, plants and buildings depend on."
-        image={images.fieldGeologist}
+        image={siteImages.heroSlope}
         crumbs={crumbs}
       />
 

@@ -9,6 +9,7 @@ import { StatCard } from '@/components/sections/StatCard';
 import { Seo } from '@/components/seo/Seo';
 import { esgPillars, safetyStats } from '@/content/about';
 import { images } from '@/content/images';
+import { siteImages } from '@/content/siteImages';
 
 const crumbs = [
   { name: 'Home', path: '/' },
@@ -30,7 +31,7 @@ export default function Sustainability() {
         title="Responsible mining in Nepal, for generations."
         highlight={[0, 1]}
         intro="Mining changes land. Our job is to change it carefully, keep people safe and leave hillsides stable for the communities that live beside them."
-        image={images.hillside}
+        image={siteImages.topsoil}
         crumbs={crumbs}
       />
 
@@ -65,7 +66,7 @@ export default function Sustainability() {
       <section id="environment" aria-labelledby="environment-title" className="section bg-muted/40">
         <div className="container-site grid items-center gap-12 lg:grid-cols-2">
           <Reveal className="aspect-[4/3] overflow-hidden rounded-[20px] shadow-glass">
-            <Img image={images.mossyOutcrop} sizes="(min-width: 1024px) 50vw, 100vw" />
+            <Img image={siteImages.southernSlope} sizes="(min-width: 1024px) 50vw, 100vw" />
           </Reveal>
           <div>
             <SectionHeading

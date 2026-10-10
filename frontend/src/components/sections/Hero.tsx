@@ -6,18 +6,22 @@ import { Parallax } from '@/components/motion/Parallax';
 import { Reveal } from '@/components/motion/Reveal';
 import { SplitText } from '@/components/motion/SplitText';
 import { Button } from '@/components/ui/button';
-import { images } from '@/content/images';
+import { siteImages } from '@/content/siteImages';
 import { HERO_VIDEO_URL } from '@/content/placeholders';
 import { useSettings } from '@/features/settings/useSettings';
+import { cn } from '@/lib/utils';
 
 /**
  * Full-screen hero. Looping video when one is supplied (HERO_VIDEO_URL), otherwise
  * the poster photograph with parallax. Overlay is identical in both themes so the
  * white H1 stays readable (≥ 7:1 on the darkened lower area).
+ *
+ * The Katujpani hero photo is only ~1100 px wide: on ≥ 1600 px screens a 2 px blur (with a
+ * slight scale so the blurred edge stays off-screen) hides the upscaling.
  */
 export function Hero() {
   const { motto } = useSettings();
-  const poster = images.fieldGeologist;
+  const poster = siteImages.heroSlope;
 
   return (
     <section
@@ -43,7 +47,10 @@ export function Hero() {
           image={poster}
           priority
           sizes="100vw"
-          className={HERO_VIDEO_URL ? 'hidden motion-reduce:block' : undefined}
+          className={cn(
+            'min-[1600px]:scale-[1.03] min-[1600px]:blur-[2px]',
+            HERO_VIDEO_URL && 'hidden motion-reduce:block',
+          )}
         />
       </Parallax>
       {/* Bottom 70% gradient + side vignette — same in light and dark. */}

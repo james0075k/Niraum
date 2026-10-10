@@ -22,3 +22,16 @@ declare module '*?picture' {
   const picture: Picture;
   export default picture;
 }
+
+/** Report imagery in src/assets/site: `import pic from './x.webp?site'` → AVIF + WebP picture. */
+declare module '*?site' {
+  import type { Picture } from '@/lib/types';
+  const picture: Picture;
+  export default picture;
+}
+
+/** Single resized asset URL, e.g. `./logo.png?w=96&format=webp`. */
+declare module '*&format=webp' {
+  const src: string;
+  export default src;
+}
