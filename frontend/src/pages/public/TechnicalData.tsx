@@ -13,7 +13,7 @@ import { InquiryForm } from '@/components/sections/InquiryForm';
 import { StatCard } from '@/components/sections/StatCard';
 import { Seo } from '@/components/seo/Seo';
 import { Button } from '@/components/ui/button';
-import { photos, siteImages } from '@/content/siteImages';
+import { banners, photos, siteImages } from '@/content/siteImages';
 import { useAssaySamples, useAssaySummary } from '@/features/assay/useAssay';
 import { localePath } from '@/app/i18n';
 import { useLang, useT } from '@/hooks/useLang';
@@ -74,7 +74,7 @@ export default function TechnicalData() {
         eyebrow={t('hero.eyebrow')}
         title={t('hero.title')}
         intro={t('hero.intro')}
-        image={photos.channelWide}
+        image={banners.crushingPlant}
         crumbs={crumbs}
       >
         <Button asChild size="lg" className="mt-8">

@@ -5,7 +5,7 @@ import { MagneticButton } from '@/components/motion/MagneticButton';
 import { Parallax } from '@/components/motion/Parallax';
 import { SplitText } from '@/components/motion/SplitText';
 import { Button } from '@/components/ui/button';
-import { photos } from '@/content/siteImages';
+import { banners } from '@/content/siteImages';
 import { HERO_VIDEO_URL } from '@/content/placeholders';
 import { useSettings } from '@/features/settings/useSettings';
 import { useLang, useT } from '@/hooks/useLang';
@@ -24,7 +24,7 @@ export function Hero() {
   const { motto } = useSettings();
   const lang = useLang();
   const { t } = useT(['home', 'common']);
-  const poster = photos.cliffGeologist;
+  const poster = banners.stockpile;
   // The admin's motto is English-first; Nepali uses the reviewed tagline from the locale file.
   const title = lang === 'ne' ? t('hero.tagline') : motto;
 

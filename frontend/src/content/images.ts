@@ -13,6 +13,8 @@ import channelMarksWide from '@/assets/images/rock-face-channel-marks.jpg?pictur
 import channelMarks from '@/assets/images/channel-sampling-marks.jpg?picture';
 import mossyOutcrop from '@/assets/images/mossy-outcrop.jpg?picture';
 import hillside from '@/assets/images/hillside-outcrop.jpg?picture';
+// Founder portrait (912 px wide): `?photo` never upscales.
+import founderPortrait from '@/assets/images/shivahari.jpeg?photo';
 
 const img = (picture: Picture, alt: string): ImageSource => ({
   src: picture.img.src,
@@ -47,6 +49,7 @@ export const images = {
   ),
   mossyOutcrop: img(mossyOutcrop, 'Moss-covered outcrop with ferns and exposed mineralised rock'),
   hillside: img(hillside, 'Green hillside with boulders of exposed bedrock at a survey site'),
+  founder: img(founderPortrait, 'Portrait of Shivahari Pudasaini, founder of Niraum Metals'),
 } satisfies Record<string, ImageSource>;
 
 /**
@@ -63,6 +66,7 @@ const localImages: Record<string, ImageSource> = {
   '/images/channel-sampling-marks.jpg': images.channelMarks,
   '/images/mossy-outcrop.jpg': images.mossyOutcrop,
   '/images/hillside-outcrop.jpg': images.hillside,
+  '/images/shivahari.jpeg': images.founder,
 };
 
 /** Deep-replaces `{ src: '/images/<file>.jpg' }` refs in API data; the API's alt text wins. */

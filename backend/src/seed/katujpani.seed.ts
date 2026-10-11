@@ -55,7 +55,8 @@ export interface SiteContent {
     chemistryBasis: L;
   };
   founder: { name: string; role: L; bio: L; otherVentures: Venture[] };
-  settings: { motto: L; email: string };
+  /** phone + WhatsApp: the founder's number, also the company line (supplied 11 Oct 2026). */
+  settings: { motto: L; email: string; phone: string; whatsapp: string };
 }
 
 export function loadSiteContent(path = process.env.SITE_CONTENT_PATH): SiteContent {
@@ -112,7 +113,7 @@ async function fillNe(doc: Document, paths: Record<string, unknown>): Promise<bo
   return changed;
 }
 
-type SeedResult = 'created' | 'exists' | 'translated';
+type SeedResult = 'created' | 'exists' | 'translated' | 'updated';
 
 export async function seedKatujpani(content = loadSiteContent()): Promise<SeedResult> {
   const c = content.deposit;
@@ -195,6 +196,12 @@ export async function seedProduct(content = loadSiteContent()): Promise<SeedResu
   return filled ? 'translated' : 'exists';
 }
 
+/** Supplied portrait; the frontend maps this site path to its optimised local picture. */
+const FOUNDER_PHOTO = {
+  src: '/images/shivahari.jpeg',
+  alt: 'Portrait of Shivahari Pudasaini, founder of Niraum Metals',
+};
+
 export async function seedFounder(content = loadSiteContent()): Promise<SeedResult> {
   const c = content.founder;
   const existing = await TeamMember.findOne({ isFounder: true });
@@ -203,8 +210,7 @@ export async function seedFounder(content = loadSiteContent()): Promise<SeedResu
       name: c.name,
       role: c.role,
       bio: c.bio,
-      // High-resolution portrait still to be supplied ([CONFIRM]) — grey placeholder on the site.
-      photo: null,
+      photo: FOUNDER_PHOTO,
       order: 0,
       published: true,
       isFounder: true,
@@ -212,15 +218,22 @@ export async function seedFounder(content = loadSiteContent()): Promise<SeedResu
     });
     return 'created';
   }
+  // Add the portrait to a founder seeded before it was supplied; never replace an admin's photo.
+  let photoAdded = false;
+  if (!existing.photo?.src) {
+    existing.set('photo', FOUNDER_PHOTO);
+    await existing.save();
+    photoAdded = true;
+  }
   const filled = await fillNe(existing, {
     role: c.role,
     bio: c.bio,
     otherVentures: c.otherVentures,
   });
-  return filled ? 'translated' : 'exists';
+  return filled ? 'translated' : photoAdded ? 'updated' : 'exists';
 }
 
-/** Nepali motto and the blueprint business email (phone stays [CONFIRM]). */
+/** Nepali motto, the blueprint business email and the company phone / WhatsApp. */
 export async function seedSiteText(content = loadSiteContent()): Promise<string[]> {
   const done: string[] = [];
   const s = await SiteSettings.findById(SETTINGS_ID);
@@ -237,6 +250,16 @@ export async function seedSiteText(content = loadSiteContent()): Promise<string[
   if (!emails.length || emails.every((e) => e.includes('PLACEHOLDER'))) {
     s.set('contact.email', [content.settings.email]);
     done.push('contact.email');
+  }
+  const phones = (s.get('contact.phone') as string[] | undefined) ?? [];
+  if (!phones.length || phones.every((p) => p.includes('PLACEHOLDER'))) {
+    s.set('contact.phone', [content.settings.phone]);
+    done.push('contact.phone');
+  }
+  const whatsapp = s.get('contact.whatsapp') as string | null | undefined;
+  if (!whatsapp || whatsapp.includes('PLACEHOLDER')) {
+    s.set('contact.whatsapp', content.settings.whatsapp);
+    done.push('contact.whatsapp');
   }
   if (done.length) await s.save();
   return done;

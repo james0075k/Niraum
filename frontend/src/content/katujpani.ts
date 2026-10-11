@@ -7,6 +7,7 @@
 import assayData from '../../../docs/content/data/assay_data.json';
 import siteContent from '../../../docs/content/data/site_content.json';
 import type { Lang } from '@/app/i18n';
+import { images } from '@/content/images';
 import type {
   AssayDataset,
   AssaySampleRow,
@@ -160,7 +161,7 @@ export function founderFor(lang: Lang): TeamMember {
     name: f.name,
     role: pick(f.role, lang),
     bio: pick(f.bio, lang),
-    photo: null,
+    photo: images.founder,
     order: 0,
     linkedin: null,
     isFounder: true,

@@ -36,6 +36,10 @@ import channelWide from '@/assets/site/photos/iron-ore-rock-face-channel-samplin
 import channelMarks from '@/assets/site/photos/iron-ore-rock-face-channel-sampling-marks.webp?photo';
 import mossFerns from '@/assets/site/photos/iron-ore-outcrop-moss-ferns.webp?photo';
 import hillsideBoulders from '@/assets/site/photos/bedrock-boulders-hillside-vegetation.webp?photo';
+// Banner photos chosen by Niraum (11 Oct 2026). Not taken at Katujpani, so the alt text stays
+// generic; source and licence are [CONFIRM] in assets/CREDITS.md.
+import stockpileCrane from '@/assets/images/crane.jpg?photo';
+import crushingPlant from '@/assets/images/worksites.jpg?photo';
 
 const img = (picture: Picture, alt: string): ImageSource => ({
   src: picture.img.src,
@@ -116,5 +120,17 @@ export const photos = {
   hillsideBoulders: img(
     hillsideBoulders,
     'Boulders of exposed bedrock among green grass and shrubs',
+  ),
+} satisfies Record<string, ImageSource>;
+
+/** Banner photos (illustrative, not of the Katujpani site): Home hero and page heroes. */
+export const banners = {
+  stockpile: img(
+    stockpileCrane,
+    'Large ore stockpile with orange stacker-reclaimer machines against a blue sky',
+  ),
+  crushingPlant: img(
+    crushingPlant,
+    'Crushing and screening plant with conveyors, stockpiles and wheel loaders below a forested hill',
   ),
 } satisfies Record<string, ImageSource>;

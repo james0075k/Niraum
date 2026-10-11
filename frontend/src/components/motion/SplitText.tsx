@@ -4,6 +4,13 @@ import { ease } from '@/lib/motion';
 import { cn } from '@/lib/utils';
 import { usePrefersReducedMotion } from '@/hooks/useMediaQuery';
 
+/**
+ * Word mask for the slide-up reveal. The top padding (cancelled by a negative margin, so
+ * the layout doesn't move) leaves room for marks above the line — Devanagari vowel signs
+ * and chandrabindu (ि, े, ँ) were clipped in the Nepali headings.
+ */
+const MASK = 'inline-block overflow-hidden -mt-[0.35em] pb-[0.08em] pt-[0.35em] align-bottom';
+
 interface SplitTextProps {
   text: string;
   as?: 'h1' | 'h2' | 'p';
@@ -62,7 +69,7 @@ export function SplitText({
     return (
       <Tag id={id} className={className}>
         {join((w, i) => (
-          <span className="inline-block overflow-hidden pb-[0.08em] align-bottom">
+          <span className={MASK}>
             <span
               className={cn(
                 'inline-block duration-700 ease-brand animate-in fade-in slide-in-from-bottom-full fill-mode-both motion-reduce:animate-none',
@@ -88,7 +95,7 @@ export function SplitText({
         transition={{ staggerChildren: 0.07, delayChildren: delay }}
       >
         {join((w, i) => (
-          <span className="inline-block overflow-hidden pb-[0.08em] align-bottom">
+          <span className={MASK}>
             <motion.span
               className={cn('inline-block', highlight.includes(i) && 'text-copper')}
               variants={{

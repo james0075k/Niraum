@@ -1,4 +1,5 @@
 import type { SiteSettings, Stat } from '@/lib/types';
+import siteContent from '../../../docs/content/data/site_content.json';
 import { tbc } from './placeholders';
 
 /**
@@ -11,8 +12,13 @@ export const defaultSettings: SiteSettings = {
   motto: 'Strength Forged For Generations',
   // Logo files not yet supplied (see public/logo/README.md) — the wordmark renders instead.
   logo: { light: null, dark: null },
-  // Business email from the blueprint; phone/WhatsApp still [CONFIRM].
-  contact: { phone: [], email: ['niraummetals@gmail.com'], whatsapp: null },
+  // Business email from the blueprint; phone + WhatsApp from site_content.json (founder's number,
+  // also the company line).
+  contact: {
+    phone: [siteContent.settings.phone],
+    email: [siteContent.settings.email],
+    whatsapp: siteContent.settings.whatsapp,
+  },
   address: {
     line1: 'Lalitpur-13',
     city: 'Lalitpur',

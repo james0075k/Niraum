@@ -7,7 +7,7 @@ import { Reveal, RevealGroup, RevealItem } from '@/components/motion/Reveal';
 import { CtaBand } from '@/components/sections/CtaBand';
 import { MapGallery } from '@/components/sections/MapGallery';
 import { Seo } from '@/components/seo/Seo';
-import { siteImages } from '@/content/siteImages';
+import { banners, siteImages } from '@/content/siteImages';
 import { useDeposit } from '@/features/deposits/useDeposit';
 import { localePath } from '@/app/i18n';
 import { useLang, useT } from '@/hooks/useLang';
@@ -58,7 +58,7 @@ export default function OurProject() {
         eyebrow={t('hero.eyebrow')}
         title={t('hero.title')}
         intro={t('hero.intro')}
-        image={siteImages.heroSlope}
+        image={banners.crushingPlant}
         crumbs={crumbs}
       />
 

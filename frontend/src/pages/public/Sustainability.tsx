@@ -6,7 +6,7 @@ import { Reveal, RevealGroup, RevealItem } from '@/components/motion/Reveal';
 import { TiltCard } from '@/components/motion/TiltCard';
 import { CtaBand } from '@/components/sections/CtaBand';
 import { Seo } from '@/components/seo/Seo';
-import { photos, siteImages } from '@/content/siteImages';
+import { banners, photos, siteImages } from '@/content/siteImages';
 import { useT } from '@/hooks/useLang';
 
 const COMMITMENTS = [
@@ -41,7 +41,7 @@ export default function Sustainability() {
         eyebrow={t('hero.eyebrow')}
         title={t('hero.title')}
         intro={t('hero.intro')}
-        image={photos.mossFerns}
+        image={banners.crushingPlant}
         crumbs={crumbs}
       />
 

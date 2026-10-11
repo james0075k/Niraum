@@ -16,7 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { photos } from '@/content/siteImages';
+import { banners, photos } from '@/content/siteImages';
 import { useAssaySummary } from '@/features/assay/useAssay';
 import { useProduct } from '@/features/products/useProducts';
 import { useLang, useT } from '@/hooks/useLang';
@@ -71,7 +71,7 @@ export default function Products() {
         eyebrow={t('hero.eyebrow')}
         title={t('hero.title')}
         intro={t('hero.intro')}
-        image={photos.sampleCh8}
+        image={banners.crushingPlant}
         crumbs={crumbs}
       />
 

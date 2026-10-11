@@ -5,7 +5,7 @@ import { CtaBand } from '@/components/sections/CtaBand';
 import { FounderCard } from '@/components/sections/FounderCard';
 import { InquiryForm } from '@/components/sections/InquiryForm';
 import { Seo } from '@/components/seo/Seo';
-import { photos } from '@/content/siteImages';
+import { banners, photos } from '@/content/siteImages';
 import { useAssaySummary } from '@/features/assay/useAssay';
 import { useDeposit } from '@/features/deposits/useDeposit';
 import { useProduct } from '@/features/products/useProducts';
@@ -58,7 +58,7 @@ export default function Investors() {
         eyebrow={t('hero.eyebrow')}
         title={t('hero.title')}
         intro={t('hero.intro')}
-        image={photos.sampleChd10}
+        image={banners.crushingPlant}
         crumbs={crumbs}
       />
 

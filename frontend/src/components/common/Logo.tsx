@@ -5,8 +5,8 @@ import { cn } from '@/lib/utils';
 /**
  * Brand lockup. Uses the supplied logo files from SiteSettings (light/dark) when the
  * admin has uploaded them; otherwise the supplied emblem (assets/site/brand) beside the
- * wordmark in type. The emblem is charcoal + copper, so on dark backgrounds it sits on an
- * off-white tile instead of being recoloured.
+ * wordmark in type. The emblem is the supplied transparent file in its own colours on every
+ * background (no tile, never recoloured — owner's choice, 11 Oct 2026).
  */
 export function Logo({ className, onDark }: { className?: string; onDark?: boolean }) {
   const { logo, companyName } = useSettings();
@@ -41,12 +41,7 @@ export function Logo({ className, onDark }: { className?: string; onDark?: boole
       aria-label={companyName}
       role="img"
     >
-      <span
-        className={cn(
-          'inline-flex h-11 w-9 shrink-0 items-center justify-center rounded-lg',
-          onDark ? 'bg-offwhite p-1' : 'dark:bg-offwhite dark:p-1',
-        )}
-      >
+      <span className="inline-flex h-11 w-[29px] shrink-0 items-center justify-center">
         <img
           src={emblem}
           alt=""

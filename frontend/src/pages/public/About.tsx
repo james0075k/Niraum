@@ -6,7 +6,7 @@ import { TiltCard } from '@/components/motion/TiltCard';
 import { CtaBand } from '@/components/sections/CtaBand';
 import { FounderCard } from '@/components/sections/FounderCard';
 import { Seo } from '@/components/seo/Seo';
-import { photos } from '@/content/siteImages';
+import { banners, photos } from '@/content/siteImages';
 import { useFounder } from '@/features/team/useTeam';
 import { useT } from '@/hooks/useLang';
 import { personLd } from '@/lib/seo';
@@ -40,7 +40,7 @@ export default function About() {
         eyebrow={t('hero.eyebrow')}
         title={t('hero.title')}
         intro={t('hero.intro')}
-        image={photos.cliffGeologist}
+        image={banners.crushingPlant}
         crumbs={crumbs}
       />
 

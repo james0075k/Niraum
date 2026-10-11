@@ -13,7 +13,7 @@ import { MapCard } from '@/components/sections/MapCard';
 import { Seo } from '@/components/seo/Seo';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { isPlaceholder } from '@/content/placeholders';
-import { photos } from '@/content/siteImages';
+import { banners } from '@/content/siteImages';
 import { INQUIRY_TOPICS, type InquiryTopic } from '@/features/inquiries/schemas';
 import { useActiveSocials, useDisplayAddress, useSettings } from '@/features/settings/useSettings';
 import { useT } from '@/hooks/useLang';
@@ -75,7 +75,7 @@ export default function Contact() {
         eyebrow={t('hero.eyebrow')}
         title={t('hero.title')}
         intro={t('hero.intro')}
-        image={photos.hillsideBoulders}
+        image={banners.crushingPlant}
         crumbs={crumbs}
       />
 

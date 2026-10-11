@@ -14,6 +14,7 @@ import {
   seedSiteText,
 } from '../src/seed/katujpani.seed.js';
 import { Deposit } from '../src/models/Deposit.js';
+import { TeamMember } from '../src/models/TeamMember.js';
 import { SETTINGS_ID, SiteSettings } from '../src/models/SiteSettings.js';
 import { loginAs } from './helpers.js';
 
@@ -110,6 +111,30 @@ describe('assay API', () => {
 });
 
 describe('Katujpani deposit, product and founder seeds', () => {
+  it('gives the founder the supplied portrait, without replacing an admin photo', async () => {
+    expect(await seedFounder()).toBe('created');
+    const founder = await TeamMember.findOne({ isFounder: true });
+    expect(founder?.photo?.src).toBe('/images/shivahari.jpeg');
+
+    // Seeded before the portrait existed → filled in on the next seed.
+    founder!.set('photo', null);
+    await founder!.save();
+    expect(await seedFounder()).toBe('updated');
+    expect((await TeamMember.findOne({ isFounder: true }))?.photo?.src).toBe(
+      '/images/shivahari.jpeg',
+    );
+
+    // An admin's own photo stays.
+    await TeamMember.updateOne(
+      { isFounder: true },
+      { photo: { src: 'https://cdn.example/a.jpg', alt: 'A' } },
+    );
+    expect(await seedFounder()).toBe('exists');
+    expect((await TeamMember.findOne({ isFounder: true }))?.photo?.src).toBe(
+      'https://cdn.example/a.jpg',
+    );
+  });
+
   it('creates them once and serves them publicly in both languages', async () => {
     const app = createApp();
     expect(await seedKatujpani()).toBe('created');
@@ -172,15 +197,22 @@ describe('Nepali fill-in for content seeded before translations existed', () => 
     expect(await seedKatujpani()).toBe('exists');
   });
 
-  it('sets the Nepali motto and the blueprint email on placeholder settings', async () => {
+  it('sets the Nepali motto, the blueprint email and the company phone on placeholder settings', async () => {
     await SiteSettings.create({ _id: SETTINGS_ID });
-    expect(await seedSiteText()).toEqual(['motto.ne', 'contact.email']);
+    expect(await seedSiteText()).toEqual([
+      'motto.ne',
+      'contact.email',
+      'contact.phone',
+      'contact.whatsapp',
+    ]);
     const s = await SiteSettings.findById(SETTINGS_ID).lean();
     expect(s?.motto).toEqual({
       en: 'Strength Forged For Generations',
       ne: 'पुस्तौँसम्म टिक्ने बल',
     });
     expect(s?.contact.email).toEqual(['niraummetals@gmail.com']);
+    expect(s?.contact.phone).toEqual(['+977 9851090957']);
+    expect(s?.contact.whatsapp).toBe('+977 9851090957');
     expect(await seedSiteText()).toEqual([]);
   });
 });
