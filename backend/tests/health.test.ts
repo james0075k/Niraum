@@ -9,6 +9,8 @@ describe('app shell', () => {
     expect(res.status).toBe(200);
     expect(res.body.data).toMatchObject({ status: 'ok', db: 'up' });
     expect(typeof res.body.data.uptime).toBe('number');
+    // Deployed release (RENDER_GIT_COMMIT); null outside Render.
+    expect(res.body.data).toHaveProperty('commit');
   });
 
   it('sets security headers and a strict CSP', async () => {

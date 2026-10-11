@@ -5,26 +5,27 @@
 > Read with [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md); if this file conflicts with an ADR, the
 > ADR wins.
 >
-> **Current phase: 6 — security (next).** Phases 2–5 are complete (4.5 has open items: mobile
-> Lighthouse, Nepali review, confirm list). All 4.5 work is additive: extend finished code, don't rewrite it. Content facts come
+> **Current phase: 7 — deploy (config done; accounts, domain and first deploy pending), then 6 —
+> security.** Phase 7 was started before Phase 6 at the owner's request (2026-10-11). Phases 2–5
+> are complete (4.5 has open items: mobile Lighthouse, Nepali review, confirm list). All 4.5 work is additive: extend finished code, don't rewrite it. Content facts come
 > only from `docs/content/NIRAUM_MASTER_BLUEPRINT.md` and `docs/content/data/assay_data.json`.
 
 ---
 
 ## 1. Project snapshot
 
-| Item             | Value                                                                                                                                 |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| Company          | Niraum Metals Pvt. Ltd. (NIRAUM METALS PVT. LTD. — confirmed legal name)                                                              |
-| Motto            | Strength Forged For Generations                                                                                                       |
-| Address          | Lalitpur-13, Nepal                                                                                                                    |
-| Purpose          | Corporate website for a Nepal mining & metals company (iron ore, metal minerals, stone & aggregates) with an admin panel              |
-| Design reference | <https://gmining.com> (feel only) · Stitch export: `code.html`, `screen.png`, `DESIGN.md` (Home, dark, desktop)                       |
-| Frontend         | React 18 + Vite 6 + TypeScript, Tailwind 3, shadcn/ui, Framer Motion, GSAP + ScrollTrigger, Lenis, TanStack Query, RHF + Zod, Leaflet |
-| Rendering        | Public routes prerendered with `vite-react-ssg` (19 pages); `/admin` client-only                                                      |
-| Backend          | Node 20 + Express 4 + TypeScript, Mongoose 8, Zod, argon2, JWT (httpOnly cookies), Cloudinary, Nodemailer, Nominatim                  |
-| Tooling          | pnpm workspaces, ESLint + Prettier, Husky, Commitlint, Vitest + RTL, Supertest, Playwright, Docker, GitHub Actions                    |
-| Live URLs        | Production: `TBD` · Staging: `TBD` · API: `TBD` · Admin: `TBD/admin`                                                                  |
+| Item             | Value                                                                                                                                       |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Company          | Niraum Metals Pvt. Ltd. (NIRAUM METALS PVT. LTD. — confirmed legal name)                                                                    |
+| Motto            | Strength Forged For Generations                                                                                                             |
+| Address          | Lalitpur-13, Nepal                                                                                                                          |
+| Purpose          | Corporate website for a Nepal mining & metals company (iron ore, metal minerals, stone & aggregates) with an admin panel                    |
+| Design reference | <https://gmining.com> (feel only) · Stitch export: `code.html`, `screen.png`, `DESIGN.md` (Home, dark, desktop)                             |
+| Frontend         | React 18 + Vite 6 + TypeScript, Tailwind 3, shadcn/ui, Framer Motion, GSAP + ScrollTrigger, Lenis, TanStack Query, RHF + Zod, Leaflet       |
+| Rendering        | Public routes prerendered with `vite-react-ssg` (19 pages); `/admin` client-only                                                            |
+| Backend          | Node 20 + Express 4 + TypeScript, Mongoose 8, Zod, argon2, JWT (httpOnly cookies), Cloudinary, Nodemailer, Nominatim                        |
+| Tooling          | pnpm workspaces, ESLint + Prettier, Husky, Commitlint, Vitest + RTL, Supertest, Playwright, Docker, GitHub Actions                          |
+| Live URLs        | Production: `https://<domain>` (Vercel) · Staging: Vercel PR previews · API: `https://api.<domain>` (Render) · Admin: `/admin` — domain TBD |
 
 Phase 4.5 facts (from the blueprint; the code still shows the older generic copy until 4.5 lands):
 
@@ -40,7 +41,7 @@ Phase 4.5 facts (from the blueprint; the code still shows the older generic copy
 | Languages (planned)     | English (`/en`) and नेपाली (`/ne`)                                                                                                                   |
 | Content source of truth | `docs/content/NIRAUM_MASTER_BLUEPRINT.md` + `docs/content/data/assay_data.json` (+ CSVs); image placement in `docs/content/manifest.json`            |
 | Planned additions       | react-i18next, i18next-browser-languagedetector, Recharts, Mukta (Devanagari)                                                                        |
-| Hosting (proposed)      | Vercel (frontend) · Render (API) · Atlas Mumbai · Cloudinary · Cloudflare DNS — not decided in `docs/DEPLOYMENT.md` yet                              |
+| Hosting (decided)       | Vercel (site) · Render Singapore (API) · Atlas AWS Singapore · Cloudinary · Resend · Cloudflare DNS — ADR-0005, `docs/DEPLOYMENT.md`                 |
 
 ---
 
@@ -269,6 +270,17 @@ backend/src/seed/                        assay.seed.ts, katujpani.seed.ts (depos
                                          founder)
 ```
 
+Added in Phase 7 (deploy config):
+
+```text
+frontend/vercel.json                     Vercel build, 301s, /admin shell, headers
+render.yaml                              Render Blueprint for niraum-api
+.github/workflows/deploy-backend.yml     CI-gated Render deploy + /health commit check
+.github/workflows/deploy-frontend.yml    manual Vercel rebuild + smoke check
+backend/src/jobs/publishWatch.ts         rebuild when scheduled projects/posts go live
+docs/adr/0005-hosting-vercel-render-atlas.md
+```
+
 ---
 
 ## 5. Phase checklist
@@ -297,7 +309,14 @@ backend/src/seed/                        assay.seed.ts, katujpani.seed.ts (depos
       editor incl. lat/lng pin, Assay manager with CSV import + `publicAssayDetail` switch, EN/नेपाली
       tabs on every content form)
 - [ ] **Phase 6 — Security:** OWASP review, headers, rate limits, CSRF, 2FA, SECURITY.md, ZAP scan
-- [ ] **Phase 7 — CI/CD + Deploy:** workflows, Docker, staging + production, domain, DEPLOYMENT.md, rollback runbook
+- [~] **Phase 7 — CI/CD + Deploy:** _config done 2026-10-11_ (ADR-0005)
+  - [x] Hosting decided: Vercel + Render + Atlas + Cloudflare DNS
+  - [x] `frontend/vercel.json`, `render.yaml`, deploy workflows (backend gated on CI + health commit check)
+  - [x] Timed rebuild for scheduled projects/posts (`jobs/publishWatch.ts`)
+  - [x] DEPLOYMENT.md: setup steps, staging (Vercel previews), rollback runbook, go-live checklist
+  - [ ] Domain registered; accounts created (Atlas, Render, Vercel, Cloudinary, Resend, Turnstile)
+  - [ ] Secrets and env vars entered; GitHub `production` environment + branch protection
+  - [ ] First deploy, seed, superadmin password changed, go-live checklist ticked
 - [ ] **Phase 8 — Docs + QA:** README, SKILLS, CREDITS, final QA checklist passed
 
 ### Phase 4 tasks
@@ -348,7 +367,8 @@ backend/src/seed/                        assay.seed.ts, katujpani.seed.ts (depos
 | Admin e2e (in-memory API)                       | Admin    | Done (P5 T13)      | `e2e/admin.spec.ts`, `backend/scripts/e2e-server.ts`    | 10 Playwright flows         |
 | Deposit composition donut (Table 14)            | Frontend | Done               | `sections/CompositionDonut.tsx`, `lib/composition.ts`   | composition-donut           |
 | Drilling preloader (CSS-only)                   | Frontend | Done               | `motion/Preloader.tsx`, `globals.css` `.drill-*`        | screenshots                 |
-| CI pipeline / deployments                       | DevOps   | Skeleton           | `.github/workflows/*`                                   | —                           |
+| CI pipeline / deployments                       | DevOps   | Done (not live)    | `.github/workflows/*`, `render.yaml`, `vercel.json`     | —                           |
+| Rebuild when scheduled items go live            | Backend  | Done               | `jobs/publishWatch.ts`                                  | publish-watch               |
 | Real report imagery + logos (4.5)               | Assets   | Done (step 1)      | `assets/site/*`, `docs/content/manifest.json`           | —                           |
 | Bilingual EN/NE (4.5)                           | Full     | Done (step 2)      | `app/i18n.ts`, `locales/*`, `LocalizedString.ts`        | —                           |
 | LocalizedString migration (4.5)                 | Backend  | Done (step 2)      | `migrations/2026-10-localize-fields.ts`                 | —                           |
@@ -365,6 +385,7 @@ Status values: Not started · In progress · Review · Done · Blocked
 
 | Date       | What changed                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Files touched                                                                                                                                                                                                                                                                                                                                                                                                                 | Open issues                                                                                                    |
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| 2026-10-11 | Phase 7 deploy config (owner chose deploy before Phase 6; Vercel + Render + Atlas). ADR-0005; `frontend/vercel.json` (pnpm workspace build, retired-page 301s, `/admin` shell, cache + security headers); build also writes root `404.html`; `render.yaml` (Docker, Singapore, starter, health check, `preDeployCommand` migrations, `autoDeploy: false`); `deploy-backend.yml` (after CI on main → Render hook `&ref=<sha>` → waits for `/health` `commit`); `deploy-frontend.yml` (manual Vercel hook + smoke check); `/health` returns `commit`; `jobs/publishWatch.ts` rebuilds when scheduled items go live; API image ships `docs/content/data` for seeding. 178 backend + 229 frontend tests, lint, typecheck, build pass. Not done: accounts, domain, secrets, first deploy (no Docker locally, so image builds are checked by CI only).                                                                                                                                                                                                                                   | `frontend/vercel.json`, `render.yaml`, `.github/workflows/deploy-*.yml`, `backend/src/{jobs/publishWatch,config/env,routes/index,server}.ts`, `backend/Dockerfile`, `frontend/vite.config.ts`, `docs/{DEPLOYMENT,ARCHITECTURE,API}.md`, `docs/adr/0005-*`                                                                                                                                                                     | Domain + accounts; first deploy; Phase 6                                                                       |
 | 2026-10-11 | Site updates (plan `~/.claude/plans/atomic-launching-eich.md`): **glass/texture CSS never loaded** — `@import`s sat below the Mukta `@font-face` and were dropped; moved to the top (scrolled header was see-through). Banner photos (`crane.jpg` Home hero, `worksites.jpg` page heroes, source [CONFIRM]); logo emblem transparent in its own colours, no tile (owner chose not to recolour); Nepali headings no longer clip vowel signs; founder portrait (`shivahari.jpeg`, seed fills a missing photo); phone/WhatsApp +977 9851090957 (`site_content.json` → fallback + seed). Home sustainability section rebuilt as a split layout with the CH-B-1 field photo. Deposit composition SVG donut (SiO₂ / Fe₂O₃ / Al₂O₃ / remainder from Table 14; Fe as centre label) on Home, Products, Technical Data. Drilling preloader in pure CSS. Vitest `asyncUtilTimeout` 10 s. 176 backend + 229 frontend tests. Lighthouse mobile A/B on the same machine: baseline en 85–87 / ne 74–77 → now en 83–86 / ne 72 (see §8).                                                           | `frontend/src/{styles,components,content,pages,locales,lib}/**`, `backend/src/seed/katujpani.seed.ts`, `docs/content/data/site_content.json`, `assets/CREDITS.md`                                                                                                                                                                                                                                                             | Banner photo licences; /ne mobile TBT                                                                          |
 | 2026-10-11 | Phase 5 tasks 9–13 by five parallel agents in git worktrees, merged by cherry-pick: deposit editor with WGS-84 pin (T9), inquiries pipeline + CSV, messages, applications, inquiry `q` + `meta.counts` (T10), assay admin writes + all-or-nothing CSV import + screen (T11), users + audit log (T12), admin e2e on an in-memory API with e2e seed users, plus smoke e2e for the new screens (T13). Found and fixed: `sonner` missing from `package.json`. Audit rows link to inquiry detail, messages, applications, assay, media, users. Earlier today: T8 rich text, media library, scheduling, remaining content configs.                                                                                                                                                                                                                                                                                                                                                                                                                                                       | `frontend/src/admin/**`, `backend/src/{services,controllers,validators,routes,utils,seed}/**`, `backend/scripts/e2e-server.ts`, `frontend/e2e/admin.spec.ts`, `docs/API.md`                                                                                                                                                                                                                                                   | Phase 6 security                                                                                               |
 | 2026-10-11 | Phase 5 task 8 — scheduled publishing: projects/posts with a future `publishedAt` stay off public lists, detail and sitemap (`schedulable` in content.service, `$and` so it combines with jobs' deadline `$or`; project validator accepts `publishedAt`). TipTap 2.27.3 `RichTextEditor` (bold, italic, H2/H3, lists, safe links, undo/redo; empty doc → `''`) in every richtext field incl. EN/नेपाली tabs. Media: `MediaPicker` (library dialog + upload, chosen straight away), `/admin/media` page (type tabs, drag-and-drop upload with alt required for images and client size/type checks, edit alt, copy URL, delete, `STORAGE_UNAVAILABLE` banner). Configs for team, services, projects, posts, jobs; form support for `nullable` fields and `group` objects (hidden keys such as project lat/lng are kept). Test setup: jsdom layout stubs for ProseMirror, `asyncUtilTimeout` 5 s (cold lazy admin chunks timed out at 1 s even before this change). 150 backend + 181 frontend tests; lint, typecheck, build, admin boundary clean; editor code only in admin chunks. | `backend/src/services/{content.service,resources}.ts`, `validators/content.ts`, `tests/schedule.test.ts`, `frontend/src/admin/{components/{RichTextEditor,MediaPicker,MediaUpload,MediaGrid,ResourceField,LocalizedField}.tsx,media/useMedia.ts,pages/Media.tsx,resources/{config,form}.ts,routes.tsx}`, `frontend/tests/{setup.ts,admin/{rich-text,media,resource-configs,localized-field}.test.*}`, `frontend/package.json` | Task 9 deposit editor; scheduled items need a rebuild at their publish time (§8)                               |
@@ -418,9 +439,15 @@ Status values: Not started · In progress · Review · Done · Blocked
   JWT secrets, Cloudinary, SMTP/Resend, captcha and Nominatim values in `backend/.env`.
 - Pages published after the last build render client-side (nginx serves the shell) until the
   rebuild hook (`REBUILD_HOOK_URL`) triggers a new build.
-- **Scheduled items:** the rebuild hook fires when a scheduled project/post is saved, not when
-  its `publishedAt` arrives, so the static site only shows it after the next build. Phase 7:
-  add a timed rebuild (e.g. hourly cron, or at the earliest future `publishedAt`).
+- **Scheduled items:** `jobs/publishWatch.ts` fires the rebuild hook within
+  `PUBLISH_CHECK_MINUTES` (10) of a scheduled project/post going live. In-process, so one API
+  replica only.
+- **Deployed before Phase 6:** the site ships with basic security headers (`vercel.json`) but no
+  CSP yet. Phase 6 adds it (Turnstile, Cloudinary, map tiles).
+- **Vercel previews can't sign in to `/admin`:** `*.vercel.app` is cross-site to `api.<domain>`
+  (ADR-0003/0005).
+- **Format check on Windows:** `pnpm format:check` reports ~59 files because `core.autocrlf=true`
+  checks out CRLF; CI (LF) is clean. Check only changed files locally.
 - No hero video yet (`HERO_VIDEO_URL`); hero uses the field-geologist photo.
 - Office map pin is approximate (central Lalitpur) and labelled as such.
 - shadcn CLI hangs during its dependency install on this machine — see §3 for the workaround.
@@ -505,9 +532,10 @@ Status values: Not started · In progress · Review · Done · Blocked
    paint or trim mobile motion, then re-run Lighthouse on `/en` and `/ne` (target ≥ 90).
 2. Get the founder to answer the confirm list (§11) — lease holder, WGS-84 pin, banner photo licences.
 3. Native-speaker review of the Nepali strings.
-4. Phase 6 — security: OWASP review, headers + CSP (Turnstile, Cloudinary), CSRF, 2FA,
-   SECURITY.md, ZAP scan. Then Phase 7: timed rebuild for scheduled posts/projects.
-5. Legal review of the draft Privacy, Terms and Cookie pages; then Phase 6 security, Phase 7 deploy.
+4. Phase 7 go-live: register the domain, create the accounts and follow `docs/DEPLOYMENT.md`
+   "First-time setup" (Atlas → services → Render → Vercel → DNS → GitHub), then the go-live list.
+5. Phase 6 — security: OWASP review, CSP (Turnstile, Cloudinary, tiles), CSRF, 2FA, SECURITY.md,
+   ZAP scan against the deployed site. Legal review of Privacy, Terms and Cookie pages.
 
 ---
 
@@ -528,6 +556,8 @@ Source of truth: `backend/.env.example` and `frontend/.env.example`.
 | `TURNSTILE_SECRET` or `RECAPTCHA_SECRET`                                | form spam protection (required in prod)   |
 | `SEED_ADMIN_*`                                                          | first admin                               |
 | `REBUILD_HOOK_URL`, `REBUILD_DEBOUNCE_SECONDS`                          | rebuild prerendered site after publishing |
+| `PUBLISH_CHECK_MINUTES` (10)                                            | scheduled-item rebuild check (0 = off)    |
+| `RENDER_GIT_COMMIT`                                                     | set by Render; shown by `/health`         |
 
 | Frontend (all `VITE_*` are public)          | Purpose                                                             |
 | ------------------------------------------- | ------------------------------------------------------------------- |

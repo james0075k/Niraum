@@ -579,7 +579,8 @@ by a pre-release check (`grep PLACEHOLDER dist/`) before go-live.
 
 ## 12. Open questions
 
-1. Hosting targets for the static site and the API (drives `deploy-*.yml` and the rebuild hook).
+1. ~~Hosting targets for the static site and the API~~ **Decided** — Vercel (site), Render (API,
+   Singapore), Atlas (AWS Singapore), Cloudflare DNS: ADR-0005, `docs/DEPLOYMENT.md`.
 2. ~~Is Nepali (ने) localisation required at launch?~~ **Yes** — Phase 4.5 adds `/en` + `/ne`
    path-prefix routing with `hreflang` (see §13).
 3. Newsletter: own double-opt-in list (current plan) or an external provider?

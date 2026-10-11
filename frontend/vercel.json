@@ -1,0 +1,53 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "cd .. && pnpm install --frozen-lockfile --filter frontend...",
+  "buildCommand": "pnpm build",
+  "outputDirectory": "dist",
+  "redirects": [
+    {
+      "source": "/:lang(en|ne)/operations/:rest*",
+      "destination": "/:lang/products",
+      "statusCode": 301
+    },
+    {
+      "source": "/:lang(en|ne)/projects/:rest*",
+      "destination": "/:lang/our-project",
+      "statusCode": 301
+    },
+    { "source": "/:lang(en|ne)/news/:rest*", "destination": "/:lang/about", "statusCode": 301 },
+    {
+      "source": "/:lang(en|ne)/careers/:rest*",
+      "destination": "/:lang/contact",
+      "statusCode": 301
+    },
+    { "source": "/operations/:rest*", "destination": "/en/products", "statusCode": 301 },
+    { "source": "/projects/:rest*", "destination": "/en/our-project", "statusCode": 301 },
+    { "source": "/news/:rest*", "destination": "/en/about", "statusCode": 301 },
+    { "source": "/careers/:rest*", "destination": "/en/contact", "statusCode": 301 }
+  ],
+  "rewrites": [{ "source": "/admin/:path*", "destination": "/index.html" }],
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" }
+      ]
+    },
+    {
+      "source": "/admin/:path*",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" },
+        { "key": "Cache-Control", "value": "no-cache" }
+      ]
+    }
+  ]
+}

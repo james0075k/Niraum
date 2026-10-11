@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { dbState } from '../config/db.js';
+import { env } from '../config/env.js';
 import {
   auditController,
   inboxController,
@@ -134,7 +135,14 @@ export function createApiRouter(limits: RateLimiters): Router {
 
   api.get('/health', (_req, res) => {
     res.setHeader('Cache-Control', 'no-store');
-    res.json({ data: { status: 'ok', uptime: process.uptime(), db: dbState() } });
+    res.json({
+      data: {
+        status: 'ok',
+        uptime: process.uptime(),
+        db: dbState(),
+        commit: env.RENDER_GIT_COMMIT ?? null,
+      },
+    });
   });
 
   // ── Auth ────────────────────────────────────────────────────────────────

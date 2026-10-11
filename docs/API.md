@@ -48,25 +48,25 @@ authenticated route except `me`, `change-password` and `logout` answers
 
 ## Public endpoints
 
-| Method | Path                      | Query / body                                                                    | Notes                                                                     |
-| ------ | ------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| GET    | `/health`                 | —                                                                               | `{ data: { status, uptime, db } }`                                        |
-| GET    | `/settings/public`        | —                                                                               | Public projection; `social` = active only, sorted by `order`. ETag, 60 s. |
-| GET    | `/services`               | `page limit sort q`                                                             | Ordered by `order`.                                                       |
-| GET    | `/services/:slug`         |                                                                                 |                                                                           |
-| GET    | `/projects`               | `page limit sort q status mineral featured`                                     | Default order: featured, then newest published.                           |
-| GET    | `/projects/:slug`         |                                                                                 |                                                                           |
-| GET    | `/posts`                  | `page limit sort q tag`                                                         | Newest `publishedAt` first.                                               |
-| GET    | `/posts/:slug`            |                                                                                 |                                                                           |
-| GET    | `/jobs`                   | `page limit sort q department type`                                             | `isOpen` and deadline not passed.                                         |
-| GET    | `/jobs/:slug`             |                                                                                 |                                                                           |
-| GET    | `/team`                   | `page limit sort`                                                               | Ordered by `order`. No detail route.                                      |
-| POST   | `/contact`                | `{ name, email, phone?, company?, subject, message, website?, captchaToken? }`  | 5 / hour / IP. See below.                                                 |
-| POST   | `/applications`           | multipart: `name email phone message? job? website? captchaToken?` + `cv` (PDF) | 5 / hour / IP. CV ≤ 5 MB, checked by magic bytes.                         |
-| POST   | `/newsletter`             | `{ email, source?, website? }`                                                  | Always `202`. Double opt-in. 5 / 10 min / IP.                             |
-| GET    | `/newsletter/confirm`     | `?token=`                                                                       | `303` → `CLIENT_URL/?newsletter=confirmed` (or `invalid`).                |
-| GET    | `/newsletter/unsubscribe` | `?token=`                                                                       | `303` → `CLIENT_URL/?newsletter=unsubscribed` (or `invalid`).             |
-| GET    | `/seo/sitemap-data`       | —                                                                               | `{ projects, posts, jobs: [{ slug, updatedAt }], generatedAt }`           |
+| Method | Path                      | Query / body                                                                    | Notes                                                                      |
+| ------ | ------------------------- | ------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| GET    | `/health`                 | —                                                                               | `{ data: { status, uptime, db, commit } }` (`commit` = Render release SHA) |
+| GET    | `/settings/public`        | —                                                                               | Public projection; `social` = active only, sorted by `order`. ETag, 60 s.  |
+| GET    | `/services`               | `page limit sort q`                                                             | Ordered by `order`.                                                        |
+| GET    | `/services/:slug`         |                                                                                 |                                                                            |
+| GET    | `/projects`               | `page limit sort q status mineral featured`                                     | Default order: featured, then newest published.                            |
+| GET    | `/projects/:slug`         |                                                                                 |                                                                            |
+| GET    | `/posts`                  | `page limit sort q tag`                                                         | Newest `publishedAt` first.                                                |
+| GET    | `/posts/:slug`            |                                                                                 |                                                                            |
+| GET    | `/jobs`                   | `page limit sort q department type`                                             | `isOpen` and deadline not passed.                                          |
+| GET    | `/jobs/:slug`             |                                                                                 |                                                                            |
+| GET    | `/team`                   | `page limit sort`                                                               | Ordered by `order`. No detail route.                                       |
+| POST   | `/contact`                | `{ name, email, phone?, company?, subject, message, website?, captchaToken? }`  | 5 / hour / IP. See below.                                                  |
+| POST   | `/applications`           | multipart: `name email phone message? job? website? captchaToken?` + `cv` (PDF) | 5 / hour / IP. CV ≤ 5 MB, checked by magic bytes.                          |
+| POST   | `/newsletter`             | `{ email, source?, website? }`                                                  | Always `202`. Double opt-in. 5 / 10 min / IP.                              |
+| GET    | `/newsletter/confirm`     | `?token=`                                                                       | `303` → `CLIENT_URL/?newsletter=confirmed` (or `invalid`).                 |
+| GET    | `/newsletter/unsubscribe` | `?token=`                                                                       | `303` → `CLIENT_URL/?newsletter=unsubscribed` (or `invalid`).              |
+| GET    | `/seo/sitemap-data`       | —                                                                               | `{ projects, posts, jobs: [{ slug, updatedAt }], generatedAt }`            |
 
 Public responses only include published / open, non-deleted documents and never expose
 `isDeleted`, `deletedAt`, `createdBy`, `updatedBy`.

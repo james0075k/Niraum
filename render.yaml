@@ -1,0 +1,66 @@
+# Render Blueprint — the API (docs/DEPLOYMENT.md). The website itself is on Vercel.
+# Values marked `sync: false` are entered in the Render dashboard when the Blueprint is applied.
+services:
+  - type: web
+    name: niraum-api
+    runtime: docker
+    region: singapore # same AWS region as the Atlas cluster
+    plan: starter # paid: the free tier sleeps when idle
+    branch: main
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: .
+    # Deployed by .github/workflows/deploy-backend.yml only after CI passes on main.
+    autoDeploy: false
+    healthCheckPath: /api/v1/health
+    # Idempotent data migrations run before the new release takes traffic.
+    preDeployCommand: node dist/migrations/run.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: LOG_LEVEL
+        value: info
+      # Render's load balancer only. Add 1 if Cloudflare proxying (orange cloud) is turned on.
+      - key: TRUST_PROXY
+        value: '1'
+      - key: CLIENT_URL # https://<domain>
+        sync: false
+      - key: ADMIN_URL # same as CLIENT_URL (admin lives at /admin)
+        sync: false
+      - key: CORS_ORIGINS # https://www.<domain> if both apex and www are served
+        sync: false
+      - key: API_PUBLIC_URL # https://api.<domain>
+        sync: false
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_ACCESS_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: CLOUDINARY_FOLDER
+        value: niraum
+      - key: RESEND_API_KEY
+        sync: false
+      - key: MAIL_FROM
+        sync: false
+      - key: CONTACT_INBOX
+        sync: false
+      - key: HR_INBOX
+        sync: false
+      - key: INQUIRY_CC
+        sync: false
+      - key: NOMINATIM_USER_AGENT # e.g. NiraumMetalsWebsite/1.0 (contact@<domain>)
+        sync: false
+      - key: TURNSTILE_SECRET
+        sync: false
+      - key: REBUILD_HOOK_URL # Vercel deploy hook for the production branch
+        sync: false
+      - key: SEED_ADMIN_EMAIL
+        sync: false
+      - key: SEED_ADMIN_PASSWORD
+        sync: false

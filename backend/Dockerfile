@@ -16,6 +16,8 @@ WORKDIR /app
 COPY --from=build /out/node_modules ./node_modules
 COPY --from=build /out/package.json ./
 COPY --from=build /repo/backend/dist ./dist
+# Seed data (`node dist/seed/index.js` in a Render shell) reads these JSON files.
+COPY docs/content/data ./docs/content/data
 USER node
 EXPOSE 4000
 HEALTHCHECK CMD wget -qO- http://localhost:4000/api/v1/health >/dev/null || exit 1

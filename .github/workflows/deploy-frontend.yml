@@ -1,7 +1,10 @@
 name: Deploy frontend
 
-# PLACEHOLDER — hosting target not yet chosen (see docs/DEPLOYMENT.md).
-# Manual trigger only until the target, secrets and environments are configured.
+# Vercel builds the website from main through its Git integration, and the API calls the same
+# deploy hook (REBUILD_HOOK_URL) after content changes. Run this by hand to rebuild the site,
+# for example after an API data fix. Then it checks that the home page and sitemap respond.
+#   secrets.VERCEL_DEPLOY_HOOK_URL  Vercel → Project → Settings → Git → Deploy Hooks (main)
+#   vars.SITE_URL                   https://<domain>
 on:
   workflow_dispatch:
 
@@ -9,10 +12,25 @@ permissions:
   contents: read
 
 jobs:
-  deploy:
+  rebuild:
     runs-on: ubuntu-latest
     environment: production
+    timeout-minutes: 20
+    env:
+      HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+      SITE_URL: ${{ vars.SITE_URL }}
     steps:
-      - uses: actions/checkout@v4
-      - run: docker build -f frontend/Dockerfile -t niraum-frontend:${{ github.sha }} .
-      - run: echo "TODO push image and deploy once the hosting target is decided." && exit 1
+      - name: Trigger Vercel build
+        run: |
+          test -n "$HOOK" || { echo "VERCEL_DEPLOY_HOOK_URL is not set"; exit 1; }
+          curl -fsS -X POST "$HOOK"
+      - name: Smoke check
+        run: |
+          test -n "$SITE_URL" || { echo "vars.SITE_URL is not set"; exit 0; }
+          sleep 240
+          for path in /en /ne /en/contact /sitemap.xml /robots.txt; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "$SITE_URL$path")
+            echo "$path → $code"; [ "$code" = "200" ] || exit 1
+          done
+          code=$(curl -s -o /dev/null -w '%{http_code}' "$SITE_URL/en/projects")
+          echo "/en/projects → $code (expect 301)"; [ "$code" = "301" ] || exit 1

@@ -76,6 +76,11 @@ const schema = z
 
     REBUILD_HOOK_URL: optionalUrl,
     REBUILD_DEBOUNCE_SECONDS: z.coerce.number().int().min(0).default(120),
+    /** How often to look for scheduled projects/posts that just went live (0 = off). */
+    PUBLISH_CHECK_MINUTES: z.coerce.number().int().min(0).default(10),
+
+    /** Set by Render on every deploy; reported by /health so CI can confirm a release. */
+    RENDER_GIT_COMMIT: optionalString,
 
     SEED_ADMIN_NAME: z.string().default('Site Owner'),
     SEED_ADMIN_EMAIL: optionalString.pipe(z.string().email().optional()),

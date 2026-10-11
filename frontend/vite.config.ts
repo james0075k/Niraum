@@ -1,5 +1,5 @@
 /// <reference types="vitest/config" />
-import { existsSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath, URL } from 'node:url';
 import { defineConfig, loadEnv, type Plugin } from 'vite';
@@ -245,6 +245,10 @@ export default defineConfig(({ isSsrBuild, mode }) => {
           join(dir, 'robots.txt'),
           `User-agent: *\nAllow: /\nDisallow: /admin\n\nSitemap: ${siteUrl}/sitemap.xml\n`,
         );
+        // Static hosts (Vercel) serve a root 404.html for unknown paths; nginx uses /404/.
+        if (existsSync(join(dir, '404', 'index.html'))) {
+          copyFileSync(join(dir, '404', 'index.html'), join(dir, '404.html'));
+        }
       },
     },
     test: {

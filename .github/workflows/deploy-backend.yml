@@ -1,18 +1,49 @@
 name: Deploy backend
 
-# PLACEHOLDER — hosting target not yet chosen (see docs/DEPLOYMENT.md).
-# Manual trigger only until the target, secrets and environments are configured.
+# Deploys the API to Render after CI passes on main (render.yaml has autoDeploy off), then
+# waits until /api/v1/health reports the new commit. See docs/DEPLOYMENT.md.
+#   secrets.RENDER_DEPLOY_HOOK_URL  Render → niraum-api → Settings → Deploy Hook
+#   vars.API_URL                    https://api.<domain>
 on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: deploy-backend
+  cancel-in-progress: false
+
 jobs:
   deploy:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     environment: production
+    timeout-minutes: 25
+    env:
+      SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+      HOOK: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+      API_URL: ${{ vars.API_URL }}
     steps:
-      - uses: actions/checkout@v4
-      - run: docker build -f backend/Dockerfile -t niraum-backend:${{ github.sha }} .
-      - run: echo "TODO push image and deploy once the hosting target is decided." && exit 1
+      - name: Trigger Render deploy
+        run: |
+          test -n "$HOOK" || { echo "RENDER_DEPLOY_HOOK_URL is not set"; exit 1; }
+          curl -fsS -X POST "$HOOK&ref=$SHA" > /dev/null
+          echo "Requested deploy of $SHA"
+      - name: Wait for the new release
+        run: |
+          test -n "$API_URL" || { echo "vars.API_URL is not set"; exit 1; }
+          for i in $(seq 1 80); do
+            body=$(curl -fsS "$API_URL/api/v1/health" || true)
+            commit=$(echo "$body" | jq -r '.data.commit // empty' 2>/dev/null || true)
+            db=$(echo "$body" | jq -r '.data.db // empty' 2>/dev/null || true)
+            if [ "$commit" = "$SHA" ] && [ "$db" = "up" ]; then
+              echo "API is live on $SHA"; exit 0
+            fi
+            echo "Waiting… (live: ${commit:-none})"; sleep 15
+          done
+          echo "Timed out: the API never reported $SHA. Check the Render deploy log."; exit 1

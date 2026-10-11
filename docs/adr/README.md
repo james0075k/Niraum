@@ -9,3 +9,4 @@ after acceptance — supersede with a new ADR instead.
 | 0002 | Prerender public routes with vite-react-ssg   | Accepted |
 | 0003 | Auth: JWT in httpOnly SameSite=Strict cookies | Accepted |
 | 0004 | Email via Nodemailer (SMTP)                   | Accepted |
+| 0005 | Hosting: Vercel, Render, Atlas, Cloudflare    | Accepted |

@@ -5,6 +5,21 @@ All notable changes to this project are documented here. Format:
 
 ## [Unreleased]
 
+### Added — Phase 7: deployment (2026-10-11)
+
+- Hosting decided (ADR-0005): Vercel for the site, Render for the API (Singapore), MongoDB Atlas
+  (AWS Singapore), Cloudflare DNS.
+- `frontend/vercel.json`: pnpm workspace build, retired-page 301s, `/admin` app shell, cache and
+  security headers; the build also writes a root `404.html`.
+- `render.yaml` Blueprint: Docker service, health check, migrations before each deploy, env vars.
+- `deploy-backend.yml` deploys the API after CI passes on `main` and waits for `/health` to report
+  the new commit; `deploy-frontend.yml` rebuilds the site by hand and smoke-checks it.
+- `/api/v1/health` returns the deployed `commit`.
+- Scheduled projects and posts trigger a site rebuild when they go live (`jobs/publishWatch.ts`,
+  `PUBLISH_CHECK_MINUTES`).
+- The API image ships `docs/content/data` so `node dist/seed/index.js` works on Render.
+- `docs/DEPLOYMENT.md`: setup steps, staging, rollback runbook, go-live checklist.
+
 ### Added — Phase 5: admin panel (2026-10-11)
 
 - `/admin`: lazy, client-only, `noindex`; public code can't import it (`check:admin-boundary`).
