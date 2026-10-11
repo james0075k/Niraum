@@ -32,3 +32,6 @@ Thumbs.db
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
+
+# Developer CV — kept locally, never committed
+frontend/src/assets/images/Janak_Rokaya_CV_with_photo.pdf
