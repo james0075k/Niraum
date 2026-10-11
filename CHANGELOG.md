@@ -5,6 +5,35 @@ All notable changes to this project are documented here. Format:
 
 ## [Unreleased]
 
+### Added — Phase 5: admin panel (2026-10-11)
+
+- `/admin`: lazy, client-only, `noindex`; public code can't import it (`check:admin-boundary`).
+- Sign-in with captcha after 3 failed logins, forced password change, forgot/reset; drafts survive
+  an expired session; role-aware shell with Cmd+K palette, breadcrumbs and unsaved-changes guard.
+- Dashboard; settings (address + map pin with geocode fallback, social links, assay visibility).
+- Generic resource manager with English | नेपाली tabs (saving English keeps Nepali): products,
+  deposit (WGS-84 pin), team, services, projects, posts, jobs; TipTap rich text; media library
+  and picker; scheduled publishing for projects and posts.
+- Inquiries pipeline (status counts, search, CSV export), messages, applications (signed CV link).
+- Assay data manager: inline edits, all-or-nothing CSV import with per-line errors, public
+  sample-detail switch; backend admin write endpoints + `POST /admin/assay/import`.
+- Users (superadmin) and audit log with field diffs and links to each record's screen.
+- Tests: 176 backend + 229 frontend unit tests; 10 admin e2e flows against an in-memory API.
+
+### Added — site updates (2026-10-11)
+
+- New banner photos (Home hero, page heroes), founder portrait, company phone/WhatsApp.
+- Deposit composition donut (Table 14) on Home, Products and Technical Data.
+- Sustainability section on Home rebuilt around the CH-B-1 field photo.
+- Drilling preloader (CSS-only, plays before JS).
+
+### Fixed (2026-10-11)
+
+- Glass and texture styles never loaded (late `@import` below `@font-face`): the scrolled header
+  was see-through and glass cards had no background.
+- Nepali headings clipped vowel signs and chandrabindu.
+- `sonner` was imported by the admin but missing from `package.json`.
+
 ### Added — Phase 4.5: real content, bilingual site, bulk inquiries (2026-10-10)
 
 - Content source of truth in `docs/content/` (master blueprint, Phase 4.5 prompt, image

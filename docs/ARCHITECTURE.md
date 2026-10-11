@@ -702,3 +702,27 @@ coordinates are confirmed (the report uses a local grid).
 | 0009         | Mine pin waits for WGS-84 coordinates  | Guessing a grid conversion risks a wrong public location                      |
 
 The incoming v2.0 numbered these 0007–0011; renumbered here to follow the existing 0001–0004.
+
+## 14. Phase 5 — admin panel (built 2026-10-11)
+
+- **Boundary:** everything admin lives in `frontend/src/admin/`; `/admin/*` is a lazy route beside
+  the `/:lang` tree with its own providers and `noindex`. `scripts/check-admin-boundary.mjs` fails
+  the build if public code imports `@/admin`, so TipTap, cmdk and the admin pages never reach a
+  public chunk.
+- **Auth flow:** httpOnly cookies only. `useMe()` gates routes (`RequireAuth` → login with a safe
+  `?next=`, forced password change; `RequireRole` → "You don't have access"). The single-flight
+  refresh interceptor in `lib/api.ts` retries after a 401; if the refresh fails, the open form's
+  draft is kept in memory and restored after sign-in in the same tab.
+- **Resource pattern:** each content type is a `ResourceConfig` (`admin/resources/config.ts`:
+  fields, Zod schema mirroring `validators/content.ts`, columns, filters, `localized` list from
+  `localized.json`, checked against the backend by `tests/localized-sync.test.ts`).
+  `ResourceList` / `ResourceEdit` render any config; `form.ts` and `localize.ts` convert between
+  API docs, form values and request bodies (only dirty fields; `{ en }` unless Nepali was edited).
+  The deposit uses a custom edit page with the map pin.
+- **Backend additions:** captcha after 3 failed logins; dashboard counts; scheduled publishing
+  (`schedulable` content: a future `publishedAt` hides an item from public lists, detail pages and
+  the sitemap); inquiry search + per-status counts; assay admin writes and CSV import
+  (validate the whole file first, then replace or append in a transaction where supported);
+  `import` audit action.
+- **Known gap:** a scheduled item appears on the static site only after the next rebuild — the
+  rebuild hook runs on save, not at `publishedAt` (Phase 7: timed rebuild).

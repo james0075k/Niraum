@@ -5,8 +5,8 @@
 > Read with [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md); if this file conflicts with an ADR, the
 > ADR wins.
 >
-> **Current phase: 4.5 — real content, bilingual (EN/NE), bulk inquiries.** Phases 2–4 are
-> complete. All 4.5 work is additive: extend finished code, don't rewrite it. Content facts come
+> **Current phase: 6 — security (next).** Phases 2–5 are complete (4.5 has open items: mobile
+> Lighthouse, Nepali review, confirm list). All 4.5 work is additive: extend finished code, don't rewrite it. Content facts come
 > only from `docs/content/NIRAUM_MASTER_BLUEPRINT.md` and `docs/content/data/assay_data.json`.
 
 ---
@@ -292,7 +292,7 @@ backend/src/seed/                        assay.seed.ts, katujpani.seed.ts (depos
   - [x] Step 4 — Pages: Our Project, Products, Technical Data, Investors; Home/About/Contact updated
   - [~] Step 5 — Tests ✓ (132 backend, 36 frontend, 11 e2e) + Lighthouse ≥ 90 — desktop ✓ (98–100), mobile ✓ 90–99 except /ne Home 82–88 (see §8)
   - [x] Step 6 — Docs (SKILLS, README, ARCHITECTURE, API, CHANGELOG)
-- [ ] **Phase 5 — Admin panel** (_tasks 1–8 of 13 done_; plan `docs/superpowers/plans/2026-10-10-phase-5-admin-panel.md`)**:** login, shell, dashboard, settings (address/map, social toggles), managers, media, inbox, users, audit
+- [x] **Phase 5 — Admin panel** (_all 13 tasks done 2026-10-11_; plan `docs/superpowers/plans/2026-10-10-phase-5-admin-panel.md`)**:** login, shell, dashboard, settings (address/map, social toggles), managers, media, inbox, users, audit
       (+ Phase 4.5 adds: Inquiries inbox with status pipeline + CSV, Products editor, Deposit
       editor incl. lat/lng pin, Assay manager with CSV import + `publicAssayDetail` switch, EN/नेपाली
       tabs on every content form)
@@ -319,37 +319,43 @@ backend/src/seed/                        assay.seed.ts, katujpani.seed.ts (depos
 
 ## 6. Feature status
 
-| Feature                                         | Area     | Status              | Key files                                               | Tests                       |
-| ----------------------------------------------- | -------- | ------------------- | ------------------------------------------------------- | --------------------------- |
-| Preloader + page transitions                    | Frontend | Done                | `components/motion/Preloader.tsx`, `PageTransition.tsx` | e2e (indirect)              |
-| Light/dark theme (+ admin default)              | Frontend | Done                | `lib/theme.tsx`, `layout/ThemeToggle.tsx`, `index.html` | theme-toggle, e2e           |
-| Navbar (glass, sticky, dropdown, sheet)         | Frontend | Done                | `components/layout/Navbar.tsx`                          | navbar                      |
-| Home sections                                   | Frontend | Done                | `pages/public/Home.tsx`, `components/sections/*`        | home, e2e                   |
-| About, Operations, Sustainability               | Frontend | Done                | `pages/public/*`                                        | screenshots                 |
-| Projects list (filters) + detail + map          | Frontend | Done                | `Projects.tsx`, `ProjectDetail.tsx`, `MapCard.tsx`      | map-card                    |
-| News list + article                             | Frontend | Done                | `News.tsx`, `Article.tsx`                               | screenshots                 |
-| Careers + job + apply form (PDF ≤ 5 MB)         | Frontend | Done (no jobs yet)  | `Careers.tsx`, `Job.tsx`, `ApplyForm.tsx`               | —                           |
-| Contact form + map + socials                    | Frontend | Done (API pending)  | `ContactForm.tsx`, `MapCard.tsx`, `Contact.tsx`         | contact-form, map-card, e2e |
-| Footer, cookie banner, mobile CTA, 404, legal   | Frontend | Done                | `components/layout/*`, `Legal.tsx`, `NotFound.tsx`      | e2e (404)                   |
-| SEO (meta, JSON-LD, sitemap, prerender)         | Frontend | Done                | `components/seo/*`, `lib/seo.ts`, `vite.config.ts`      | e2e (title)                 |
-| Auth (login, refresh, lockout, reset)           | Backend  | Done                | `services/auth.service.ts`, `middlewares/auth.ts`       | auth, roles                 |
-| Site settings + geocoding                       | Backend  | Done                | `services/settings.service.ts`, `geocode.service.ts`    | settings                    |
-| Content CRUD, contact, applications, newsletter | Backend  | Done                | `services/content.service.ts`, `routes/index.ts`        | content, forms              |
-| Media library (Cloudinary)                      | Backend  | Done                | `services/media.service.ts`, `middlewares/upload.ts`    | media                       |
-| OpenAPI docs                                    | Backend  | Done                | `docs/openapi.ts` → `/api/docs`                         | health                      |
-| Admin: login, shell, dashboard, settings        | Admin    | Done (P5 T1–6)      | `admin/{auth,layout,pages,settings}/*`                  | admin/* (login, shell…)     |
-| Admin: resource manager (EN/NE tabs)            | Admin    | Done (P5 T7–8)      | `admin/resources/*`, `ResourceForm`, `ResourceTable`    | resource-*, localize        |
-| Admin: rich text + media library                | Admin    | Done (P5 T8)        | `RichTextEditor.tsx`, `MediaPicker.tsx`, `pages/Media`  | rich-text, media            |
-| Scheduled publishing (projects, posts)          | Backend  | Done (P5 T8)        | `services/content.service.ts` (`schedulable`)           | schedule                    |
-| Admin: deposit, inquiries, assay, users, audit  | Admin    | Not started (T9–12) | —                                                       | —                           |
-| CI pipeline / deployments                       | DevOps   | Skeleton            | `.github/workflows/*`                                   | —                           |
-| Real report imagery + logos (4.5)               | Assets   | Done (step 1)       | `assets/site/*`, `docs/content/manifest.json`           | —                           |
-| Bilingual EN/NE (4.5)                           | Full     | Done (step 2)       | `app/i18n.ts`, `locales/*`, `LocalizedString.ts`        | —                           |
-| LocalizedString migration (4.5)                 | Backend  | Done (step 2)       | `migrations/2026-10-localize-fields.ts`                 | —                           |
-| Product + Deposit models/API (4.5)              | Backend  | Done (step 3)       | `models/Product.ts`, `models/Deposit.ts`                | —                           |
-| Assay models/API + seed (4.5)                   | Backend  | Done (step 3)       | `models/Assay*.ts`, `seed/assay.seed.ts`                | —                           |
-| Bulk supply Inquiry (4.5)                       | Full     | Done (step 4)       | `models/Inquiry.ts`, `InquiryForm.tsx`                  | —                           |
-| Our Project / Products / Technical / Investors  | Frontend | Done (QA'd)         | `pages/public/*`                                        | —                           |
+| Feature                                         | Area     | Status             | Key files                                               | Tests                       |
+| ----------------------------------------------- | -------- | ------------------ | ------------------------------------------------------- | --------------------------- |
+| Preloader + page transitions                    | Frontend | Done               | `components/motion/Preloader.tsx`, `PageTransition.tsx` | e2e (indirect)              |
+| Light/dark theme (+ admin default)              | Frontend | Done               | `lib/theme.tsx`, `layout/ThemeToggle.tsx`, `index.html` | theme-toggle, e2e           |
+| Navbar (glass, sticky, dropdown, sheet)         | Frontend | Done               | `components/layout/Navbar.tsx`                          | navbar                      |
+| Home sections                                   | Frontend | Done               | `pages/public/Home.tsx`, `components/sections/*`        | home, e2e                   |
+| About, Operations, Sustainability               | Frontend | Done               | `pages/public/*`                                        | screenshots                 |
+| Projects list (filters) + detail + map          | Frontend | Done               | `Projects.tsx`, `ProjectDetail.tsx`, `MapCard.tsx`      | map-card                    |
+| News list + article                             | Frontend | Done               | `News.tsx`, `Article.tsx`                               | screenshots                 |
+| Careers + job + apply form (PDF ≤ 5 MB)         | Frontend | Done (no jobs yet) | `Careers.tsx`, `Job.tsx`, `ApplyForm.tsx`               | —                           |
+| Contact form + map + socials                    | Frontend | Done (API pending) | `ContactForm.tsx`, `MapCard.tsx`, `Contact.tsx`         | contact-form, map-card, e2e |
+| Footer, cookie banner, mobile CTA, 404, legal   | Frontend | Done               | `components/layout/*`, `Legal.tsx`, `NotFound.tsx`      | e2e (404)                   |
+| SEO (meta, JSON-LD, sitemap, prerender)         | Frontend | Done               | `components/seo/*`, `lib/seo.ts`, `vite.config.ts`      | e2e (title)                 |
+| Auth (login, refresh, lockout, reset)           | Backend  | Done               | `services/auth.service.ts`, `middlewares/auth.ts`       | auth, roles                 |
+| Site settings + geocoding                       | Backend  | Done               | `services/settings.service.ts`, `geocode.service.ts`    | settings                    |
+| Content CRUD, contact, applications, newsletter | Backend  | Done               | `services/content.service.ts`, `routes/index.ts`        | content, forms              |
+| Media library (Cloudinary)                      | Backend  | Done               | `services/media.service.ts`, `middlewares/upload.ts`    | media                       |
+| OpenAPI docs                                    | Backend  | Done               | `docs/openapi.ts` → `/api/docs`                         | health                      |
+| Admin: login, shell, dashboard, settings        | Admin    | Done (P5 T1–6)     | `admin/{auth,layout,pages,settings}/*`                  | admin/* (login, shell…)     |
+| Admin: resource manager (EN/NE tabs)            | Admin    | Done (P5 T7–8)     | `admin/resources/*`, `ResourceForm`, `ResourceTable`    | resource-*, localize        |
+| Admin: rich text + media library                | Admin    | Done (P5 T8)       | `RichTextEditor.tsx`, `MediaPicker.tsx`, `pages/Media`  | rich-text, media            |
+| Scheduled publishing (projects, posts)          | Backend  | Done (P5 T8)       | `services/content.service.ts` (`schedulable`)           | schedule                    |
+| Admin: deposit editor (WGS-84 pin)              | Admin    | Done (P5 T9)       | `admin/pages/DepositEdit.tsx`                           | deposit                     |
+| Admin: inquiries, messages, applications        | Full     | Done (P5 T10)      | `admin/inbox/*`, `pages/{Inquiries,Messages,…}`         | inbox, inquiry              |
+| Admin: assay manager + CSV import               | Full     | Done (P5 T11)      | `admin/pages/Assay.tsx`, `services/assay.service.ts`    | assay, assay-admin, csv     |
+| Admin: users + audit log                        | Admin    | Done (P5 T12)      | `admin/pages/{Users,Audit}.tsx`                         | users-audit                 |
+| Admin e2e (in-memory API)                       | Admin    | Done (P5 T13)      | `e2e/admin.spec.ts`, `backend/scripts/e2e-server.ts`    | 10 Playwright flows         |
+| Deposit composition donut (Table 14)            | Frontend | Done               | `sections/CompositionDonut.tsx`, `lib/composition.ts`   | composition-donut           |
+| Drilling preloader (CSS-only)                   | Frontend | Done               | `motion/Preloader.tsx`, `globals.css` `.drill-*`        | screenshots                 |
+| CI pipeline / deployments                       | DevOps   | Skeleton           | `.github/workflows/*`                                   | —                           |
+| Real report imagery + logos (4.5)               | Assets   | Done (step 1)      | `assets/site/*`, `docs/content/manifest.json`           | —                           |
+| Bilingual EN/NE (4.5)                           | Full     | Done (step 2)      | `app/i18n.ts`, `locales/*`, `LocalizedString.ts`        | —                           |
+| LocalizedString migration (4.5)                 | Backend  | Done (step 2)      | `migrations/2026-10-localize-fields.ts`                 | —                           |
+| Product + Deposit models/API (4.5)              | Backend  | Done (step 3)      | `models/Product.ts`, `models/Deposit.ts`                | —                           |
+| Assay models/API + seed (4.5)                   | Backend  | Done (step 3)      | `models/Assay*.ts`, `seed/assay.seed.ts`                | —                           |
+| Bulk supply Inquiry (4.5)                       | Full     | Done (step 4)      | `models/Inquiry.ts`, `InquiryForm.tsx`                  | —                           |
+| Our Project / Products / Technical / Investors  | Frontend | Done (QA'd)        | `pages/public/*`                                        | —                           |
 
 Status values: Not started · In progress · Review · Done · Blocked
 
@@ -359,6 +365,8 @@ Status values: Not started · In progress · Review · Done · Blocked
 
 | Date       | What changed                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Files touched                                                                                                                                                                                                                                                                                                                                                                                                                 | Open issues                                                                                                    |
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| 2026-10-11 | Site updates (plan `~/.claude/plans/atomic-launching-eich.md`): **glass/texture CSS never loaded** — `@import`s sat below the Mukta `@font-face` and were dropped; moved to the top (scrolled header was see-through). Banner photos (`crane.jpg` Home hero, `worksites.jpg` page heroes, source [CONFIRM]); logo emblem transparent in its own colours, no tile (owner chose not to recolour); Nepali headings no longer clip vowel signs; founder portrait (`shivahari.jpeg`, seed fills a missing photo); phone/WhatsApp +977 9851090957 (`site_content.json` → fallback + seed). Home sustainability section rebuilt as a split layout with the CH-B-1 field photo. Deposit composition SVG donut (SiO₂ / Fe₂O₃ / Al₂O₃ / remainder from Table 14; Fe as centre label) on Home, Products, Technical Data. Drilling preloader in pure CSS. Vitest `asyncUtilTimeout` 10 s. 176 backend + 229 frontend tests. Lighthouse mobile A/B on the same machine: baseline en 85–87 / ne 74–77 → now en 83–86 / ne 72 (see §8).                                                           | `frontend/src/{styles,components,content,pages,locales,lib}/**`, `backend/src/seed/katujpani.seed.ts`, `docs/content/data/site_content.json`, `assets/CREDITS.md`                                                                                                                                                                                                                                                             | Banner photo licences; /ne mobile TBT                                                                          |
+| 2026-10-11 | Phase 5 tasks 9–13 by five parallel agents in git worktrees, merged by cherry-pick: deposit editor with WGS-84 pin (T9), inquiries pipeline + CSV, messages, applications, inquiry `q` + `meta.counts` (T10), assay admin writes + all-or-nothing CSV import + screen (T11), users + audit log (T12), admin e2e on an in-memory API with e2e seed users, plus smoke e2e for the new screens (T13). Found and fixed: `sonner` missing from `package.json`. Audit rows link to inquiry detail, messages, applications, assay, media, users. Earlier today: T8 rich text, media library, scheduling, remaining content configs.                                                                                                                                                                                                                                                                                                                                                                                                                                                       | `frontend/src/admin/**`, `backend/src/{services,controllers,validators,routes,utils,seed}/**`, `backend/scripts/e2e-server.ts`, `frontend/e2e/admin.spec.ts`, `docs/API.md`                                                                                                                                                                                                                                                   | Phase 6 security                                                                                               |
 | 2026-10-11 | Phase 5 task 8 — scheduled publishing: projects/posts with a future `publishedAt` stay off public lists, detail and sitemap (`schedulable` in content.service, `$and` so it combines with jobs' deadline `$or`; project validator accepts `publishedAt`). TipTap 2.27.3 `RichTextEditor` (bold, italic, H2/H3, lists, safe links, undo/redo; empty doc → `''`) in every richtext field incl. EN/नेपाली tabs. Media: `MediaPicker` (library dialog + upload, chosen straight away), `/admin/media` page (type tabs, drag-and-drop upload with alt required for images and client size/type checks, edit alt, copy URL, delete, `STORAGE_UNAVAILABLE` banner). Configs for team, services, projects, posts, jobs; form support for `nullable` fields and `group` objects (hidden keys such as project lat/lng are kept). Test setup: jsdom layout stubs for ProseMirror, `asyncUtilTimeout` 5 s (cold lazy admin chunks timed out at 1 s even before this change). 150 backend + 181 frontend tests; lint, typecheck, build, admin boundary clean; editor code only in admin chunks. | `backend/src/services/{content.service,resources}.ts`, `validators/content.ts`, `tests/schedule.test.ts`, `frontend/src/admin/{components/{RichTextEditor,MediaPicker,MediaUpload,MediaGrid,ResourceField,LocalizedField}.tsx,media/useMedia.ts,pages/Media.tsx,resources/{config,form}.ts,routes.tsx}`, `frontend/tests/{setup.ts,admin/{rich-text,media,resource-configs,localized-field}.test.*}`, `frontend/package.json` | Task 9 deposit editor; scheduled items need a rebuild at their publish time (§8)                               |
 | 2026-10-10 | Phase 5 tasks 2–7 (logged 11 Oct): captcha after 3 failed logins (`9c5495a`); sign-in, forced password change, forgot/reset (`d4dab2d`), drafts kept on session errors (`02a50b2`); role-aware shell with sidebar, Cmd+K palette, breadcrumbs, unsaved guard (`30f0ba7`, `31f56c0`); dashboard (`e85e4ed`); settings with map pin, social rows, assay visibility (`e46bf31`); generic resource manager with EN/नेपाली tabs, products first, `localized.json` sync test (`dbac026`).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | `backend/src/services/auth.service.ts`, `frontend/src/admin/**`                                                                                                                                                                                                                                                                                                                                                               | —                                                                                                              |
 | 2026-10-10 | Phase 5 task 1 — admin route tree: lazy client-only `/admin/*` (`adminRoute` beside the `/:lang` tree, own providers, noindex Helmet), Login stub, `check:admin-boundary` script (public code must not import `@/admin`).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `frontend/src/admin/**`, `frontend/src/app/router.tsx`, `frontend/scripts/check-admin-boundary.mjs`, `frontend/tests/admin/routes.test.tsx`, `eslint.config.js`                                                                                                                                                                                                                                                               | Login form, shell, pages follow in tasks 2+                                                                    |
@@ -384,6 +392,15 @@ Status values: Not started · In progress · Review · Done · Blocked
 ---
 
 ## 8. Known issues / tech debt
+
+- **CSS `@import` order:** every `@import` in `globals.css` must stay above all other rules,
+  including `@font-face`, or the browser silently drops it (glass/textures were missing until
+  2026-10-11).
+- **Lighthouse is machine-dependent:** compare against a baseline built and measured in the
+  same session (A/B), not against old numbers. 2026-10-11 A/B: en unchanged, /ne ≈ 3 points lower
+  (TBT +200 ms, likely hydration of the extra Home section).
+- Agent worktrees from Phase 5 live in `.claude/worktrees/` (ignored; all merged) — remove with
+  `git worktree remove` when no longer needed.
 
 - `useContentList` only falls back to local content on errors/404. Once the API answers, an
   **empty** collection renders an empty page — run `pnpm seed` on every fresh database.
@@ -486,10 +503,10 @@ Status values: Not started · In progress · Review · Done · Blocked
 
 1. Decide on mobile performance (SKILLS §8): defer framer-motion / GSAP / Lenis after first
    paint or trim mobile motion, then re-run Lighthouse on `/en` and `/ne` (target ≥ 90).
-2. Get the founder to answer the confirm list (§11) — lease holder, phone, WGS-84 pin.
+2. Get the founder to answer the confirm list (§11) — lease holder, WGS-84 pin, banner photo licences.
 3. Native-speaker review of the Nepali strings.
-4. Phase 5 — continue at Task 9 (deposit editor with lat/lng pin), then 10 inquiries inbox,
-   11 assay manager + CSV import, 12 users + audit, 13 e2e + docs.
+4. Phase 6 — security: OWASP review, headers + CSP (Turnstile, Cloudinary), CSRF, 2FA,
+   SECURITY.md, ZAP scan. Then Phase 7: timed rebuild for scheduled posts/projects.
 5. Legal review of the draft Privacy, Terms and Cookie pages; then Phase 6 security, Phase 7 deploy.
 
 ---
@@ -557,13 +574,14 @@ code.
 ### Phase 4.5 confirm list (blueprint [CONFIRM] items — admin-editable placeholders until answered)
 
 - [ ] Lease ownership of Katujpani and how to credit Ms Niru Upreti
-- [ ] Public phone/WhatsApp (+977 985 109 0957?) — email niraummetals@gmail.com is in use (blueprint)
+- [x] Public phone/WhatsApp +977 9851090957 (founder's number = company line; confirmed by the owner 2026-10-11) — email niraummetals@gmail.com (blueprint)
 - [ ] WGS-84 lat/lng of the mine main point
 - [ ] Land figures from Map No. 1 (survey 20.68 ha, total land use 3.41 ha, etc.)
 - [ ] Product sizes, minimum order, packing, delivery points
 - [ ] Permission to publish sample-level assay data (`publicAssayDetail`)
 - [ ] Consent from people shown in field photos (hero `iron-ore-outcrop-cliff-field-geologist`, Field_Sampling_*)
-- [ ] Original high-res photos + founder portrait
+- [x] Founder portrait (`shivahari.jpeg`, 2026-10-11)
+- [ ] Source and licence of the banner photos `crane.jpg`, `worksites.jpg` (not of Katujpani)
 - [ ] Sustainability commitments from EIA/IEE
 - [ ] Social media URLs (Admin → Settings)
 - [ ] Privacy, Terms, Cookie text (legal review)

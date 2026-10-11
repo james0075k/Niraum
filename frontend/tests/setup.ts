@@ -2,8 +2,8 @@ import '@testing-library/jest-dom/vitest';
 import { cleanup, configure } from '@testing-library/react';
 import { afterEach, vi } from 'vitest';
 
-// Admin pages are lazy chunks; their first cold transform in Vitest can exceed the 1 s default.
-configure({ asyncUtilTimeout: 5000 });
+// Admin pages are lazy chunks; their first cold transform in Vitest can exceed the 1 s default (and 5 s when the whole suite runs at once).
+configure({ asyncUtilTimeout: 10_000 });
 
 afterEach(() => {
   cleanup();

@@ -13,6 +13,9 @@ build/
 .env.*
 !.env.example
 
+# Claude Code agent worktrees (parallel task branches)
+.claude/worktrees/
+
 # tests
 coverage/
 playwright-report/

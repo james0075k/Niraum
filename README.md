@@ -21,7 +21,7 @@ traders, and verified technical data for investors. Content source of truth:
 | 3 — Frontend (public site)           | ✅ Done                                                            |
 | 4 — Backend API                      | ✅ Done                                                            |
 | 4.5 — Real content, EN/NE, inquiries | 🟡 Built — mobile Lighthouse performance and Nepali review pending |
-| 5 — Admin panel                      | ⬜ Next                                                            |
+| 5 — Admin panel                      | ✅ Done (2026-10-11) — see “Admin panel” below                     |
 | 6 — Security hardening               | ⬜ To do                                                           |
 | 7 — CI/CD + deploy                   | ⬜ To do                                                           |
 | 8 — Docs + final QA                  | ⬜ To do                                                           |
@@ -87,17 +87,33 @@ Prompt: [`docs/content/PHASE_4.5_CONTENT_INTEGRATION_PROMPT.md`](docs/content/PH
 - [~] Lighthouse: desktop 92–94 performance and 100 a11y / best practices / SEO on `/en` and
   `/ne`; mobile performance ≈ 70 — see SKILLS.md §8
 
+### Phase 5 — admin panel
+
+Plan: [`docs/superpowers/plans/2026-10-10-phase-5-admin-panel.md`](docs/superpowers/plans/2026-10-10-phase-5-admin-panel.md) — all 13 tasks done.
+
+- **URL:** `/admin` (client-only, `noindex`, never prerendered, separate JS chunks).
+- **First sign-in:** the seed creates a superadmin from `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD`
+  with a forced password change. Captcha appears after 3 failed logins; 5 lock the account.
+- **Roles:** editor = content, media, assay · admin = + settings, inquiries, messages,
+  applications, audit · superadmin = + users.
+- **Screens:** dashboard; settings (address + map pin, social links, assay visibility); products,
+  deposit (WGS-84 pin), team, services, projects, posts, jobs with English | नेपाली tabs; rich text;
+  media library (Cloudinary); inquiries pipeline + CSV; messages; applications; assay data with CSV
+  import; users; audit log.
+- **End-to-end tests** (in-memory MongoDB, never Atlas):
+  `cd frontend && E2E_ADMIN_PASSWORD=<12+ chars> npx playwright test --project=admin`
+
 ### Waiting on Niraum Metals
 
 - [ ] Official logo files (site shows a text wordmark and a temporary "N" favicon)
-- [ ] Phone, email, WhatsApp, office hours, social links, exact office location
+- [ ] Office hours, social links, exact office location (phone/WhatsApp +977 9851090957 and email are in)
 - [ ] Founding year, licences, registration numbers, leadership, real projects and figures
 - [ ] Hero video and more site photography
 - [ ] Legal review of the Privacy, Terms and Cookie pages
 - [ ] Phase 4.5 confirm list: Katujpani lease holder and credit, public phone,
       WGS-84 mine pin, land figures, product sizes/minimum order/delivery, permission to publish
-      sample-level assay data, consent for people in field photos, original photos + founder
-      portrait, EIA/IEE commitments, Nepali review
+      sample-level assay data, consent for people in field photos, source/licence of the two
+      banner photos, EIA/IEE commitments, Nepali review
 
 Every unknown is shown on the site as `[PLACEHOLDER: …]`; full list in SKILLS.md §11.
 

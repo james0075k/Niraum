@@ -107,7 +107,9 @@ deleted items) in addition to the public filters.
 `-3`…). Editing a title does **not** change the slug (stable URLs); send `slug` to change it.
 Soft-deleted items keep their slug reserved. Rich-text fields (`body`, job `description`) are
 sanitised with an allow-list on every write. Turning `published`/`isOpen` on sets `publishedAt`
-the first time. Every create / update / delete / restore / publish / unpublish writes an
+the first time (unless one is sent). **Scheduling:** projects and posts accept a future
+`publishedAt`; until then a published item is left out of public lists, detail pages (`404`) and
+`/seo/sitemap-data`. Every create / update / delete / restore / publish / unpublish writes an
 `AuditLog` entry with a field diff (secrets omitted), and changes to public content schedule a
 debounced call to `REBUILD_HOOK_URL`.
 
