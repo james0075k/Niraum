@@ -23,10 +23,12 @@ const EMPTY_SEO = { title: '', description: '', ogImage: '', noindex: false };
 
 /** Empty form value for one field. */
 export function emptyValue(f: FieldDef): unknown {
-  if (f.localized && !['list', 'pairs'].includes(f.kind)) return { en: '', ne: '' };
+  if (f.localized && !['list', 'pairs', 'group'].includes(f.kind)) return { en: '', ne: '' };
   switch (f.kind) {
     case 'number':
-      return f.required ? undefined : 0;
+      return f.required || f.nullable ? undefined : 0;
+    case 'group':
+      return Object.fromEntries((f.itemFields ?? []).map((i) => [i.name, emptyValue(i)]));
     case 'switch':
       return false;
     case 'select':
@@ -60,6 +62,14 @@ export const toLocalInput = (iso: string) => {
 function fieldToForm(f: FieldDef, value: unknown): unknown {
   if (value === undefined || value === null) return emptyValue(f);
   switch (f.kind) {
+    case 'group':
+      // Keys the form doesn't show (a project's lat/lng) ride along so saving keeps them.
+      return {
+        ...(value as Plain),
+        ...Object.fromEntries(
+          (f.itemFields ?? []).map((i) => [i.name, fieldToForm(i, (value as Plain)[i.name])]),
+        ),
+      };
     case 'image':
       return { ...EMPTY_IMAGE, ...(value as Plain) };
     case 'images':
@@ -98,19 +108,32 @@ export function docToForm(cfg: ResourceConfig, doc: Plain): Plain {
   return out;
 }
 
+/** One `list` / `pairs` row or `group` object → body shape, field by field. */
+const objectToBody = (items: FieldDef[], value: Plain): Plain => ({
+  ...value,
+  ...Object.fromEntries(items.map((i) => [i.name, fieldToBody(i, value[i.name])])),
+});
+
 function fieldToBody(f: FieldDef, value: unknown): unknown {
+  if (f.nullable && (value === undefined || value === '' || Number.isNaN(value))) return null;
   switch (f.kind) {
+    case 'group':
+      return objectToBody(f.itemFields ?? [], (value as Plain) ?? {});
     case 'image': {
       const img = value as { src?: string } & Plain;
       return img?.src ? img : null;
     }
     case 'images':
       return ((value as { src?: string }[]) ?? []).filter((i) => i.src);
-    case 'list':
-      if (itemFieldsOf(f)) return value;
+    case 'pairs':
+      return ((value as Plain[]) ?? []).map((row) => objectToBody(itemFieldsOf(f) ?? [], row));
+    case 'list': {
+      const items = itemFieldsOf(f);
+      if (items) return ((value as Plain[]) ?? []).map((row) => objectToBody(items, row));
       return ((value as { value: string }[]) ?? [])
         .map((r) => r.value.trim())
         .filter((v) => v !== '');
+    }
     case 'date':
       return value ? value : null;
     default:
@@ -155,7 +178,7 @@ export function buildBody(cfg: ResourceConfig, values: Plain, dirty: Plain, isNe
 export function formPathFor(cfg: ResourceConfig, path: string): string {
   const top = path.split('.')[0];
   const field = cfg.fields.find((f) => f.name === top);
-  if (field?.localized && !['list', 'pairs'].includes(field.kind) && path === top) {
+  if (field?.localized && !['list', 'pairs', 'group'].includes(field.kind) && path === top) {
     return `${path}.en`;
   }
   return path;

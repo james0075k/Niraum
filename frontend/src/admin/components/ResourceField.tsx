@@ -22,7 +22,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import type { FieldDef } from '../resources/config';
 import { emptyItem, itemFieldsOf } from '../resources/form';
+import type { PickedMedia } from '../media/useMedia';
 import { LocalizedField } from './LocalizedField';
+import { MediaPicker } from './MediaPicker';
+import { RichTextEditor } from './RichTextEditor';
 
 const LOCALIZED_AS = { text: 'input', textarea: 'textarea', richtext: 'richtext' } as const;
 
@@ -151,33 +154,47 @@ const IMAGE_ITEM: FieldDef[] = [
   { name: 'alt', label: 'Alt text', kind: 'text', max: 200 },
 ];
 
-/** Single image: URL + alt text with a small preview. */
+/** Single image: library picker, or URL + alt text typed in, with a small preview. */
 function ImageField({ def, name }: { def: FieldDef; name: string }) {
-  const { control } = useFormContext();
+  const { control, setValue } = useFormContext();
   const src = useWatch({ control, name: `${name}.src` }) as string | undefined;
+  const alt = useWatch({ control, name: `${name}.alt` }) as string | undefined;
+  const pick = (m: PickedMedia | null) => {
+    const opts = { shouldDirty: true, shouldValidate: true };
+    setValue(
+      name,
+      m
+        ? { src: m.url, alt: m.alt, width: m.width, height: m.height, mediaId: m.mediaId }
+        : { src: '', alt: '' },
+      opts,
+    );
+  };
   return (
     <fieldset className="space-y-3">
       <legend className="text-sm font-medium">{def.label}</legend>
-      <Help text={def.help ?? 'An https:// image URL or a site path. Leave empty for no image.'} />
-      <div className="flex flex-col gap-3 sm:flex-row">
-        <div className="min-w-0 flex-1 space-y-3">
-          <ResourceField
-            def={{ name: 'src', label: `${def.label} URL`, kind: 'text', max: 1000 }}
-            name={`${name}.src`}
-          />
-          <ResourceField
-            def={{ name: 'alt', label: `${def.label} alt text`, kind: 'text', max: 200 }}
-            name={`${name}.alt`}
-          />
-        </div>
-        {src && (/^https:\/\//.test(src) || src.startsWith('/')) ? (
-          <img
-            src={src}
-            alt=""
-            className="h-24 w-32 shrink-0 rounded-md border object-cover"
-            loading="lazy"
-          />
-        ) : null}
+      <Help
+        text={
+          def.help ??
+          'Choose from the media library, or type an https:// image URL or a site path. Leave empty for no image.'
+        }
+      />
+      <MediaPicker
+        value={
+          src && (/^https:\/\//.test(src) || src.startsWith('/'))
+            ? { url: src, alt: alt ?? '' }
+            : null
+        }
+        onChange={pick}
+      />
+      <div className="grid gap-3 sm:grid-cols-2">
+        <ResourceField
+          def={{ name: 'src', label: `${def.label} URL`, kind: 'text', max: 1000 }}
+          name={`${name}.src`}
+        />
+        <ResourceField
+          def={{ name: 'alt', label: `${def.label} alt text`, kind: 'text', max: 200 }}
+          name={`${name}.alt`}
+        />
       </div>
     </fieldset>
   );
@@ -191,6 +208,19 @@ export function ResourceField({ def, name }: { def: FieldDef; name: string }) {
     return <ArrayField def={def} name={name} />;
   }
   if (def.kind === 'image') return <ImageField def={def} name={name} />;
+  if (def.kind === 'group') {
+    return (
+      <fieldset className="space-y-3">
+        <legend className="text-sm font-medium">{def.label}</legend>
+        <Help text={def.help} />
+        <div className="grid gap-3 sm:grid-cols-2">
+          {def.itemFields?.map((item) => (
+            <ResourceField key={item.name} def={item} name={`${name}.${item.name}`} />
+          ))}
+        </div>
+      </fieldset>
+    );
+  }
 
   if (
     def.localized &&
@@ -248,9 +278,17 @@ export function ResourceField({ def, name }: { def: FieldDef; name: string }) {
             </Select>
           ) : (
             <FormControl>
-              {def.kind === 'textarea' || def.kind === 'richtext' ? (
+              {def.kind === 'richtext' ? (
+                // FormControl's Slot passes the label's `id` through to the editable area.
+                <RichTextEditor
+                  label={def.label}
+                  value={(field.value as string) ?? ''}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                />
+              ) : def.kind === 'textarea' ? (
                 <Textarea
-                  rows={def.kind === 'richtext' ? 8 : 4}
+                  rows={4}
                   maxLength={def.max}
                   {...field}
                   value={(field.value as string) ?? ''}

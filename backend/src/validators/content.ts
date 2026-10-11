@@ -43,6 +43,7 @@ export const projectCreate = z.object({
   gallery: z.array(imageInput).max(40).default([]),
   featured: z.boolean().default(false),
   published: z.boolean().default(false),
+  publishedAt: z.coerce.date().optional(),
   isSample: z.boolean().default(false),
   seo: seoInput.optional(),
 });

@@ -31,13 +31,16 @@ describe('LocalizedField', () => {
     expect(screen.queryByText('Nepali missing')).toBeNull();
   });
 
-  it('renders a textarea for textarea and richtext', () => {
+  it('renders a textarea for textarea and the rich-text editor for richtext', async () => {
     render(
       <Harness ne="पाठ">
+        <LocalizedField name="title" label="Summary" as="textarea" />
         <LocalizedField name="title" label="Body" as="richtext" />
       </Harness>,
     );
-    expect(screen.getByLabelText('Body (English)').tagName).toBe('TEXTAREA');
+    expect(screen.getByLabelText('Summary (English)').tagName).toBe('TEXTAREA');
+    const box = await screen.findByRole('textbox', { name: 'Body (English)' });
+    expect(box).toHaveAttribute('contenteditable', 'true');
     expect(screen.queryByText('Nepali missing')).toBeNull();
   });
 });

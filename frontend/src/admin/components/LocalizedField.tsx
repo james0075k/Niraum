@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { useFormContext, useWatch } from 'react-hook-form';
+import { Controller, useFormContext, useWatch } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
+import { RichTextEditor } from './RichTextEditor';
 
 type Lang = 'en' | 'ne';
 
@@ -12,8 +13,8 @@ const LANG_NAME: Record<Lang, string> = { en: 'English', ne: 'Nepali' };
 /**
  * A localized text field: English | नेपाली tabs over `${name}.en` / `${name}.ne` of the
  * surrounding react-hook-form. English is the required one; the नेपाली tab shows a dot while
- * the Nepali value is empty (the site falls back to English). `richtext` is a plain textarea
- * until the rich-text editor lands.
+ * the Nepali value is empty (the site falls back to English). `richtext` uses the TipTap
+ * editor (HTML; the count is HTML characters, which is what the backend limit measures).
  */
 export function LocalizedField(props: {
   name: string;
@@ -44,14 +45,30 @@ export function LocalizedField(props: {
       lang,
       maxLength: max,
       className: cn(lang === 'ne' && 'font-[Mukta]'),
-      ...register(path),
     };
     return (
       <div className="space-y-1">
-        {as === 'input' ? (
-          <Input {...common} />
+        {as === 'richtext' ? (
+          <Controller
+            control={control}
+            name={path}
+            render={({ field: f }) => (
+              <RichTextEditor
+                id={id}
+                label={common['aria-label']}
+                lang={lang}
+                value={(f.value as string | undefined) ?? ''}
+                onChange={f.onChange}
+                onBlur={f.onBlur}
+                invalid={!!error}
+                describedBy={common['aria-describedby']}
+              />
+            )}
+          />
+        ) : as === 'input' ? (
+          <Input {...common} {...register(path)} />
         ) : (
-          <Textarea rows={as === 'richtext' ? 8 : 4} {...common} />
+          <Textarea rows={4} {...common} {...register(path)} />
         )}
         <div className="flex items-start justify-between gap-2 text-xs">
           <span id={`${id}-error`} className="font-medium text-destructive">

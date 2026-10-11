@@ -20,9 +20,16 @@ export const lazyPage = (load: () => Promise<{ default: React.ComponentType }>) 
 /**
  * Admin paths (relative to /admin) of the resources served by the generic ResourceList /
  * ResourceEdit pages. Must match `adminPathOf(RESOURCES[key])`; kept here so the shell chunk
- * doesn't load the resource configs (they load with the pages). Tasks 8–9 add entries.
+ * doesn't load the resource configs (they load with the pages). Task 9 adds the deposit.
  */
-export const RESOURCE_PATHS: Partial<Record<ResourceKey, string>> = { products: 'products' };
+export const RESOURCE_PATHS: Partial<Record<ResourceKey, string>> = {
+  products: 'products',
+  team: 'team',
+  services: 'services',
+  projects: 'projects',
+  posts: 'posts',
+  jobs: 'jobs',
+};
 
 /** List, new and edit routes of one resource, role-gated like the rest of the content area. */
 export function resourceRoutes(key: ResourceKey, path: string): RouteObject[] {
@@ -48,7 +55,7 @@ const resourcePaths = new Set(resourceEntries.map(([, path]) => `/admin/${path}`
  * Sections without a real page yet: a role-gated "coming soon" placeholder at each NAV path,
  * so links never 404. Later tasks replace entries here with their pages.
  */
-const BUILT = new Set(['/admin', '/admin/settings']);
+const BUILT = new Set(['/admin', '/admin/settings', '/admin/media']);
 const placeholders: RouteObject[] = NAV.filter(
   (n) => !BUILT.has(n.to) && !resourcePaths.has(n.to),
 ).map((n) => ({
@@ -80,6 +87,12 @@ export const adminRoutes: RouteObject[] = [
               <RequireRole area="settings">
                 {lazyPage(() => import('./pages/Settings'))}
               </RequireRole>
+            ),
+          },
+          {
+            path: 'media',
+            element: (
+              <RequireRole area="media">{lazyPage(() => import('./pages/Media'))}</RequireRole>
             ),
           },
           ...resources,

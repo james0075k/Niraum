@@ -28,6 +28,8 @@ export interface ContentConfig<T extends ContentBase> {
   visibleField: 'published' | 'isOpen';
   /** Extra public conditions, e.g. jobs past their deadline are hidden. */
   publicExtra?: () => Plain;
+  /** Published items with a future `publishedAt` stay hidden until then (projects, posts). */
+  schedulable?: boolean;
   /** Converts validated filter params (`status`, `tag`…) to a Mongo filter. */
   filters?: (query: Plain) => Plain;
   sortable: readonly string[];
@@ -72,11 +74,16 @@ export function createContentService<T extends ContentBase>(cfg: ContentConfig<T
 
   const isVisible = (doc: Plain | null) => !!doc && doc[visibleField] === true && !doc.isDeleted;
 
-  const publicFilter = (): Plain => ({
-    isDeleted: false,
-    [visibleField]: true,
-    ...(cfg.publicExtra?.() ?? {}),
-  });
+  const publicFilter = (): Plain => {
+    const filter: Plain = { isDeleted: false, [visibleField]: true };
+    // `$and` keeps the schedule's `$or` from overwriting one in `publicExtra`.
+    const and: Plain[] = [];
+    if (cfg.schedulable) {
+      and.push({ $or: [{ publishedAt: null }, { publishedAt: { $lte: new Date() } }] });
+    }
+    if (cfg.publicExtra) and.push(cfg.publicExtra());
+    return and.length ? { ...filter, $and: and } : filter;
+  };
 
   async function slugFor(source: string, excludeId?: string): Promise<string> {
     return uniqueSlug(source, async (slug) => {

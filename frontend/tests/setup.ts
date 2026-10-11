@@ -1,6 +1,9 @@
 import '@testing-library/jest-dom/vitest';
-import { cleanup } from '@testing-library/react';
+import { cleanup, configure } from '@testing-library/react';
 import { afterEach, vi } from 'vitest';
+
+// Admin pages are lazy chunks; their first cold transform in Vitest can exceed the 1 s default.
+configure({ asyncUtilTimeout: 5000 });
 
 afterEach(() => {
   cleanup();
@@ -31,3 +34,11 @@ class MockObserver {
 window.IntersectionObserver = MockObserver as unknown as typeof IntersectionObserver;
 window.ResizeObserver = MockObserver as unknown as typeof ResizeObserver;
 window.scrollTo = vi.fn() as unknown as typeof window.scrollTo;
+
+// ProseMirror (TipTap) measures layout through these; jsdom has no layout engine.
+document.elementFromPoint = () => null;
+const emptyRects = () => Object.assign([], { item: () => null }) as unknown as DOMRectList;
+const zeroRect = () => new DOMRect(0, 0, 0, 0);
+Range.prototype.getClientRects = emptyRects;
+Range.prototype.getBoundingClientRect = zeroRect;
+Element.prototype.getClientRects ??= emptyRects;

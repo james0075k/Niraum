@@ -24,7 +24,8 @@ export interface FieldDef {
     | 'image'
     | 'images'
     | 'list'
-    | 'pairs';
+    | 'pairs'
+    | 'group';
   localized?: boolean;
   required?: boolean;
   max?: number;
@@ -32,12 +33,15 @@ export interface FieldDef {
   help?: string;
   section?: string;
   /**
+   * `group`: the fields of a nested object (e.g. a project's `location`).
    * `list` / `pairs` rows: the fields of one item. A `list` without `itemFields` is a list of
    * plain strings (`max` applies to each). `pairs` without `itemFields` is `{ label, value }`.
    */
   itemFields?: FieldDef[];
   /** `list` / `pairs` / `images`: most items allowed (backend `.max()`). */
   maxItems?: number;
+  /** Empty is sent as `null` (backend `.nullable()`), e.g. an optional number or URL. */
+  nullable?: boolean;
 }
 
 export interface ResourceConfig {
@@ -272,11 +276,499 @@ const products: ResourceConfig = {
   publicUrl: (_doc, lang) => `/${lang}/products`,
 };
 
-/**
- * Configured resources. Team, services, projects, posts and jobs land in Task 8 and deposits
- * in Task 9; until then their admin routes stay "coming soon".
- */
-export const RESOURCES: Partial<Record<ResourceKey, ResourceConfig>> = { products };
+// ── Shared bits for the remaining content types ─────────────────────────────
+
+const updatedColumn = {
+  key: 'updatedAt',
+  label: 'Updated',
+  sortable: true,
+  render: (row: { updatedAt?: string }) => (row.updatedAt ? formatDate(row.updatedAt) : '—'),
+};
+
+const optionsOf = (values: readonly string[], labels: Record<string, string>) =>
+  values.map((value) => ({ value, label: labels[value] ?? value }));
+
+/** Backend `title`: localized, English 2–150 characters. */
+const titleField: FieldDef = {
+  name: 'title',
+  label: 'Title',
+  kind: 'text',
+  localized: true,
+  required: true,
+  max: 150,
+  section: 'Basics',
+};
+
+const imagesRule = (max: number) => z.array(imageRule).max(max, `Up to ${max} images`);
+const stringList = (max: number, items: number, what: string) =>
+  z.array(z.object({ value: textRule(max) })).max(items, `Up to ${items} ${what}`);
+/** `YYYY-MM-DD` from a date input, or empty. */
+const dateRule = z
+  .string()
+  .refine((v) => v === '' || /^\d{4}-\d{2}-\d{2}$/.test(v), 'Use a valid date');
+/** Backend `z.string().url()`; empty = none. */
+const urlRule = z
+  .string()
+  .trim()
+  .max(300, tooLong(300))
+  .refine((v) => {
+    if (v === '') return true;
+    try {
+      return ['http:', 'https:'].includes(new URL(v).protocol);
+    } catch {
+      return false;
+    }
+  }, 'Enter a full URL, starting with https://');
+
+// ── Team (backend teamCreate) ───────────────────────────────────────────────
+
+const team: ResourceConfig = {
+  key: 'team',
+  label: 'Team',
+  singular: 'team member',
+  apiPath: '/admin/team',
+  titleField: 'name',
+  visibleField: 'published',
+  localized: LOCALIZED.team,
+  columns: [
+    { key: 'name', label: 'Name' },
+    { key: 'role', label: 'Role' },
+    { key: 'status', label: 'Status' },
+    { key: 'order', label: 'Order', sortable: true },
+    updatedColumn,
+  ],
+  fields: [
+    { name: 'name', label: 'Name', kind: 'text', required: true, max: 100, section: 'Basics' },
+    { name: 'role', label: 'Role', kind: 'text', localized: true, max: 100, section: 'Basics' },
+    { name: 'bio', label: 'Bio', kind: 'textarea', localized: true, max: 2000, section: 'Basics' },
+    {
+      name: 'isFounder',
+      label: 'Founder',
+      kind: 'switch',
+      help: 'Shown in the founder card on About and Investors.',
+      section: 'Basics',
+    },
+    {
+      name: 'order',
+      label: 'Order',
+      kind: 'number',
+      help: 'Lower numbers are listed first.',
+      section: 'Basics',
+    },
+    {
+      name: 'linkedin',
+      label: 'LinkedIn URL',
+      kind: 'text',
+      max: 300,
+      nullable: true,
+      section: 'Basics',
+    },
+    { name: 'photo', label: 'Photo', kind: 'image', section: 'Photo' },
+    {
+      name: 'otherVentures',
+      label: 'Other ventures',
+      kind: 'list',
+      localized: true,
+      maxItems: 20,
+      section: 'Other ventures',
+      itemFields: [
+        { name: 'company', label: 'Company', kind: 'text', required: true, max: 150 },
+        { name: 'role', label: 'Role', kind: 'text', localized: true, max: 100 },
+        { name: 'sector', label: 'Sector', kind: 'text', localized: true, max: 100 },
+        { name: 'since', label: 'Since (year)', kind: 'number', nullable: true },
+      ],
+    },
+  ],
+  schema: z.object({
+    name: requiredText(100).min(2, 'At least 2 characters'),
+    role: localizedRule(100),
+    bio: localizedRule(2000),
+    isFounder: z.boolean(),
+    order: numberRule(0, 1000, true),
+    linkedin: urlRule,
+    photo: imageRule,
+    otherVentures: z
+      .array(
+        z.object({
+          company: requiredText(150),
+          role: localizedRule(100),
+          sector: localizedRule(100),
+          since: numberRule(1900, 2100, true).optional(),
+        }),
+      )
+      .max(20, 'Up to 20 ventures'),
+    published: z.boolean(),
+  }),
+  publicUrl: (_doc, lang) => `/${lang}/about`,
+};
+
+// ── Services (backend serviceCreate) ────────────────────────────────────────
+
+const SERVICE_ICONS = ['pickaxe', 'gem', 'mountain', 'truck'] as const;
+
+const services: ResourceConfig = {
+  key: 'services',
+  label: 'Services',
+  singular: 'service',
+  apiPath: '/admin/services',
+  titleField: 'title',
+  visibleField: 'published',
+  localized: LOCALIZED.services,
+  columns: [
+    { key: 'title', label: 'Title' },
+    { key: 'status', label: 'Status' },
+    { key: 'order', label: 'Order', sortable: true },
+    updatedColumn,
+  ],
+  fields: [
+    titleField,
+    {
+      name: 'icon',
+      label: 'Icon',
+      kind: 'select',
+      options: optionsOf(SERVICE_ICONS, {
+        pickaxe: 'Pickaxe',
+        gem: 'Gem',
+        mountain: 'Mountain',
+        truck: 'Truck',
+      }),
+      section: 'Basics',
+    },
+    {
+      name: 'summary',
+      label: 'Summary',
+      kind: 'textarea',
+      localized: true,
+      max: 300,
+      section: 'Basics',
+    },
+    {
+      name: 'order',
+      label: 'Order',
+      kind: 'number',
+      help: 'Lower numbers are listed first.',
+      section: 'Basics',
+    },
+    { name: 'body', label: 'Body', kind: 'richtext', localized: true, section: 'Body' },
+    {
+      name: 'highlights',
+      label: 'Highlights',
+      kind: 'list',
+      max: 200,
+      maxItems: 12,
+      section: 'Body',
+    },
+    {
+      name: 'stats',
+      label: 'Stats',
+      kind: 'pairs',
+      maxItems: 8,
+      help: 'Leave Value empty and fill Placeholder for a figure that is still [CONFIRM].',
+      section: 'Stats',
+      itemFields: [
+        { name: 'label', label: 'Label', kind: 'text', max: 60 },
+        { name: 'value', label: 'Value', kind: 'number', nullable: true },
+        { name: 'suffix', label: 'Suffix', kind: 'text', max: 10 },
+        { name: 'placeholder', label: 'Placeholder', kind: 'text', max: 60 },
+      ],
+    },
+    { name: 'image', label: 'Image', kind: 'image', section: 'Images' },
+    { name: 'gallery', label: 'Gallery', kind: 'images', maxItems: 20, section: 'Images' },
+  ],
+  schema: z.object({
+    title: localizedRule(150, 2),
+    slug: slugRule,
+    icon: z.enum(SERVICE_ICONS),
+    summary: localizedRule(300),
+    order: numberRule(0, 1000, true),
+    body: localizedRule(100_000),
+    highlights: stringList(200, 12, 'highlights'),
+    stats: z
+      .array(
+        z.object({
+          label: textRule(60),
+          value: z.number({ invalid_type_error: 'Enter a number' }).optional(),
+          suffix: textRule(10),
+          placeholder: textRule(60),
+        }),
+      )
+      .max(8, 'Up to 8 stats'),
+    image: imageRule,
+    gallery: imagesRule(20),
+    published: z.boolean(),
+  }),
+  slug: true,
+};
+
+// ── Projects (backend projectCreate) — retired from the public site ─────────
+
+const MINERALS = ['iron-ore', 'metal-minerals', 'stone-aggregates'] as const;
+const PROJECT_STATUSES = ['exploration', 'development', 'operating', 'completed'] as const;
+const MINERAL_LABELS: Record<string, string> = {
+  'iron-ore': 'Iron ore',
+  'metal-minerals': 'Metal minerals',
+  'stone-aggregates': 'Stone aggregates',
+};
+const PROJECT_STATUS_LABELS: Record<string, string> = {
+  exploration: 'Exploration',
+  development: 'Development',
+  operating: 'Operating',
+  completed: 'Completed',
+};
+
+const projects: ResourceConfig = {
+  key: 'projects',
+  label: 'Projects',
+  singular: 'project',
+  apiPath: '/admin/projects',
+  titleField: 'title',
+  visibleField: 'published',
+  localized: LOCALIZED.projects,
+  columns: [
+    { key: 'title', label: 'Title' },
+    {
+      key: 'mineral',
+      label: 'Mineral',
+      render: (row: { mineral?: string }) =>
+        (row.mineral && MINERAL_LABELS[row.mineral]) ?? row.mineral ?? '—',
+    },
+    { key: 'status', label: 'Status' },
+    updatedColumn,
+  ],
+  filters: [
+    { key: 'mineral', label: 'Mineral', options: optionsOf(MINERALS, MINERAL_LABELS) },
+    {
+      key: 'status',
+      label: 'Project status',
+      options: optionsOf(PROJECT_STATUSES, PROJECT_STATUS_LABELS),
+    },
+  ],
+  fields: [
+    titleField,
+    {
+      name: 'mineral',
+      label: 'Mineral',
+      kind: 'select',
+      required: true,
+      options: optionsOf(MINERALS, MINERAL_LABELS),
+      section: 'Basics',
+    },
+    {
+      name: 'status',
+      label: 'Project status',
+      kind: 'select',
+      options: optionsOf(PROJECT_STATUSES, PROJECT_STATUS_LABELS),
+      section: 'Basics',
+    },
+    {
+      name: 'summary',
+      label: 'Summary',
+      kind: 'textarea',
+      localized: true,
+      max: 300,
+      section: 'Basics',
+    },
+    { name: 'featured', label: 'Featured', kind: 'switch', section: 'Basics' },
+    {
+      name: 'location',
+      label: 'Location',
+      kind: 'group',
+      help: 'The deposit editor holds the map pin; projects only keep a place name.',
+      section: 'Basics',
+      itemFields: [
+        { name: 'name', label: 'Place', kind: 'text', max: 150 },
+        { name: 'district', label: 'District', kind: 'text', max: 100 },
+      ],
+    },
+    { name: 'body', label: 'Body', kind: 'richtext', localized: true, section: 'Body' },
+    {
+      name: 'facts',
+      label: 'Facts',
+      kind: 'pairs',
+      maxItems: 20,
+      help: 'Figures only from the blueprint or assay data; unknown → [CONFIRM].',
+      section: 'Body',
+    },
+    { name: 'coverImage', label: 'Cover image', kind: 'image', section: 'Images' },
+    { name: 'gallery', label: 'Gallery', kind: 'images', maxItems: 40, section: 'Images' },
+  ],
+  schema: z.object({
+    title: localizedRule(150, 2),
+    slug: slugRule,
+    mineral: z.enum(MINERALS, { errorMap: () => ({ message: 'Choose a mineral' }) }),
+    status: z.enum(PROJECT_STATUSES),
+    summary: localizedRule(300),
+    featured: z.boolean(),
+    // passthrough: keep stored lat/lng, which this form doesn't edit.
+    location: z.object({ name: textRule(150), district: textRule(100) }).passthrough(),
+    body: localizedRule(100_000),
+    facts: z
+      .array(z.object({ label: textRule(60), value: textRule(120) }))
+      .max(20, 'Up to 20 facts'),
+    coverImage: imageRule,
+    gallery: imagesRule(40),
+    published: z.boolean(),
+    publishedAt: z.string(),
+    seo: seoRule,
+  }),
+  seo: true,
+  slug: true,
+  schedulable: true,
+};
+
+// ── Posts (backend postCreate) — retired from the public site ───────────────
+
+const posts: ResourceConfig = {
+  key: 'posts',
+  label: 'Posts',
+  singular: 'post',
+  apiPath: '/admin/posts',
+  titleField: 'title',
+  visibleField: 'published',
+  localized: LOCALIZED.posts,
+  columns: [
+    { key: 'title', label: 'Title' },
+    { key: 'status', label: 'Status' },
+    {
+      key: 'publishedAt',
+      label: 'Published',
+      sortable: true,
+      render: (row: { publishedAt?: string | null }) =>
+        row.publishedAt ? formatDate(row.publishedAt) : '—',
+    },
+    updatedColumn,
+  ],
+  fields: [
+    titleField,
+    {
+      name: 'excerpt',
+      label: 'Excerpt',
+      kind: 'textarea',
+      localized: true,
+      max: 300,
+      section: 'Basics',
+    },
+    { name: 'author', label: 'Author', kind: 'text', max: 100, section: 'Basics' },
+    {
+      name: 'tags',
+      label: 'Tags',
+      kind: 'list',
+      max: 40,
+      maxItems: 12,
+      help: 'Saved in lowercase.',
+      section: 'Basics',
+    },
+    { name: 'body', label: 'Body', kind: 'richtext', localized: true, section: 'Body' },
+    { name: 'coverImage', label: 'Cover image', kind: 'image', section: 'Image' },
+  ],
+  schema: z.object({
+    title: localizedRule(150, 2),
+    slug: slugRule,
+    excerpt: localizedRule(300),
+    author: textRule(100),
+    tags: stringList(40, 12, 'tags'),
+    body: localizedRule(100_000),
+    coverImage: imageRule,
+    published: z.boolean(),
+    publishedAt: z.string(),
+    seo: seoRule,
+  }),
+  seo: true,
+  slug: true,
+  schedulable: true,
+};
+
+// ── Jobs (backend jobCreate) — retired from the public site ─────────────────
+
+const JOB_TYPES = ['full-time', 'part-time', 'contract', 'internship'] as const;
+const JOB_TYPE_LABELS: Record<string, string> = {
+  'full-time': 'Full-time',
+  'part-time': 'Part-time',
+  contract: 'Contract',
+  internship: 'Internship',
+};
+
+const jobs: ResourceConfig = {
+  key: 'jobs',
+  label: 'Jobs',
+  singular: 'job',
+  apiPath: '/admin/jobs',
+  titleField: 'title',
+  visibleField: 'isOpen',
+  localized: LOCALIZED.jobs,
+  columns: [
+    { key: 'title', label: 'Title' },
+    { key: 'department', label: 'Department' },
+    { key: 'status', label: 'Status' },
+    {
+      key: 'deadline',
+      label: 'Deadline',
+      sortable: true,
+      render: (row: { deadline?: string | null }) =>
+        row.deadline ? formatDate(row.deadline) : '—',
+    },
+    updatedColumn,
+  ],
+  filters: [{ key: 'type', label: 'Type', options: optionsOf(JOB_TYPES, JOB_TYPE_LABELS) }],
+  fields: [
+    titleField,
+    { name: 'department', label: 'Department', kind: 'text', max: 100, section: 'Basics' },
+    { name: 'location', label: 'Location', kind: 'text', max: 150, section: 'Basics' },
+    {
+      name: 'type',
+      label: 'Type',
+      kind: 'select',
+      options: optionsOf(JOB_TYPES, JOB_TYPE_LABELS),
+      section: 'Basics',
+    },
+    {
+      name: 'deadline',
+      label: 'Deadline',
+      kind: 'date',
+      help: 'The job leaves the site after this day. Leave empty for no deadline.',
+      section: 'Basics',
+    },
+    {
+      name: 'description',
+      label: 'Description',
+      kind: 'richtext',
+      localized: true,
+      section: 'Description',
+    },
+    {
+      name: 'requirements',
+      label: 'Requirements',
+      kind: 'list',
+      max: 300,
+      maxItems: 40,
+      section: 'Description',
+    },
+  ],
+  schema: z.object({
+    title: localizedRule(150, 2),
+    slug: slugRule,
+    department: textRule(100),
+    location: textRule(150),
+    type: z.enum(JOB_TYPES),
+    deadline: dateRule,
+    description: localizedRule(100_000),
+    requirements: stringList(300, 40, 'requirements'),
+    isOpen: z.boolean(),
+    seo: seoRule,
+  }),
+  seo: true,
+  slug: true,
+};
+
+/** Configured resources. Deposits land in Task 9; until then their route stays "coming soon". */
+export const RESOURCES: Partial<Record<ResourceKey, ResourceConfig>> = {
+  products,
+  team,
+  services,
+  projects,
+  posts,
+  jobs,
+};
 
 export function getResource(key: ResourceKey): ResourceConfig {
   const cfg = RESOURCES[key];
