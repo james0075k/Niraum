@@ -249,6 +249,104 @@ html.preloaded .preloader {
   }
 }
 
+/* Drilling preloader (Preloader.tsx). 1.35 s feed, finishes before the 1.6 s dismissal. */
+.drill-rod,
+.drill-hole,
+.drill-core {
+  transform-box: fill-box;
+  transform-origin: top;
+}
+.drill-rod {
+  animation: drill-rod 1.35s cubic-bezier(0.45, 0, 0.25, 1) both;
+}
+.drill-hole {
+  animation: drill-hole 1.35s cubic-bezier(0.45, 0, 0.25, 1) both;
+}
+.drill-core {
+  animation: drill-core 1.35s cubic-bezier(0.45, 0, 0.25, 1) both;
+}
+.drill-bit {
+  animation: drill-bit 1.35s cubic-bezier(0.45, 0, 0.25, 1) both;
+}
+.drill-flutes {
+  animation: drill-flutes 0.18s linear infinite;
+}
+.drill-rotor {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: drill-rotor 0.3s linear infinite;
+}
+.drill-chip {
+  opacity: 0;
+  animation: drill-chip 0.6s ease-out infinite;
+}
+@keyframes drill-rod {
+  from {
+    transform: scaleY(1);
+  }
+  to {
+    transform: scaleY(2.6); /* 56 → ~146 px: tip from the collar to the bedrock */
+  }
+}
+@keyframes drill-bit {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(90px);
+  }
+}
+@keyframes drill-hole {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(0.98);
+  }
+}
+@keyframes drill-core {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+@keyframes drill-flutes {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(6px);
+  }
+}
+@keyframes drill-rotor {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes drill-chip {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx), var(--dy));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .drill-rod,
+  .drill-hole,
+  .drill-core,
+  .drill-bit,
+  .drill-flutes,
+  .drill-rotor,
+  .drill-chip {
+    animation: none;
+  }
+}
+
 /* Placeholders for unknown business facts — visible on purpose until replaced. */
 .tbc {
   @apply rounded-sm border border-dashed border-primary/50 px-1 text-copper-ink;
