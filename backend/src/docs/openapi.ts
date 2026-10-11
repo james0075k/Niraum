@@ -15,7 +15,14 @@ import {
   userCreateBody,
   userUpdateBody,
 } from '../validators/auth.js';
-import { assaySamplesQuery } from '../validators/assay.js';
+import {
+  assayImportQuery,
+  assaySampleBody,
+  assaySampleUpdate,
+  assaySamplesQuery,
+  assaySummaryUpdate,
+  CSV_COLUMNS,
+} from '../validators/assay.js';
 import { adminListQuery, langQuery, paginationQuery } from '../validators/common.js';
 import {
   applicationStatusBody,
@@ -76,6 +83,8 @@ export function buildOpenApiSpec() {
       summary: string;
       body?: ZodTypeAny;
       multipart?: ZodTypeAny;
+      /** Raw `text/csv` request body. */
+      csv?: ZodTypeAny;
       query?: z.AnyZodObject;
       params?: z.AnyZodObject;
       response?: ZodTypeAny;
@@ -97,6 +106,7 @@ export function buildOpenApiSpec() {
         ...(o.multipart
           ? { body: { content: { 'multipart/form-data': { schema: o.multipart } } } }
           : {}),
+        ...(o.csv ? { body: { content: { 'text/csv': { schema: o.csv } } } } : {}),
       },
       responses: {
         [status]: {
@@ -277,6 +287,47 @@ export function buildOpenApiSpec() {
     tag: 'Assay',
     summary: 'Sample-level rows (always)',
     query: assaySamplesQuery,
+    auth: true,
+  });
+  add('post', '/admin/assay/samples', {
+    tag: 'Assay',
+    summary: 'Add a sample (editor+); optional oxides default to null',
+    body: assaySampleBody,
+    auth: true,
+  });
+  add('put', '/admin/assay/samples/{id}', {
+    tag: 'Assay',
+    summary: 'Edit a sample (partial)',
+    params: idP,
+    body: assaySampleUpdate,
+    auth: true,
+  });
+  add('delete', '/admin/assay/samples/{id}', {
+    tag: 'Assay',
+    summary: 'Hard delete (the audit entry keeps the old values)',
+    params: idP,
+    status: 204,
+    auth: true,
+  });
+  add('get', '/admin/assay/summary', {
+    tag: 'Assay',
+    summary: 'Every summary row (Table 14 sections + deposit average) with ids',
+    auth: true,
+  });
+  add('put', '/admin/assay/summary/{id}', {
+    tag: 'Assay',
+    summary: 'Edit the reported numbers of one summary row (section/isOverall stay fixed)',
+    params: idP,
+    body: assaySummaryUpdate,
+    auth: true,
+  });
+  add('post', '/admin/assay/import', {
+    tag: 'Assay',
+    summary: `CSV import into one dataset, all-or-nothing (≤ 1 MB). Columns: ${CSV_COLUMNS.join(', ')}. 400 details: { formErrors, rows: [{ line, errors }] }`,
+    query: assayImportQuery,
+    csv: z.string().openapi({ example: CSV_COLUMNS.join(',') }),
+    response: z.object({ data: z.object({ inserted: z.number(), replaced: z.number() }) }),
+    status: 200,
     auth: true,
   });
   add('post', '/inquiries', {

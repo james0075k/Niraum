@@ -13,7 +13,8 @@ export type AuditAction =
   | 'logout'
   | 'password_change'
   | 'password_reset'
-  | 'upload';
+  | 'upload'
+  | 'import';
 
 export interface IAuditLog {
   user: Types.ObjectId | null;

@@ -179,6 +179,36 @@ WGS-84 coordinates are confirmed. `land.confirmed: false` marks figures read fro
 -Fe | Fe2O3 | -Fe2O3 | SiO2 | -SiO2`. Responses include `source` (consultant, DMG basis,
 "not a JORC/NI 43-101 reserve statement").
 
+#### Assay admin writes (Phase 5, editor+)
+
+| Method | Path                                 | Notes                                                           |
+| ------ | ------------------------------------ | --------------------------------------------------------------- |
+| POST   | `/admin/assay/samples`               | One sample → `201`; optional oxides default to `null`           |
+| PUT    | `/admin/assay/samples/:id`           | Partial → `200`                                                 |
+| DELETE | `/admin/assay/samples/:id`           | Hard delete → `204`; the audit entry keeps the old values       |
+| GET    | `/admin/assay/summary`               | Every summary row (5 sections + deposit average) with ids       |
+| PUT    | `/admin/assay/summary/:id`           | Partial numbers only (`section`, `isOverall` stay fixed)        |
+| POST   | `/admin/assay/import?dataset=&mode=` | `text/csv` body ≤ 1 MB → `200 { data: { inserted, replaced } }` |
+
+Sample body: `sample` (≤ 30 chars, unique per dataset), `dataset`, `SiO2`, `Fe`, `Fe2O3`, `Al2O3`
+(required, 0–100), `LOI`, `CaO`, `MgO` (0–100 or `null`), `lengthM` (≥ 0 or `null`), `note`
+(≤ 300), `order`. Summary body: `thicknessM`, `SiO2`, `Fe`, `Fe2O3`, `Al2O3`, `order`. Duplicate
+samples → `409 CONFLICT`; unknown fields → `400`.
+
+**CSV import.** `mode` = `replace` (default: the dataset's rows are swapped for the file) or
+`append` (added after the existing rows; samples already in the dataset are errors). Header row
+required; columns are case-sensitive, in any order: `sample,SiO2,LOI,Fe,Fe2O3,Al2O3,CaO,MgO,lengthM,note`
+— `sample`, `SiO2`, `Fe`, `Fe2O3`, `Al2O3` must be present; blank optional cells → `null`.
+Quoted fields, CRLF and a UTF-8 BOM are accepted. The import is all-or-nothing: the whole file
+is validated first and nothing is written unless every row is valid (Mongo transaction where the
+deployment supports one). Errors come back as
+`400 VALIDATION_ERROR` with `details: { formErrors: string[], rows: [{ line, errors: string[] }] }`
+— `line` is the file line (header = 1), e.g. `{ line: 2, errors: ["Fe must be ≤ 100"] }`. Other
+statuses: `413` over 1 MB, `415` when the body isn't `text/csv`.
+
+Every write is audit-logged (`entity: AssaySample | AssaySummary`; imports use
+`action: "import"` with `{ dataset, mode, inserted, replaced }`) and schedules the rebuild hook.
+
 ### Bulk supply inquiries
 
 `POST /inquiries` — `companyName`, `contactName`, `email`, `phone`, `buyerType`

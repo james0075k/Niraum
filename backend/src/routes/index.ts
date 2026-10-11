@@ -7,7 +7,7 @@ import {
   rebuildController,
   userController,
 } from '../controllers/admin.controller.js';
-import { assayController } from '../controllers/assay.controller.js';
+import { assayController, csvBody } from '../controllers/assay.controller.js';
 import { authController } from '../controllers/auth.controller.js';
 import { contentController, type ContentSchemas } from '../controllers/content.controller.js';
 import { dashboardController } from '../controllers/dashboard.controller.js';
@@ -210,6 +210,12 @@ export function createApiRouter(limits: RateLimiters): Router {
   admin.get('/inquiries/:id', adminOnly, inquiryController.get);
   admin.patch('/inquiries/:id', adminOnly, inquiryController.setStatus);
   admin.get('/assay/samples', content, assayController.samplesAdmin);
+  admin.post('/assay/samples', content, assayController.createSample);
+  admin.put('/assay/samples/:id', content, assayController.updateSample);
+  admin.delete('/assay/samples/:id', content, assayController.removeSample);
+  admin.get('/assay/summary', content, assayController.summaryAdmin);
+  admin.put('/assay/summary/:id', content, assayController.updateSummary);
+  admin.post('/assay/import', content, csvBody, assayController.importCsv);
   admin.get('/audit', adminOnly, auditController.list);
   admin.post('/rebuild', adminOnly, rebuildController.trigger);
 
