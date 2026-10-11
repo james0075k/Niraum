@@ -1,5 +1,6 @@
 import { CtaBand } from '@/components/sections/CtaBand';
 import { Hero } from '@/components/sections/Hero';
+import { HomeComposition } from '@/components/sections/HomeComposition';
 import { ProcessTimeline } from '@/components/sections/ProcessTimeline';
 import { ProjectTeaser } from '@/components/sections/ProjectTeaser';
 import { Stats } from '@/components/sections/Stats';
@@ -42,6 +43,7 @@ export default function Home() {
       <Seo path="/" title={t('seo.title')} description={t('seo.description')} />
       <Hero />
       <Stats stats={stats} title={t('stats.title')} />
+      <HomeComposition overall={assay.overall} />
       <SupplyCards />
       <ProjectTeaser />
       <ProcessTimeline

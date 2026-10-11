@@ -1,6 +1,7 @@
 import { Factory, Flame } from 'lucide-react';
 import { Img } from '@/components/common/Img';
 import { PageHero } from '@/components/common/PageHero';
+import { CompositionDonut } from '@/components/sections/CompositionDonut';
 import { SectionHeading } from '@/components/common/SectionHeading';
 import { Reveal, RevealGroup, RevealItem } from '@/components/motion/Reveal';
 import { CtaBand } from '@/components/sections/CtaBand';
@@ -127,39 +128,42 @@ export default function Products() {
       </section>
 
       <section id="chemistry" aria-labelledby="chemistry-title" className="section grain">
-        <div className="container-site max-w-4xl">
+        <div className="container-site max-w-6xl">
           <SectionHeading
             id="chemistry-title"
             eyebrow={t('chemistry.eyebrow')}
             title={t('chemistry.title')}
             intro={t('chemistry.note')}
           />
-          <div className="glass overflow-x-auto p-2 sm:p-4">
-            <Table className="tabular-nums">
-              <TableCaption className="sr-only">{t('chemistry.caption')}</TableCaption>
-              <TableHeader>
-                <TableRow>
-                  <TableHead scope="col">{t('chemistry.oxide')}</TableHead>
-                  <TableHead scope="col" className="text-right">
-                    {t('chemistry.value')}
-                  </TableHead>
-                  <TableHead scope="col">{t('chemistry.basis')}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {p.typicalChemistry.map((c) => (
-                  <TableRow key={c.oxide}>
-                    <TableHead scope="row" className="font-semibold text-foreground">
-                      {c.oxide}
+          <div className="grid items-start gap-8 lg:grid-cols-12">
+            <div className="glass min-w-0 overflow-x-auto p-2 sm:p-4 lg:col-span-7">
+              <Table className="tabular-nums">
+                <TableCaption className="sr-only">{t('chemistry.caption')}</TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead scope="col">{t('chemistry.oxide')}</TableHead>
+                    <TableHead scope="col" className="text-right">
+                      {t('chemistry.value')}
                     </TableHead>
-                    <TableCell className="text-right font-semibold text-copper-ink">
-                      {formatPct(c.value)} {c.unit}
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">{c.basis}</TableCell>
+                    <TableHead scope="col">{t('chemistry.basis')}</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {p.typicalChemistry.map((c) => (
+                    <TableRow key={c.oxide}>
+                      <TableHead scope="row" className="font-semibold text-foreground">
+                        {c.oxide}
+                      </TableHead>
+                      <TableCell className="text-right font-semibold text-copper-ink">
+                        {formatPct(c.value)} {c.unit}
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">{c.basis}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+            <CompositionDonut overall={assay.overall} className="lg:col-span-5" stacked />
           </div>
           <DataOriginNote />
         </div>

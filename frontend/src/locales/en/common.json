@@ -107,5 +107,16 @@
     "moved": "This page has moved.",
     "continue": "Continue"
   },
-  "places": {}
+  "places": {},
+  "composition": {
+    "title": "Deposit composition",
+    "desc": "Donut chart of the Katujpani deposit weighted average from assay Table 14: SiO₂ {{sio2}}%, Fe₂O₃ {{fe2o3}}%, Al₂O₃ {{al2o3}}%, other components {{other}}%. Fe content {{fe}}%.",
+    "sio2": "Silica (SiO₂)",
+    "fe2o3": "Iron oxide (Fe₂O₃)",
+    "al2o3": "Alumina (Al₂O₃)",
+    "other": "Other (LOI, CaO, MgO… not broken out in Table 14)",
+    "feCentre": "Fe",
+    "feNote": "Iron content, contained in the Fe₂O₃ slice",
+    "source": "Length-weighted average over {{m}} m of sampling (Table 14)."
+  }
 }

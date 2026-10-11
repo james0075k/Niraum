@@ -8,6 +8,7 @@ import { AssaySampleTable } from '@/components/sections/AssaySampleTable';
 import { CtaBand } from '@/components/sections/CtaBand';
 import { AssaySummaryTable } from '@/components/sections/AssaySummaryTable';
 import { DataOriginNote } from '@/components/sections/DataOriginNote';
+import { CompositionDonut } from '@/components/sections/CompositionDonut';
 import { FeBySectionChart } from '@/components/sections/FeBySectionChart';
 import { InquiryForm } from '@/components/sections/InquiryForm';
 import { StatCard } from '@/components/sections/StatCard';
@@ -116,7 +117,8 @@ export default function TechnicalData() {
             />
             <AssaySummaryTable data={assay} />
           </div>
-          <div className="min-w-0 lg:col-span-5 lg:pt-28">
+          <div className="min-w-0 space-y-6 lg:col-span-5 lg:pt-28">
+            <CompositionDonut overall={assay.overall} stacked />
             <FeBySectionChart sections={assay.sections} />
             <DataOriginNote />
           </div>

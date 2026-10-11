@@ -71,5 +71,11 @@
   "cta": {
     "title": "Need iron ore for your kiln mix?",
     "body": "Tell us your tonnage and specification."
+  },
+  "composition": {
+    "eyebrow": "Ore composition",
+    "title": "What the Katujpani ore is made of.",
+    "body": "Across {{m}} m of channel and chip sampling, the deposit averages about one-third iron oxide, with silica as the main other component. Every section and sample is on the Technical Data page.",
+    "link": "View Technical Data"
   }
 }
