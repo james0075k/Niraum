@@ -34,7 +34,10 @@ const fillItem = (item: unknown): unknown => {
   return item;
 };
 
-/** Admin doc → form values: each localized field becomes `{ en, ne }` (arrays per item). */
+/**
+ * Admin doc → form values: each localized field becomes `{ en, ne }` (arrays per item,
+ * objects per key).
+ */
 export function toFormValues<T extends Record<string, unknown>>(
   doc: T & { translations?: Record<string, { en: string; ne?: string } | unknown[]> },
   fields: readonly string[],
@@ -44,7 +47,11 @@ export function toFormValues<T extends Record<string, unknown>>(
   for (const field of fields) {
     const full = translations?.[field] ?? rest[field];
     if (full === undefined) continue;
-    out[field] = Array.isArray(full) ? full.map(fillItem) : toLocalized(full);
+    // An object of localized values (a deposit's `location`) is filled key by key.
+    out[field] =
+      Array.isArray(full) || (isPlain(full) && !isLocalizedValue(full))
+        ? fillItem(full)
+        : toLocalized(full);
   }
   return out;
 }

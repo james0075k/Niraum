@@ -12,7 +12,16 @@ import { adminPathOf, getResource, type ResourceKey } from '../resources/config'
 type Doc = Record<string, unknown>;
 
 /** Create (`…/new`) or edit (`…/:id`) one document of a resource. */
-export default function ResourceEdit({ resource }: { resource: ResourceKey }) {
+export default function ResourceEdit({
+  resource,
+  backTo,
+  sectionExtras,
+}: {
+  resource: ResourceKey;
+  /** "All …" link target when it isn't the list path (the deposit index opens the only one). */
+  backTo?: string;
+  sectionExtras?: Partial<Record<string, React.ReactNode>>;
+}) {
   const cfg = getResource(resource);
   const { id } = useParams();
   const navigate = useNavigate();
@@ -42,7 +51,7 @@ export default function ResourceEdit({ resource }: { resource: ResourceKey }) {
     <div className="space-y-6">
       <header className="space-y-2">
         <Button asChild variant="link" className="h-auto px-0">
-          <Link to={base}>
+          <Link to={backTo ?? base}>
             <ArrowLeft aria-hidden="true" />
             All {cfg.label.toLowerCase()}
           </Link>
@@ -68,6 +77,7 @@ export default function ResourceEdit({ resource }: { resource: ResourceKey }) {
           cfg={cfg}
           doc={doc ?? null}
           onSave={onSave}
+          sectionExtras={sectionExtras}
           onDelete={
             id
               ? async () => {

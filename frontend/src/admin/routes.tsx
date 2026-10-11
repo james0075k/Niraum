@@ -20,10 +20,11 @@ export const lazyPage = (load: () => Promise<{ default: React.ComponentType }>) 
 /**
  * Admin paths (relative to /admin) of the resources served by the generic ResourceList /
  * ResourceEdit pages. Must match `adminPathOf(RESOURCES[key])`; kept here so the shell chunk
- * doesn't load the resource configs (they load with the pages). Task 9 adds the deposit.
+ * doesn't load the resource configs (they load with the pages).
  */
 export const RESOURCE_PATHS: Partial<Record<ResourceKey, string>> = {
   products: 'products',
+  deposits: 'deposit',
   team: 'team',
   services: 'services',
   projects: 'projects',
@@ -31,14 +32,34 @@ export const RESOURCE_PATHS: Partial<Record<ResourceKey, string>> = {
   jobs: 'jobs',
 };
 
+type PageLoader = () => Promise<{ default: React.ComponentType }>;
+
+/** Resources with their own list/edit pages instead of the generic ones. */
+const CUSTOM_PAGES: Partial<Record<ResourceKey, { list: PageLoader; edit: PageLoader }>> = {
+  // `/admin/deposit` opens the only deposit; the editor adds the map pin.
+  deposits: {
+    list: () => import('./pages/DepositEdit').then((m) => ({ default: m.DepositIndex })),
+    edit: () => import('./pages/DepositEdit'),
+  },
+};
+
 /** List, new and edit routes of one resource, role-gated like the rest of the content area. */
 export function resourceRoutes(key: ResourceKey, path: string): RouteObject[] {
   const gate = (el: React.ReactNode) => <RequireRole area="content">{el}</RequireRole>;
-  const list = lazyPage(() =>
-    import('./pages/ResourceList').then((m) => ({ default: () => <m.default resource={key} /> })),
+  const custom = CUSTOM_PAGES[key];
+  const list = lazyPage(
+    custom?.list ??
+      (() =>
+        import('./pages/ResourceList').then((m) => ({
+          default: () => <m.default resource={key} />,
+        }))),
   );
-  const edit = lazyPage(() =>
-    import('./pages/ResourceEdit').then((m) => ({ default: () => <m.default resource={key} /> })),
+  const edit = lazyPage(
+    custom?.edit ??
+      (() =>
+        import('./pages/ResourceEdit').then((m) => ({
+          default: () => <m.default resource={key} />,
+        }))),
   );
   return [
     { path, element: gate(list) },

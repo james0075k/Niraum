@@ -69,6 +69,7 @@ export function ResourceForm({
   onSave,
   onDelete,
   onRestore,
+  sectionExtras,
 }: {
   cfg: ResourceConfig;
   /** The admin doc, or null for a new one. */
@@ -77,6 +78,8 @@ export function ResourceForm({
   onSave(body: Doc, isNew: boolean): Promise<Doc>;
   onDelete?(): Promise<void>;
   onRestore?(): Promise<void>;
+  /** Extra content at the end of a section card, by section name (the deposit's map pin). */
+  sectionExtras?: Partial<Record<string, React.ReactNode>>;
 }) {
   const isNew = !doc;
   const defaults = useMemo(() => (doc ? docToForm(cfg, doc) : emptyValues(cfg)), [cfg, doc]);
@@ -190,6 +193,7 @@ export function ResourceForm({
               {fields.map((f) => (
                 <ResourceField key={f.name} def={f} name={f.name} />
               ))}
+              {sectionExtras?.[section]}
             </Card>
           ))}
         </div>

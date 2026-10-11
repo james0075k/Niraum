@@ -14,8 +14,10 @@ export function MapPinPicker(props: {
   zoom?: number;
   onChange(p: { lat: number; lng: number }): void;
   height?: number;
+  /** Marker title, e.g. "Deposit pin" (default "Office pin"). */
+  pinLabel?: string;
 }): JSX.Element {
-  const { lat, lng, zoom = 15, onChange, height = 360 } = props;
+  const { lat, lng, zoom = 15, onChange, height = 360, pinLabel } = props;
   const hasPin = lat !== null && lng !== null;
   return (
     <div className="space-y-2">
@@ -26,7 +28,7 @@ export function MapPinPicker(props: {
         style={{ height }}
       >
         <Suspense fallback={<Skeleton className="h-full w-full rounded-none" />}>
-          <PinMap lat={lat} lng={lng} zoom={zoom} onChange={onChange} />
+          <PinMap lat={lat} lng={lng} zoom={zoom} onChange={onChange} pinLabel={pinLabel} />
         </Suspense>
       </div>
       <p className="text-sm text-muted-foreground" aria-live="polite">

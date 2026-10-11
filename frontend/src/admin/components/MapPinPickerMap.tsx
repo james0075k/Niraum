@@ -23,6 +23,7 @@ export interface PinMapProps {
   lng: number | null;
   zoom: number;
   onChange(p: { lat: number; lng: number }): void;
+  pinLabel?: string;
 }
 
 /** Follows the pin and zoom when they change from outside (geocode preview, zoom slider). */
@@ -42,7 +43,13 @@ function ClickToPlace({ onChange }: Pick<PinMapProps, 'onChange'>) {
   return null;
 }
 
-export default function MapPinPickerMap({ lat, lng, zoom, onChange }: PinMapProps) {
+export default function MapPinPickerMap({
+  lat,
+  lng,
+  zoom,
+  onChange,
+  pinLabel = 'Office pin',
+}: PinMapProps) {
   const hasPin = lat !== null && lng !== null;
   const handlers = useMemo(
     () => ({
@@ -72,8 +79,8 @@ export default function MapPinPickerMap({ lat, lng, zoom, onChange }: PinMapProp
           icon={pinIcon}
           draggable
           eventHandlers={handlers}
-          title="Office pin — drag to move"
-          alt="Office pin"
+          title={`${pinLabel} — drag to move`}
+          alt={pinLabel}
         />
       )}
       <ClickToPlace onChange={onChange} />

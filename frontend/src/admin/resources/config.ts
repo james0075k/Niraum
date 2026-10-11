@@ -760,9 +760,204 @@ const jobs: ResourceConfig = {
   slug: true,
 };
 
-/** Configured resources. Deposits land in Task 9; until then their route stays "coming soon". */
+// ── Deposits (backend depositCreate) — custom page: pages/DepositEdit.tsx ───
+
+const DEPOSIT_STATUSES = ['studies', 'development', 'operating'] as const;
+const DEPOSIT_STATUS_LABELS: Record<string, string> = {
+  studies: 'Studies',
+  development: 'Development',
+  operating: 'Operating',
+};
+
+export const LAT_MESSAGE = 'Latitude must be between -90 and 90';
+export const LNG_MESSAGE = 'Longitude must be between -180 and 180';
+/** WGS-84 degrees, or empty (null) until the coordinates are confirmed. */
+const coordRule = (limit: number, message: string) =>
+  z.number({ invalid_type_error: message }).min(-limit, message).max(limit, message).nullish();
+const optionalNumber = z.number({ invalid_type_error: 'Enter a number' }).optional();
+const hectares = (name: string, label: string): FieldDef => ({
+  name,
+  label: `${label} (ha)`,
+  kind: 'number',
+  nullable: true,
+});
+const placeField = (name: string, label: string): FieldDef => ({
+  name,
+  label,
+  kind: 'text',
+  localized: true,
+  max: 100,
+});
+
+const deposits: ResourceConfig = {
+  key: 'deposits',
+  label: 'Deposits',
+  singular: 'deposit',
+  apiPath: '/admin/deposits',
+  adminPath: '/admin/deposit',
+  titleField: 'name',
+  visibleField: 'published',
+  localized: LOCALIZED.deposits,
+  columns: [
+    { key: 'name', label: 'Name' },
+    {
+      key: 'stage',
+      label: 'Stage',
+      render: (row: { status?: string }) =>
+        (row.status && DEPOSIT_STATUS_LABELS[row.status]) ?? row.status ?? '—',
+    },
+    { key: 'status', label: 'Status' },
+    updatedColumn,
+  ],
+  fields: [
+    {
+      name: 'name',
+      label: 'Name',
+      kind: 'text',
+      localized: true,
+      required: true,
+      max: 150,
+      section: 'Basics',
+    },
+    {
+      name: 'summary',
+      label: 'Summary',
+      kind: 'textarea',
+      localized: true,
+      max: 1000,
+      section: 'Basics',
+    },
+    {
+      name: 'status',
+      label: 'Stage',
+      kind: 'select',
+      options: optionsOf(DEPOSIT_STATUSES, DEPOSIT_STATUS_LABELS),
+      section: 'Basics',
+    },
+    {
+      name: 'statusText',
+      label: 'Stage note',
+      kind: 'textarea',
+      localized: true,
+      max: 300,
+      section: 'Basics',
+    },
+    {
+      name: 'location',
+      label: 'Location',
+      kind: 'group',
+      localized: true,
+      help: 'Easting and Northing are the mine scheme’s local grid on the topo sheet — not latitude/longitude.',
+      section: 'Location',
+      // lat/lng are edited with the map pin below the group (DepositEdit).
+      itemFields: [
+        placeField('district', 'District'),
+        placeField('municipality', 'Municipality'),
+        placeField('province', 'Province'),
+        { name: 'ward', label: 'Ward', kind: 'text', max: 20 },
+        { name: 'topoSheet', label: 'Topo sheet', kind: 'text', max: 40 },
+        { name: 'easting', label: 'Easting (local grid)', kind: 'number', nullable: true },
+        { name: 'northing', label: 'Northing (local grid)', kind: 'number', nullable: true },
+        { name: 'spotHeightM', label: 'Spot height (m)', kind: 'number', nullable: true },
+      ],
+    },
+    {
+      name: 'areas',
+      label: 'Areas',
+      kind: 'list',
+      localized: true,
+      maxItems: 20,
+      section: 'Areas',
+      itemFields: [
+        { name: 'code', label: 'Code', kind: 'text', required: true, max: 10 },
+        { name: 'label', label: 'Label', kind: 'text', localized: true, max: 150 },
+      ],
+    },
+    {
+      name: 'geologySummary',
+      label: 'Geology summary',
+      kind: 'textarea',
+      localized: true,
+      max: 2000,
+      section: 'Geology',
+    },
+    {
+      name: 'land',
+      label: 'Land use',
+      kind: 'group',
+      help: 'Map No. 1 figures. Leave a figure empty when it is not known.',
+      section: 'Land',
+      itemFields: [
+        hectares('surveyHa', 'Survey area'),
+        hectares('quarryHa', 'Quarry'),
+        hectares('topsoilYardHa', 'Topsoil yard'),
+        hectares('wasteYardHa', 'Waste yard'),
+        hectares('officeHa', 'Office'),
+        hectares('approachRoadHa', 'Approach road'),
+        hectares('totalLandUseHa', 'Total land use'),
+        { name: 'landType', label: 'Land type', kind: 'text', max: 100 },
+        { name: 'confirmed', label: 'Land figures confirmed', kind: 'switch' },
+      ],
+    },
+    {
+      name: 'consultant',
+      label: 'Consultant',
+      kind: 'group',
+      section: 'Consultant',
+      itemFields: [
+        { name: 'name', label: 'Name', kind: 'text', max: 200 },
+        { name: 'address', label: 'Address', kind: 'text', max: 200 },
+      ],
+    },
+    { name: 'maps', label: 'Maps', kind: 'images', maxItems: 20, section: 'Maps' },
+  ],
+  schema: z.object({
+    name: localizedRule(150, 2),
+    slug: slugRule,
+    summary: localizedRule(1000),
+    status: z.enum(DEPOSIT_STATUSES),
+    statusText: localizedRule(300),
+    location: z.object({
+      district: localizedRule(100),
+      municipality: localizedRule(100),
+      province: localizedRule(100),
+      ward: textRule(20),
+      topoSheet: textRule(40),
+      easting: optionalNumber,
+      northing: optionalNumber,
+      spotHeightM: optionalNumber,
+      lat: coordRule(90, LAT_MESSAGE),
+      lng: coordRule(180, LNG_MESSAGE),
+    }),
+    areas: z
+      .array(z.object({ code: requiredText(10), label: localizedRule(150) }))
+      .max(20, 'Up to 20 areas'),
+    geologySummary: localizedRule(2000),
+    land: z.object({
+      surveyHa: optionalNumber,
+      quarryHa: optionalNumber,
+      topsoilYardHa: optionalNumber,
+      wasteYardHa: optionalNumber,
+      officeHa: optionalNumber,
+      approachRoadHa: optionalNumber,
+      totalLandUseHa: optionalNumber,
+      landType: textRule(100),
+      confirmed: z.boolean(),
+    }),
+    consultant: z.object({ name: textRule(200), address: textRule(200) }),
+    maps: imagesRule(20),
+    published: z.boolean(),
+    seo: seoRule,
+  }),
+  seo: true,
+  slug: true,
+  publicUrl: (_doc, lang) => `/${lang}/our-project`,
+};
+
+/** Configured resources (the deposit uses its own pages, see routes.tsx). */
 export const RESOURCES: Partial<Record<ResourceKey, ResourceConfig>> = {
   products,
+  deposits,
   team,
   services,
   projects,
