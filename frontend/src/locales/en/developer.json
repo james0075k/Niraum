@@ -1,0 +1,54 @@
+{
+  "seo": {
+    "title": "Website Developer",
+    "description": "Niraum Metals website designed and developed by Janak (James) Rokaya, full-stack developer in Kathmandu, Nepal."
+  },
+  "hero": {
+    "eyebrow": "Credits",
+    "title": "Website developer",
+    "intro": "This website and its admin panel were designed and built by Janak (James) Rokaya."
+  },
+  "profile": {
+    "eyebrow": "Developer",
+    "title": "Designed and developed by",
+    "role": "Full-Stack Developer · MERN · AI/ML",
+    "location": "Kathmandu, Nepal",
+    "summary": "Full-stack developer and final-year Computer Engineering student (IOE, Tribhuvan University) who builds and deploys production web apps with React, Node.js and MongoDB, and applies machine learning to real problems.",
+    "portfolio": "Portfolio",
+    "github": "GitHub",
+    "linkedin": "LinkedIn",
+    "email": "Email"
+  },
+  "site": {
+    "eyebrow": "This website",
+    "title": "What was built",
+    "items": {
+      "bilingual": "Bilingual site in English and नेपाली, prerendered for fast loading and search engines.",
+      "data": "Assay tables, charts and the deposit composition built from the mine scheme data, never typed by hand.",
+      "admin": "Admin panel for content, products, deposit, assay data, inquiries, media and users, with an audit log.",
+      "api": "Secure REST API: Node.js, Express and MongoDB, cookie-based sign-in, rate limits and captcha.",
+      "ops": "Automated tests and a CI/CD pipeline that deploys the site and API after every check passes."
+    }
+  },
+  "skills": {
+    "eyebrow": "Skills",
+    "title": "Technical skills",
+    "groups": {
+      "languages": "Languages",
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "database": "Database",
+      "ai": "AI / ML",
+      "devops": "DevOps & tools"
+    }
+  },
+  "projects": {
+    "eyebrow": "Work",
+    "title": "Selected projects",
+    "visit": "Visit {{name}} (opens in a new tab)",
+    "momento": "Photo book, frame and print store with an admin dashboard, WhatsApp ordering and CI/CD to Vercel.",
+    "farmahelp": "AI plant and animal disease detection from a photo, with treatment advice, in English and Nepali.",
+    "cloudcall": "Browser video meetings with shareable links, screen sharing and live chat over WebRTC."
+  },
+  "copyright": "Website design & development © {{year}} Janak (James) Rokaya."
+}

@@ -34,6 +34,7 @@ const publicRoutes = (): RouteRecord[] => [
   { path: 'technical-data', lazy: page(() => import('@/pages/public/TechnicalData')) },
   { path: 'investors', lazy: page(() => import('@/pages/public/Investors')) },
   { path: 'sustainability', lazy: page(() => import('@/pages/public/Sustainability')) },
+  { path: 'developer', lazy: page(() => import('@/pages/public/Developer')) },
   // Retired (no blueprint content) → closest new page. Old slugs keep a redirect stub.
   { path: 'operations', lazy: moved },
   { path: 'projects', lazy: moved },

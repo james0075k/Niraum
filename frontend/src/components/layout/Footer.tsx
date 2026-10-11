@@ -23,6 +23,7 @@ const quickLinks = [
   { to: '/investors', key: 'investors' },
   { to: '/sustainability', key: 'sustainability' },
   { to: '/contact', key: 'contact' },
+  { to: '/developer', key: 'developer' },
 ];
 
 /** `key` → `common:legal.<key>`. */

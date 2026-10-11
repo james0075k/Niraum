@@ -15,6 +15,8 @@ import mossyOutcrop from '@/assets/images/mossy-outcrop.jpg?picture';
 import hillside from '@/assets/images/hillside-outcrop.jpg?picture';
 // Founder portrait (912 px wide): `?photo` never upscales.
 import founderPortrait from '@/assets/images/shivahari.jpeg?photo';
+// Website developer (Developer page), cropped from the CV photo (308 px).
+import developerPortrait from '@/assets/images/developer-james-portrait.jpg?photo';
 
 const img = (picture: Picture, alt: string): ImageSource => ({
   src: picture.img.src,
@@ -50,6 +52,7 @@ export const images = {
   mossyOutcrop: img(mossyOutcrop, 'Moss-covered outcrop with ferns and exposed mineralised rock'),
   hillside: img(hillside, 'Green hillside with boulders of exposed bedrock at a survey site'),
   founder: img(founderPortrait, 'Portrait of Shivahari Pudasaini, founder of Niraum Metals'),
+  developer: img(developerPortrait, 'Portrait of Janak (James) Rokaya, website developer'),
 } satisfies Record<string, ImageSource>;
 
 /**
