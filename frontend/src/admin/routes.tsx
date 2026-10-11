@@ -85,6 +85,7 @@ const BUILT = new Set([
   '/admin/inquiries',
   '/admin/messages',
   '/admin/applications',
+  '/admin/assay',
 ]);
 const placeholders: RouteObject[] = NAV.filter(
   (n) => !BUILT.has(n.to) && !resourcePaths.has(n.to),
@@ -144,6 +145,12 @@ export const adminRoutes: RouteObject[] = [
             path: 'audit',
             element: (
               <RequireRole area="audit">{lazyPage(() => import('./pages/Audit'))}</RequireRole>
+            ),
+          },
+          {
+            path: 'assay',
+            element: (
+              <RequireRole area="assay">{lazyPage(() => import('./pages/Assay'))}</RequireRole>
             ),
           },
           ...inboxRoutes,
