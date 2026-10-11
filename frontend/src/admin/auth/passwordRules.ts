@@ -58,3 +58,35 @@ export type NewPasswordValues = {
   newPassword: string;
   confirmPassword: string;
 };
+
+/** Character classes of generated passwords (no look-alikes such as 0/O, 1/l/I). */
+const GEN_CLASSES = [
+  'abcdefghijkmnopqrstuvwxyz',
+  'ABCDEFGHJKLMNPQRSTUVWXYZ',
+  '23456789',
+  '!@#$%^&*-_=+?',
+];
+const GEN_CHARS = GEN_CLASSES.join('');
+
+/** A uniform random index below `n` from `crypto.getRandomValues` (rejection sampling). */
+function randomIndex(n: number): number {
+  const limit = Math.floor(0x1_0000_0000 / n) * n;
+  const buf = new Uint32Array(1);
+  for (;;) {
+    crypto.getRandomValues(buf);
+    const v = buf[0] as number;
+    if (v < limit) return v % n;
+  }
+}
+
+/**
+ * A random temporary password (default 20 characters) with at least one lowercase, uppercase,
+ * digit and symbol, so it passes the 12–128 rule and scores "Strong".
+ */
+export function generatePassword(length = 20): string {
+  for (;;) {
+    let out = '';
+    for (let i = 0; i < length; i += 1) out += GEN_CHARS[randomIndex(GEN_CHARS.length)];
+    if (GEN_CLASSES.every((set) => [...out].some((c) => set.includes(c)))) return out;
+  }
+}

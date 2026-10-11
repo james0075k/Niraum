@@ -55,7 +55,13 @@ const resourcePaths = new Set(resourceEntries.map(([, path]) => `/admin/${path}`
  * Sections without a real page yet: a role-gated "coming soon" placeholder at each NAV path,
  * so links never 404. Later tasks replace entries here with their pages.
  */
-const BUILT = new Set(['/admin', '/admin/settings', '/admin/media']);
+const BUILT = new Set([
+  '/admin',
+  '/admin/settings',
+  '/admin/media',
+  '/admin/users',
+  '/admin/audit',
+]);
 const placeholders: RouteObject[] = NAV.filter(
   (n) => !BUILT.has(n.to) && !resourcePaths.has(n.to),
 ).map((n) => ({
@@ -93,6 +99,18 @@ export const adminRoutes: RouteObject[] = [
             path: 'media',
             element: (
               <RequireRole area="media">{lazyPage(() => import('./pages/Media'))}</RequireRole>
+            ),
+          },
+          {
+            path: 'users',
+            element: (
+              <RequireRole area="users">{lazyPage(() => import('./pages/Users'))}</RequireRole>
+            ),
+          },
+          {
+            path: 'audit',
+            element: (
+              <RequireRole area="audit">{lazyPage(() => import('./pages/Audit'))}</RequireRole>
             ),
           },
           ...resources,
