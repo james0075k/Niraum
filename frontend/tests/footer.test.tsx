@@ -19,6 +19,14 @@ describe('Developer credit', () => {
     );
   });
 
+  it('credits the designer with a link to the portfolio', () => {
+    renderWithProviders(<Footer />, { route: '/en' });
+    expect(screen.getByText('Designed by', { exact: false })).toBeInTheDocument();
+    const link = screen.getByRole('link', { name: 'JAMES.00.7' });
+    expect(link).toHaveAttribute('href', 'https://user007.cloud');
+    expect(link).toHaveAttribute('target', '_blank');
+  });
+
   it('shows the developer profile, links and projects', async () => {
     renderWithProviders(<Developer />, { route: '/en/developer' });
     expect(

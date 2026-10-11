@@ -191,13 +191,26 @@ export function Footer() {
           <p>
             © {new Date().getFullYear()} {settings.legalName} {t('footer.rights')}
           </p>
-          <button
-            type="button"
-            onClick={toTop}
-            className="inline-flex min-h-11 items-center gap-2 rounded-full px-3 font-medium text-foreground transition-colors hover:text-copper-ink"
-          >
-            {t('a11y.backToTop')} <ArrowUp className="h-4 w-4" aria-hidden="true" />
-          </button>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+            <p>
+              {t('footer.designedBy')}{' '}
+              <a
+                href="https://user007.cloud"
+                target="_blank"
+                rel="noopener"
+                className="transition-colors hover:text-copper-ink"
+              >
+                JAMES.00.7
+              </a>
+            </p>
+            <button
+              type="button"
+              onClick={toTop}
+              className="inline-flex min-h-11 items-center gap-2 rounded-full px-3 font-medium text-foreground transition-colors hover:text-copper-ink"
+            >
+              {t('a11y.backToTop')} <ArrowUp className="h-4 w-4" aria-hidden="true" />
+            </button>
+          </div>
         </div>
       </div>
     </footer>
