@@ -26,8 +26,8 @@ export const inquiryController = {
   }),
 
   exportCsv: ah(async (req, res) => {
-    const { status, buyerType } = inquiryListQuery.parse(req.query);
-    const csv = await inquiryService.exportCsv({ status, buyerType });
+    const { status, buyerType, q } = inquiryListQuery.parse(req.query);
+    const csv = await inquiryService.exportCsv({ status, buyerType, q });
     const day = new Date().toISOString().slice(0, 10);
     res.setHeader('Content-Type', 'text/csv; charset=utf-8');
     res.setHeader('Content-Disposition', `attachment; filename="inquiries-${day}.csv"`);

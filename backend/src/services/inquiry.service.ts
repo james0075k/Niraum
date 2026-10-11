@@ -1,8 +1,8 @@
 import { env } from '../config/env.js';
 import { mailer } from '../config/mailer.js';
-import { Inquiry, type IInquiry } from '../models/Inquiry.js';
+import { INQUIRY_STATUSES, Inquiry, type IInquiry } from '../models/Inquiry.js';
 import { AppError } from '../utils/AppError.js';
-import { listMeta } from '../utils/pagination.js';
+import { escapeRegex, listMeta } from '../utils/pagination.js';
 import type { InquiryBody } from '../validators/public.js';
 import { auditService, type Actor } from './audit.service.js';
 import { captchaService } from './captcha.service.js';
@@ -70,6 +70,23 @@ const CSV_COLUMNS: (keyof IInquiry | 'id')[] = [
   'sourcePage',
 ];
 
+interface InquiryFilter {
+  status?: string | undefined;
+  buyerType?: string | undefined;
+  q?: string | undefined;
+}
+
+/** Filter shared by list, counts and CSV (everything except `status`). */
+function baseFilter(query: InquiryFilter): Record<string, unknown> {
+  const filter: Record<string, unknown> = {};
+  if (query.buyerType) filter.buyerType = query.buyerType;
+  if (query.q) {
+    const rx = new RegExp(escapeRegex(query.q), 'i');
+    filter.$or = [{ companyName: rx }, { contactName: rx }, { email: rx }];
+  }
+  return filter;
+}
+
 export const inquiryService = {
   /**
    * Stores the inquiry, emails CONTACT_INBOX (+ INQUIRY_CC) and auto-replies in the visitor's
@@ -120,23 +137,34 @@ export const inquiryService = {
     return { id: String(doc._id) };
   },
 
-  async list(query: {
-    page: number;
-    limit: number;
-    status?: string | undefined;
-    buyerType?: string | undefined;
-  }) {
-    const filter: Record<string, unknown> = {};
-    if (query.status) filter.status = query.status;
-    if (query.buyerType) filter.buyerType = query.buyerType;
-    const [docs, total] = await Promise.all([
+  /**
+   * Newest first. `q` matches company, contact name or email (case-insensitive, literal);
+   * `meta.counts` gives the number per status for the same `q`/`buyerType` but ignoring the
+   * status filter, so the admin pipeline header can show every stage at once.
+   */
+  async list(query: InquiryFilter & { page: number; limit: number }) {
+    const base = baseFilter(query);
+    const filter = query.status ? { ...base, status: query.status } : base;
+    const [docs, total, grouped] = await Promise.all([
       Inquiry.find(filter)
         .sort({ createdAt: -1 })
         .skip((query.page - 1) * query.limit)
         .limit(query.limit),
       Inquiry.countDocuments(filter),
+      Inquiry.aggregate<{ _id: IInquiry['status']; n: number }>([
+        { $match: base },
+        { $group: { _id: '$status', n: { $sum: 1 } } },
+      ]),
     ]);
-    return { data: docs.map((d) => d.toJSON()), meta: listMeta(query.page, query.limit, total) };
+    const counts = Object.fromEntries(INQUIRY_STATUSES.map((st) => [st, 0])) as Record<
+      IInquiry['status'],
+      number
+    >;
+    for (const g of grouped) counts[g._id] = g.n;
+    return {
+      data: docs.map((d) => d.toJSON()),
+      meta: { ...listMeta(query.page, query.limit, total), counts },
+    };
   },
 
   async get(id: string) {
@@ -161,10 +189,9 @@ export const inquiryService = {
   },
 
   /** CSV for follow-up in a spreadsheet (UTF-8 BOM so Excel shows Nepali correctly). */
-  async exportCsv(query: { status?: string | undefined; buyerType?: string | undefined }) {
-    const filter: Record<string, unknown> = {};
-    if (query.status) filter.status = query.status;
-    if (query.buyerType) filter.buyerType = query.buyerType;
+  async exportCsv(query: InquiryFilter) {
+    const base = baseFilter(query);
+    const filter = query.status ? { ...base, status: query.status } : base;
     const docs = await Inquiry.find(filter).sort({ createdAt: -1 }).limit(10_000).lean();
     const lines = docs.map((d) =>
       CSV_COLUMNS.map((c) => csvCell(c === 'id' ? String(d._id) : d[c])).join(','),

@@ -82,6 +82,9 @@ const BUILT = new Set([
   '/admin/media',
   '/admin/users',
   '/admin/audit',
+  '/admin/inquiries',
+  '/admin/messages',
+  '/admin/applications',
 ]);
 const placeholders: RouteObject[] = NAV.filter(
   (n) => !BUILT.has(n.to) && !resourcePaths.has(n.to),
@@ -89,6 +92,15 @@ const placeholders: RouteObject[] = NAV.filter(
   path: n.to.slice('/admin/'.length),
   element: <RequireRole area={n.area}>{lazyPage(() => import('./pages/ComingSoon'))}</RequireRole>,
 }));
+
+/** Inquiries (list + detail), messages and applications — admin+ only. */
+const inbox = (el: React.ReactNode) => <RequireRole area="inbox">{el}</RequireRole>;
+const inboxRoutes: RouteObject[] = [
+  { path: 'inquiries', element: inbox(lazyPage(() => import('./pages/Inquiries'))) },
+  { path: 'inquiries/:id', element: inbox(lazyPage(() => import('./pages/InquiryDetail'))) },
+  { path: 'messages', element: inbox(lazyPage(() => import('./pages/Messages'))) },
+  { path: 'applications', element: inbox(lazyPage(() => import('./pages/Applications'))) },
+];
 
 /**
  * Children of `/admin/*` (paths are relative to `/admin`). Only the signed-out screens sit
@@ -134,6 +146,7 @@ export const adminRoutes: RouteObject[] = [
               <RequireRole area="audit">{lazyPage(() => import('./pages/Audit'))}</RequireRole>
             ),
           },
+          ...inboxRoutes,
           ...resources,
           ...placeholders,
         ],

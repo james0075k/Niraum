@@ -120,6 +120,42 @@ describe('admin inquiries', () => {
     expect(csv.text).toContain('"\'=HYPERLINK(""x"")"'); // formula neutralised
   });
 
+  it('searches with q and returns per-status counts for the pipeline header', async () => {
+    await request(app).post('/api/v1/inquiries').send(inquiry());
+    await request(app)
+      .post('/api/v1/inquiries')
+      .send(inquiry({ companyName: 'Everest Steel', contactName: 'Ram Thapa' }));
+    await request(app)
+      .post('/api/v1/inquiries')
+      .send(inquiry({ companyName: 'Spam Co', website: 'http://bot' }));
+    const { cookies } = await loginAs(app, 'admin');
+    const get = (path: string) => request(app).get(`/api/v1/admin${path}`).set('Cookie', cookies);
+
+    const all = await get('/inquiries?status=new');
+    expect(all.body.meta.total).toBe(2);
+    // Counts ignore the status filter so every chip keeps its number.
+    expect(all.body.meta.counts).toEqual({
+      new: 2,
+      contacted: 0,
+      quoted: 0,
+      won: 0,
+      lost: 0,
+      spam: 1,
+    });
+
+    const found = await get('/inquiries?q=everest');
+    expect(found.body.data).toHaveLength(1);
+    expect(found.body.data[0].companyName).toBe('Everest Steel');
+    expect(found.body.meta.counts.new).toBe(1);
+
+    const regexSafe = await get('/inquiries?q=' + encodeURIComponent('.*'));
+    expect(regexSafe.body.data).toHaveLength(0);
+
+    const csv = await get('/inquiries/export.csv?q=everest');
+    expect(csv.text).toContain('Everest Steel');
+    expect(csv.text).not.toContain('Himal Cement');
+  });
+
   it('is admin-only', async () => {
     const { cookies } = await loginAs(app, 'editor');
     const res = await request(app).get('/api/v1/admin/inquiries').set('Cookie', cookies);

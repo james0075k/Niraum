@@ -286,7 +286,7 @@ export function buildOpenApiSpec() {
   });
   add('get', '/admin/inquiries', {
     tag: 'Inquiries',
-    summary: 'Inquiries (filter by status, buyerType)',
+    summary: 'Inquiries (filter by status, buyerType, q); meta.counts = per-status totals',
     query: inquiryListQuery,
     response: list,
     auth: true,

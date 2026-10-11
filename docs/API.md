@@ -190,10 +190,13 @@ auto-replies in `lang`. Honeypot hits are stored as `spam` without email.
 
 | Method | Path                          | Access | Notes                                             |
 | ------ | ----------------------------- | ------ | ------------------------------------------------- |
-| GET    | `/admin/inquiries`            | admin+ | `?status=&buyerType=&page=&limit=`                |
-| GET    | `/admin/inquiries/export.csv` | admin+ | UTF-8 with BOM; formula cells neutralised         |
+| GET    | `/admin/inquiries`            | admin+ | `?status=&buyerType=&q=&page=&limit=` (1)         |
+| GET    | `/admin/inquiries/export.csv` | admin+ | same filters; UTF-8 BOM; formulas neutralised     |
 | GET    | `/admin/inquiries/:id`        | admin+ |                                                   |
 | PATCH  | `/admin/inquiries/:id`        | admin+ | `{ status: new→contacted→quoted→won/lost, spam }` |
+
+(1) `q` matches company, contact name or email (case-insensitive). `meta.counts` holds the
+number per status for the same `q`/`buyerType`, ignoring `status` (admin pipeline header).
 
 ### Migration
 
