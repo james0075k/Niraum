@@ -211,13 +211,3 @@ test('retired pages redirect to their replacement in the same language', async (
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   }
 });
-
-// Admin login is built in Phase 5; this spec is the acceptance test it must pass.
-test.fixme('admin can sign in', async ({ page }) => {
-  await page.goto('/admin/login');
-  await page.getByLabel('Email').fill('admin@example.com');
-  await page.getByLabel('Password').fill('change-me-on-first-login');
-  await page.getByRole('button', { name: 'Sign in' }).click();
-  await expect(page).toHaveURL(/\/admin$/);
-  await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
-});

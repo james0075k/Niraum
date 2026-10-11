@@ -15,7 +15,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "seed": "tsx --env-file-if-exists=.env src/seed/index.ts",
-    "migrate": "tsx --env-file-if-exists=.env src/migrations/run.ts"
+    "migrate": "tsx --env-file-if-exists=.env src/migrations/run.ts",
+    "e2e:server": "tsx scripts/e2e-server.ts"
   },
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "^7.3.4",

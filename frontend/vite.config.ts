@@ -132,7 +132,10 @@ export default defineConfig(({ isSsrBuild, mode }) => {
     server: {
       port: 5173,
       // Same-origin API in dev so httpOnly SameSite=Strict cookies just work.
-      proxy: { '/api': { target: 'http://localhost:4000', changeOrigin: true } },
+      // API_PROXY_TARGET: Playwright's admin project points this at its in-memory e2e API.
+      proxy: {
+        '/api': { target: env.API_PROXY_TARGET || 'http://localhost:4000', changeOrigin: true },
+      },
     },
     build: {
       target: 'es2020',
