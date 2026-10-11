@@ -195,6 +195,24 @@ describe('Audit log', () => {
     expect(await screen.findByText(/"Old" → "New"/)).toHaveTextContent('title: "Old" → "New"');
   });
 
+  it('links inquiries to their detail page and other inbox entries to their list', async () => {
+    apiGet.mockResolvedValue(
+      list([
+        { ...entry, id: 'a2', entity: 'Inquiry', entityId: '6650a1b2c3d4e5f6012345aa' },
+        { ...entry, id: 'a3', entity: 'Message', entityId: '6650a1b2c3d4e5f6012345bb' },
+      ]),
+    );
+    wrap(<AuditLog />, admin);
+    expect(await screen.findByRole('link', { name: /6650a1b2c3d4e5f6012345aa/ })).toHaveAttribute(
+      'href',
+      '/admin/inquiries/6650a1b2c3d4e5f6012345aa',
+    );
+    expect(screen.getByRole('link', { name: /6650a1b2c3d4e5f6012345bb/ })).toHaveAttribute(
+      'href',
+      '/admin/messages',
+    );
+  });
+
   it('filters by entity', async () => {
     wrap(<AuditLog />, admin);
     await screen.findByText('Ada Admin');

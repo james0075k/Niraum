@@ -62,6 +62,13 @@ const ENTITY_RESOURCE: Record<string, ResourceKey> = {
 /** Admin page of an audited record, or `null` when it has no editor. */
 function editorPath(e: AuditEntry): string | null {
   if (e.entity === 'SiteSettings') return '/admin/settings';
+  if (e.entity === 'Inquiry' && e.entityId) return `/admin/inquiries/${e.entityId}`;
+  // Messages and applications open in a drawer on their list page (no per-record route).
+  if (e.entity === 'Message') return '/admin/messages';
+  if (e.entity === 'Application') return '/admin/applications';
+  if (e.entity === 'AssaySample' || e.entity === 'AssaySummary') return '/admin/assay';
+  if (e.entity === 'Media') return '/admin/media';
+  if (e.entity === 'User') return '/admin/users';
   const key = ENTITY_RESOURCE[e.entity];
   const cfg = key ? RESOURCES[key] : undefined;
   if (!cfg || !e.entityId) return null;

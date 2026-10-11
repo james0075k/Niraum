@@ -366,3 +366,46 @@ test('editor cannot open settings', async ({ page }) => {
   const res = await page.request.get('/api/v1/admin/settings');
   expect(res.status()).toBe(403);
 });
+
+// ── Smoke tests for the Task 9–12 screens (seeded data, read-only) ──────────
+
+test('deposit opens the seeded deposit with its map pin', async ({ page }) => {
+  await signInAndWait(page, ADMIN_EMAIL);
+  await page.goto('/admin/deposit');
+  // One seeded deposit → the list redirects straight to its editor.
+  await expect(page).toHaveURL(/\/admin\/deposit\/[a-f0-9]{24}$/);
+  await expect(page.getByText('Map pin (WGS-84)')).toBeVisible();
+});
+
+test('inbox pages load for an admin', async ({ page }) => {
+  await signInAndWait(page, ADMIN_EMAIL);
+  for (const [path, heading] of [
+    ['/admin/inquiries', 'Inquiries'],
+    ['/admin/messages', 'Messages'],
+    ['/admin/applications', 'Applications'],
+    ['/admin/audit', 'Audit log'],
+  ] as const) {
+    await page.goto(path);
+    await expect(page.getByRole('heading', { name: heading, level: 1 })).toBeVisible();
+    await expect(page.getByText("You don't have access")).toHaveCount(0);
+  }
+});
+
+test('assay manager shows the seeded samples to an editor', async ({ page }) => {
+  await signInAndWait(page, EDITOR_EMAIL);
+  await page.goto('/admin/assay');
+  await expect(page.getByRole('heading', { name: 'Assay data', level: 1 })).toBeVisible();
+  await expect(page.getByRole('table').first().getByRole('row').nth(1)).toBeVisible();
+});
+
+test('only a superadmin can manage users', async ({ page }) => {
+  await signInAndWait(page, ADMIN_EMAIL);
+  await page.goto('/admin/users');
+  await expect(page.getByText("You don't have access")).toBeVisible();
+
+  await page.context().clearCookies();
+  await signInAndWait(page, SUPERADMIN_EMAIL);
+  await page.goto('/admin/users');
+  await expect(page.getByRole('heading', { name: 'Users', level: 1 })).toBeVisible();
+  await expect(page.getByText(ADMIN_EMAIL)).toBeVisible();
+});
