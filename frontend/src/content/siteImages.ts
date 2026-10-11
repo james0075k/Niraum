@@ -36,6 +36,7 @@ import channelWide from '@/assets/site/photos/iron-ore-rock-face-channel-samplin
 import channelMarks from '@/assets/site/photos/iron-ore-rock-face-channel-sampling-marks.webp?photo';
 import mossFerns from '@/assets/site/photos/iron-ore-outcrop-moss-ferns.webp?photo';
 import hillsideBoulders from '@/assets/site/photos/bedrock-boulders-hillside-vegetation.webp?photo';
+import chb1Field from '@/assets/images/channel-sample-chb1.jpg?photo';
 // Banner photos chosen by Niraum (11 Oct 2026). Not taken at Katujpani, so the alt text stays
 // generic; source and licence are [CONFIRM] in assets/CREDITS.md.
 import stockpileCrane from '@/assets/images/crane.jpg?photo';
@@ -117,6 +118,10 @@ export const photos = {
     'Orange channel-sampling lines painted across a weathered rock face',
   ),
   mossFerns: img(mossFerns, 'Outcrop covered with moss and ferns'),
+  chb1Field: img(
+    chb1Field,
+    'Sample point CH-B-1 and depth marks painted in yellow on a dark outcrop, with a notebook for scale',
+  ),
   hillsideBoulders: img(
     hillsideBoulders,
     'Boulders of exposed bedrock among green grass and shrubs',

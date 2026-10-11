@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { fade, fadeUp, stagger } from '@/lib/motion';
 import { usePrefersReducedMotion } from '@/hooks/useMediaQuery';
 
-type Tag = 'div' | 'section' | 'ul' | 'ol' | 'li' | 'article' | 'header' | 'p' | 'span';
+type Tag = 'div' | 'section' | 'ul' | 'ol' | 'li' | 'article' | 'header' | 'p' | 'span' | 'figure';
 
 interface RevealProps {
   children: ReactNode;
